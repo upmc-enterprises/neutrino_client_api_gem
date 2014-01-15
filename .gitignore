@@ -5,6 +5,7 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 # Ignore all log files and temp files.
+/pkg
 /log
 /tmp
 *~
@@ -13,12 +14,18 @@
 *.*~
 .#*
 
-#ignore Vim swap files
+# ignore generated docs
+/doc
+
+# ignore Vim swap files
 *.swp
 *.swo
 
-#ignore meld *.orig files
+# ignore meld *.orig files
 *.orig
+
+# ignore coverage reports
+/coverage/
 
 /nbproject/
 /.settings/
@@ -26,3 +33,6 @@
 /.shell_history
 /.idea/
 /cucumber_timing_data.csv
+
+# ignore compiled gem
+cdris_api_client*.gem

@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Module: Exceptions
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index (E)</a> &raquo;
+    
+    
+    <span class="title">Exceptions</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Module: Exceptions
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/exceptions.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>The Exceptions module for custom exceptions.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Exceptions/AccessForbiddenError.html" title="Exceptions::AccessForbiddenError (class)">AccessForbiddenError</a></span>, <span class='object_link'><a href="Exceptions/BadRequestError.html" title="Exceptions::BadRequestError (class)">BadRequestError</a></span>, <span class='object_link'><a href="Exceptions/BaseError.html" title="Exceptions::BaseError (class)">BaseError</a></span>, <span class='object_link'><a href="Exceptions/CluPatientDocumentNotFoundError.html" title="Exceptions::CluPatientDocumentNotFoundError (class)">CluPatientDocumentNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/CluPatientDocumentSourceTextNotFoundError.html" title="Exceptions::CluPatientDocumentSourceTextNotFoundError (class)">CluPatientDocumentSourceTextNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/ContentNotFoundError.html" title="Exceptions::ContentNotFoundError (class)">ContentNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/DocumentTypeInvalidForNlp.html" title="Exceptions::DocumentTypeInvalidForNlp (class)">DocumentTypeInvalidForNlp</a></span>, <span class='object_link'><a href="Exceptions/ExportFileTypeNotSupported.html" title="Exceptions::ExportFileTypeNotSupported (class)">ExportFileTypeNotSupported</a></span>, <span class='object_link'><a href="Exceptions/GenericNotFoundError.html" title="Exceptions::GenericNotFoundError (class)">GenericNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/Icd9CodesNotProvided.html" title="Exceptions::Icd9CodesNotProvided (class)">Icd9CodesNotProvided</a></span>, <span class='object_link'><a href="Exceptions/ImportFileNotProvided.html" title="Exceptions::ImportFileNotProvided (class)">ImportFileNotProvided</a></span>, <span class='object_link'><a href="Exceptions/ImportFileTypeNotSupported.html" title="Exceptions::ImportFileTypeNotSupported (class)">ImportFileTypeNotSupported</a></span>, <span class='object_link'><a href="Exceptions/InternalServerError.html" title="Exceptions::InternalServerError (class)">InternalServerError</a></span>, <span class='object_link'><a href="Exceptions/MapTypeInvalidError.html" title="Exceptions::MapTypeInvalidError (class)">MapTypeInvalidError</a></span>, <span class='object_link'><a href="Exceptions/MapTypeNotFoundError.html" title="Exceptions::MapTypeNotFoundError (class)">MapTypeNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/NamedQueryNotFoundError.html" title="Exceptions::NamedQueryNotFoundError (class)">NamedQueryNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/PatientDemographicsNotFoundError.html" title="Exceptions::PatientDemographicsNotFoundError (class)">PatientDemographicsNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/PatientDocumentBaseTextNotFoundError.html" title="Exceptions::PatientDocumentBaseTextNotFoundError (class)">PatientDocumentBaseTextNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/PatientDocumentConfidentialError.html" title="Exceptions::PatientDocumentConfidentialError (class)">PatientDocumentConfidentialError</a></span>, <span class='object_link'><a href="Exceptions/PatientDocumentNotFoundError.html" title="Exceptions::PatientDocumentNotFoundError (class)">PatientDocumentNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/PatientNotFoundError.html" title="Exceptions::PatientNotFoundError (class)">PatientNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/SearchCloudEntryNotFoundError.html" title="Exceptions::SearchCloudEntryNotFoundError (class)">SearchCloudEntryNotFoundError</a></span>, <span class='object_link'><a href="Exceptions/SnomedCodesNotProvided.html" title="Exceptions::SnomedCodesNotProvided (class)">SnomedCodesNotProvided</a></span>, <span class='object_link'><a href="Exceptions/SubjectMatterDomainsNotProvided.html" title="Exceptions::SubjectMatterDomainsNotProvided (class)">SubjectMatterDomainsNotProvided</a></span>, <span class='object_link'><a href="Exceptions/TimeFormatError.html" title="Exceptions::TimeFormatError (class)">TimeFormatError</a></span>, <span class='object_link'><a href="Exceptions/TimeWindowError.html" title="Exceptions::TimeWindowError (class)">TimeWindowError</a></span>, <span class='object_link'><a href="Exceptions/TypesOfServiceNotProvided.html" title="Exceptions::TypesOfServiceNotProvided (class)">TypesOfServiceNotProvided</a></span>, <span class='object_link'><a href="Exceptions/UnableToParseVersionHistoryError.html" title="Exceptions::UnableToParseVersionHistoryError (class)">UnableToParseVersionHistoryError</a></span>, <span class='object_link'><a href="Exceptions/UnableToParseVersionInformationError.html" title="Exceptions::UnableToParseVersionInformationError (class)">UnableToParseVersionInformationError</a></span>, <span class='object_link'><a href="Exceptions/UnableToRetrieveConfigurations.html" title="Exceptions::UnableToRetrieveConfigurations (class)">UnableToRetrieveConfigurations</a></span>, <span class='object_link'><a href="Exceptions/UnsupportedFileFormatError.html" title="Exceptions::UnsupportedFileFormatError (class)">UnsupportedFileFormatError</a></span>
+    
+  
+</p>
+
+
+
+
+
+
+
+
+
+</div>
+
+    <div id="footer">
+  Generated on Fri Mar 07 23:02:29 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-1.9.3).
+</div>
+
+  </body>
+</html>

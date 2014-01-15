@@ -1,3 +1,8 @@
-class CdrisApiClient
-
-end
+require 'cdris/api/client'
+require 'cdris/gateway/clu'
+require 'cdris/gateway/info'
+require 'cdris/gateway/map_type'
+require 'cdris/gateway/named_query'
+require 'cdris/gateway/patient_document'
+require 'cdris/gateway/patient'
+require 'cdris/gateway/exceptions'
