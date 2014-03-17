@@ -1,10 +1,35 @@
 # CDRIS API Client gem
 
+## Versioning
+The gem follows the following versioning scheme
+```
+<CDRIS_version>dev<major_version>.<minor_version>
+```
+where
+ - `<CDRIS_version>` is the compatible version of CDRIS of which the gem acts as a gateway
+ - `<major_version` is the major version of the gem, indicating breaking changes for the given version of CDRIS
+ - `<minor_version>` is the minor version of the gem, indicating non-breaking changes
+
 ## Generating
 In the project's root execute:
 ```
 gem build cdris_api_client.gemspec
 ```
+
+## Packaging in a Rails project
+After generating the gem, unpack it into the Rails' project's `vendor` folder:
+```
+gem unpack cdris_api_client-<version>.gem --target <rails_project>/vendor/gems/
+```
+where
+ - `<version>` is the version of the cdris_api_client
+ - `<rails_project>` is the root directory of the rails project
+
+Add a line like the following to the project's Gemfile:
+```
+gem 'cdris_api_client', '<version>', :path => 'vendor/gems/cdris_api_client-<version>'
+```
+where `<version>` is the version of the cdris_api_client
 
 ## Installing
 After generating the gem, in the project's root execute:
