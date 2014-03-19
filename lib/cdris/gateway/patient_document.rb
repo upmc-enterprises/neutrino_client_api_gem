@@ -116,7 +116,11 @@ module Cdris
         # @param [Hash] options specify query values
         # @return [Hash] the patient document's ejection fractions
         def ejection_fractions(params, options={})
-          path = "#{api}/patient/#{params[:root]}/#{params[:extension]}/patient_documents/current/with/ejection_fractions"
+          if params[:id]
+            path = "#{base_uri(params)}/facts/ejection_fraction"
+          else
+            path = "#{api}/patient/#{params[:root]}/#{params[:extension]}/patient_documents/current/with/ejection_fractions"
+          end
           request(path, options).to_hash
         end
 
