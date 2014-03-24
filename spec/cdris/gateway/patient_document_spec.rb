@@ -10,7 +10,18 @@ describe Cdris::Gateway::PatientDocument do
     Cdris::Api::Client.config = TestConfig.to_hash
   end
 
-  let(:patient_document_path) { 'patient_document_path' }
+  describe 'self.get' do
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/debug/true/patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      :body => DataSamples.patient_document_test_patient_document.to_s)
+
+    it 'requests and returns the expected patient document' do
+      described_class.get({ id: '42' }).should == DataSamples.patient_document_test_patient_document.to_hash
+    end
+
+  end
 
   describe 'self.data' do
 
@@ -138,6 +149,24 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.snomed_vitals' do
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient_document/42/facts/vitals/snomed/all?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      :body => DataSamples.patient_document_snomed_vitals.to_s)
+
+    it 'requests and returns the expected snomed vitals' do
+      described_class.snomed_vitals(
+      {
+        :id => '42'
+      }, {
+        :user => { :root => "foobar", :extension => "spameggs" }
+      }).should == DataSamples.patient_document_snomed_vitals.to_hash
+    end
+
+  end
+
   describe 'self.snomed_problem_codes_clinical' do
 
     FakeWeb.register_uri(
@@ -191,6 +220,21 @@ describe Cdris::Gateway::PatientDocument do
       }).should == DataSamples.patient_document_ejection_fractions.to_hash
     end
 
+    context 'when an id is given' do
+      
+      let(:id) { '42' }
+      let(:params) { { id: id } }
+
+      it 'performs a request using the patient document (with id) route' do
+        Cdris::Gateway::Requestor.stub(:api).and_return('foo')
+        Cdris::Gateway::Requestor.should_receive(:request).with(
+          /\/patient_document\/#{id}\/facts\/ejection_fraction/,
+          anything).and_return({})
+        described_class.ejection_fractions(params)
+      end
+
+    end
+ 
   end
 
   describe 'self.search' do
@@ -241,6 +285,89 @@ describe Cdris::Gateway::PatientDocument do
         }, {
           :user => { :root => "foobar", :extension => "spameggs"}
         }).should == DataSamples.patient_document_set.to_hash
+    end
+
+  end
+
+  describe 'self.create' do
+
+    it 'performs a post request' do
+      Cdris::Gateway::Requestor.should_receive(:request).with(anything, { method: :post }, anything).and_return({})
+      described_class.create
+    end
+
+    it 'performs a request with the passed body' do
+      Cdris::Gateway::Requestor.should_receive(:request).with(anything, anything, "foobar").and_return({})
+      described_class.create("foobar")
+    end
+
+  end
+
+  describe 'self.base_uri' do
+
+    context 'when id, root and extension are not given' do
+
+      let(:params) { { } }
+      
+      it 'raises a BadRequestError' do
+        expect { described_class.base_uri(params) }.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
+      end
+
+    end
+
+    context 'when id is given' do
+
+      let(:id) { '42' }
+      let(:params) { { id: id } }
+
+      it 'builds a URI containing the id URI component' do
+        described_class.base_uri(params).should match(/\/#{id}/)
+      end
+
+      context 'when debug is specified' do
+
+        before(:each) { params[:debug] = true }
+
+        it 'builds a URI containing the debug URI component' do
+          described_class.base_uri(params).should match(/\/debug/)
+        end
+
+      end
+
+    end
+
+    context 'when root and extension are given' do
+
+      let(:root) { 'some_root' }
+      let(:extension) { 'some_extension' }
+      let(:params) { { root: root, extension: extension } }
+
+      it 'builds a URI containing the root and extension URI components' do
+        described_class.base_uri(params).should match(/\/#{root}\/#{extension}/)
+      end
+
+      context 'when extension suffix is given' do
+        
+        let(:extension_suffix) { 'some_extension_suffix' }
+        before(:each) { params[:extension_suffix] = extension_suffix }
+
+        it 'builds a URI containing the extension suffix URI component' do
+          described_class.base_uri(params).should match(/\/#{extension_suffix}/)
+        end
+
+        context 'when document source updated at is given' do
+
+          let(:document_source_updated_at) { 'some_time' }
+          before(:each) { params[:document_source_updated_at] = document_source_updated_at } 
+
+          it 'builds a URI containing the document source updated at URI component' do
+            described_class.base_uri(params).should match(/\/#{document_source_updated_at}/)
+          end
+
+        end
+
+      end
+
     end
 
   end

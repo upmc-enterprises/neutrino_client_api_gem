@@ -87,6 +87,8 @@ describe Cdris::Gateway::Patient do
 
   describe 'self.patient_document_search' do
 
+    let(:params) { {} }
+
     FakeWeb.register_uri(
       :get,
       'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
@@ -96,6 +98,30 @@ describe Cdris::Gateway::Patient do
       described_class.patient_document_search(
         params_root_and_extension,
       user_root_and_extension).should == DataSamples.patient_patient_document_search.to_hash
+    end
+
+    context 'when root and extension are specified in params' do
+
+      let(:root) { 'some_root' }
+      let(:extension) { 'some_extension' }
+
+      before(:each) do
+        params[:root] = root
+        params[:extension] = extension
+        Cdris::Gateway::Requestor.stub(:request).and_return({})
+      end
+
+      context 'and current is specified in params' do
+
+        before(:each) { params[:current] = true }
+
+        it 'contains the current uri component' do
+          expect(Cdris::Gateway::Requestor).to receive(:request).with(/\/current/, anything)
+          described_class.patient_documents(params)
+        end
+
+      end
+
     end
 
   end

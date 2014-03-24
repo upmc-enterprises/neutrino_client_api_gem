@@ -80,13 +80,23 @@ module Cdris
           request(path, options).to_hash
         end
 
-        def # Gets a patient document's SNOMED problem codes
+        # Gets a patient document's SNOMED problem codes
         #
         # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`
         # @param [Hash] options specify query values
         # @return [Hash] the patient document's SNOMED problem codes
-        snomed_problem_codes(params, options={})
+        def snomed_problem_codes(params, options={})
           path = "#{base_uri(params)}/facts/problems/snomed/all"
+          request(path, options).to_hash
+        end
+
+        # Gets a patient document's SNOMED vitals
+        #
+        # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`
+        # @param [Hash] options specify query values
+        # @return [Hash] the patient document's SNOMED vital information
+        def snomed_vitals(params, options={})
+          path = "#{base_uri(params)}/facts/vitals/snomed/all"
           request(path, options).to_hash
         end
 

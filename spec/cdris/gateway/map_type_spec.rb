@@ -26,4 +26,24 @@ describe Cdris::Gateway::MapType do
 
   end
 
+  describe 'self.create_map_type' do
+
+    it 'performs a request specifying the post method' do
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, { method: :post }, anything)
+      described_class.create_map_type(anything)
+    end
+
+    it 'performs a request specifying the passed body' do
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar')
+      described_class.create_map_type('foobar')
+    end
+
+    it 'performs a request against the map type URI' do
+      Cdris::Gateway::Requestor.stub(:api).and_return('api_uri')
+      expect(Cdris::Gateway::Requestor).to receive(:request).with('api_uri/map_type', anything, anything)
+      described_class.create_map_type(anything)
+    end
+
+  end
+
 end

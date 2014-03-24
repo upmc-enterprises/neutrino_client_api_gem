@@ -24,6 +24,18 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
 
     end
 
+    context 'when ejection fractions are included' do
+      
+      before(:each) do
+        subject.from_whitelists_in({ with_ejection_fractions: true })
+      end
+
+      it 'builds a whitelist that builds a uri including the with ejection fractions uri component' do
+        subject.build.to_s.should match(/\/with\/ejection_fractions/)
+      end
+
+    end
+
     context 'when empty values are given and the uri is built' do
   
       let(:empty_values) { [] }
@@ -45,6 +57,26 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
 
         it 'raises a Cdris::Gateway::Exceptions::SubjectMatterDomainsNotProvided' do
           expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::SubjectMatterDomainsNotProvided)
+        end
+
+      end
+
+      context 'when snomed procedure whitelist is specified' do
+
+        before(:each) { params[:snomed_procedure_whitelist] = empty_values }
+
+        it 'raises a Cdris::Gateway::Exceptions::SnomedCodesNotProvided' do
+          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
+        end
+
+      end
+
+      context 'when icd9 problem whitelist is specified' do
+
+        before(:each) { params[:icd9_problem_whitelist] = empty_values }
+
+        it 'raises a Cdris::Gateway::Exceptions::Icd9CodesNotProvided' do
+          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::Icd9CodesNotProvided)
         end
 
       end

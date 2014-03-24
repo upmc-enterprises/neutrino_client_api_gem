@@ -58,6 +58,11 @@ class DataSamples
     self
   end
 
+  def self.patient_document_snomed_vitals
+    @@current = File.read('./spec/fixtures/sample_snomed_vitals.json')
+    self
+  end
+
   def self.patient_document_snomed_problem_codes_clinical
     @@current = File.read('./spec/fixtures/sample_snomed_problem_codes_clinical.json')
     self
