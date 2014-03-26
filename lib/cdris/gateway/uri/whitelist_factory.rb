@@ -54,6 +54,12 @@ module Cdris
                      .and_values(values)
                      .error_on_empty(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
 
+          when :snomed_vital_whitelist
+            Whitelist.new
+                     .with_template("/vital_whitelist/snomed/{value}/all")
+                     .and_values(values)
+                     .error_on_empty(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
+
           when :icd9_problem_whitelist
             Whitelist.new
                      .with_template("/problem_whitelist/icd9/{value}/all")
@@ -74,6 +80,7 @@ module Cdris
             :with_ejection_fractions,
             :snomed_problem_whitelist,
             :snomed_procedure_whitelist,
+            :snomed_vital_whitelist,
             :icd9_problem_whitelist
           ]
         end

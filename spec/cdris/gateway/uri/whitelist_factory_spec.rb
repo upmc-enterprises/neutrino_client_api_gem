@@ -51,6 +51,16 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
 
       end
 
+      context 'when snomed vital whitelist is specified' do
+        
+        before(:each) { params[:snomed_vital_whitelist] = empty_values }
+
+        it 'raises a Cdris::Gateway::Exceptions::SnomedCodesNotProvided' do
+          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
+        end
+
+      end
+
       context 'when subject matter domain whitelist is specified' do
 
         before(:each) { params[:subject_matter_domain_whitelist] = empty_values }
