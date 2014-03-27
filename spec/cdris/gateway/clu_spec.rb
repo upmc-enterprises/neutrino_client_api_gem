@@ -39,7 +39,7 @@ describe Cdris::Gateway::Clu do
       :body => "{}")
 
     it 'gets a document' do
-      described_class.document({ :id => '42' }).should == JSON.parse("{}") 
+      described_class.document({ :id => '42' }).should == JSON.parse("{}")
     end
 
     let(:empty_params) { {} }
@@ -60,7 +60,7 @@ describe Cdris::Gateway::Clu do
     it 'gets data' do
       described_class.data({ :id => '42' }).should == { data: "Some Data", type: "text/plain" }
     end
-    
+
     let(:empty_params) { {} }
 
     it 'raises a BadRequestError when no params are given' do
@@ -70,7 +70,7 @@ describe Cdris::Gateway::Clu do
   end
 
   describe 'self.base_uri' do
-  
+
     let(:params) { {} }
     let(:options) { {} }
 

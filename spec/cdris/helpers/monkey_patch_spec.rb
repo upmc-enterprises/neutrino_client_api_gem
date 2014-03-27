@@ -1,7 +1,7 @@
 require './lib/cdris/helpers/monkey_patch'
 
 describe Object do
-  
+
   describe '.blank?' do
 
     it 'is blank when it is nil' do

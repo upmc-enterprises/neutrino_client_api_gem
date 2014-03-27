@@ -14,7 +14,7 @@ describe Cdris::Gateway::PatientDocument do
 
     FakeWeb.register_uri(
       :get,
-      'http://testhost:4242/api/v1/debug/true/patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      'http://testhost:4242/api/v1/patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
       :body => DataSamples.patient_document_test_patient_document.to_s)
 
     it 'requests and returns the expected patient document' do
@@ -221,7 +221,7 @@ describe Cdris::Gateway::PatientDocument do
     end
 
     context 'when an id is given' do
-      
+
       let(:id) { '42' }
       let(:params) { { id: id } }
 
@@ -234,7 +234,7 @@ describe Cdris::Gateway::PatientDocument do
       end
 
     end
- 
+
   end
 
   describe 'self.search' do
@@ -308,7 +308,7 @@ describe Cdris::Gateway::PatientDocument do
     context 'when id, root and extension are not given' do
 
       let(:params) { { } }
-      
+
       it 'raises a BadRequestError' do
         expect { described_class.base_uri(params) }.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
       end
@@ -326,10 +326,10 @@ describe Cdris::Gateway::PatientDocument do
 
       context 'when debug is specified' do
 
-        before(:each) { params[:debug] = true }
+        let(:options) { { debug: true } }
 
         it 'builds a URI containing the debug URI component' do
-          described_class.base_uri(params).should match(/\/debug/)
+          described_class.base_uri(params, options).should match(/\/debug/)
         end
 
       end
@@ -347,7 +347,7 @@ describe Cdris::Gateway::PatientDocument do
       end
 
       context 'when extension suffix is given' do
-        
+
         let(:extension_suffix) { 'some_extension_suffix' }
         before(:each) { params[:extension_suffix] = extension_suffix }
 
@@ -358,7 +358,7 @@ describe Cdris::Gateway::PatientDocument do
         context 'when document source updated at is given' do
 
           let(:document_source_updated_at) { 'some_time' }
-          before(:each) { params[:document_source_updated_at] = document_source_updated_at } 
+          before(:each) { params[:document_source_updated_at] = document_source_updated_at }
 
           it 'builds a URI containing the document source updated at URI component' do
             described_class.base_uri(params).should match(/\/#{document_source_updated_at}/)

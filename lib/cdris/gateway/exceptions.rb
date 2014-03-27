@@ -130,12 +130,12 @@ module Cdris
       end
 
       # Error class for when a named query is not found
-      class NamedQueryNotFoundError < BaseError 
+      class NamedQueryNotFoundError < BaseError
         def initialize(errors=[], message="Named query not found")
           super(errors, message)
         end
       end
-      
+
       # The parent of various whitelist not found errors
       class WhitelistNotProvidedError < BaseError
         def initialize(errors=[], message="Whitelist not provided")

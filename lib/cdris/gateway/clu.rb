@@ -21,7 +21,7 @@ module Cdris
         #
         # @param [Hash] params specify what document to get, either `:id` or `:patient_document_id`
         # @param [Hash] options specify query values
-        # @return [Hash] A CLU document 
+        # @return [Hash] A CLU document
         # @raise [Exceptions::PatientDocumentNotFoundError] when CDRIS returns a 404 status code
         def document(params, options={})
           path = base_uri(params, options)
@@ -48,8 +48,7 @@ module Cdris
         # @return [String] the base URI for a CLU document
         # @raise [Exceptions::BadRequestError] when `:id` and `:patient_document_id` are not specified
         def base_uri(params, options)
-          path = "#{api}/clu_patient_document"
-          path << '/debug/true' if options[:debug]
+          path = "#{api(options)}/clu_patient_document"
           if params[:id]
             path << "/#{params[:id]}"
           elsif params[:patient_document_id]

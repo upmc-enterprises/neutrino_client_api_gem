@@ -25,7 +25,7 @@ module Cdris
           values = @whitelist_hash[whitelist]
 
           case whitelist
-          
+
           when :type_of_service_whitelist
             Whitelist.new
                      .with_template('/type_of_service_list/{value}')
@@ -74,10 +74,10 @@ module Cdris
             :with_ejection_fractions,
             :snomed_problem_whitelist,
             :snomed_procedure_whitelist,
-            :icd9_problem_whitelist 
+            :icd9_problem_whitelist
           ]
         end
-        
+
         private
 
         def clinical_or_all

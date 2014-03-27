@@ -10,7 +10,7 @@ describe Cdris::Gateway::Uri::Whitelist do
                .with_template('this_is_a_test_duh')
                .to_s.should == 'this_is_a_test_duh'
     end
-    
+
     it 'injects the whitelist value into the {value} placeholder of the uri template' do
       described_class.new
                .with_template('foobar/{value}')

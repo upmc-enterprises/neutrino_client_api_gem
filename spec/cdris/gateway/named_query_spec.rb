@@ -4,7 +4,7 @@ require './lib/cdris/gateway/requestor'
 require 'fakeweb'
 
 describe Cdris::Gateway::NamedQuery do
-    
+
   before(:each) do
     Cdris::Api::Client.config = TestConfig.to_hash
   end

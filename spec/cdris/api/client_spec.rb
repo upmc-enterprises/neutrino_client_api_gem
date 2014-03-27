@@ -11,7 +11,7 @@ describe Cdris::Api::Client do
   end
 
   describe 'self.config' do
-    
+
     it 'returns a config dictionary when one has been set' do
       described_class.config.should == TestConfig.to_hash
     end
@@ -37,8 +37,8 @@ describe Cdris::Api::Client do
       it 'returns an empty hash' do
         described_class.symbolize_keys(hash).should == {}
       end
-      
-    end 
+
+    end
 
     context 'given a hash with a few strings as keys' do
       let(:hash) { { 'foo' => 5, 'bar' => [] } }
@@ -56,7 +56,7 @@ describe Cdris::Api::Client do
   end
 
   describe 'self.protocol' do
-    
+
     it 'returns the protocol specified in the config when a config was given' do
       described_class.protocol.should == TestConfig.protocol
     end
@@ -64,7 +64,7 @@ describe Cdris::Api::Client do
   end
 
   describe 'self.host' do
-    
+
     it 'returns the host specified in the config when a config was given' do
       described_class.host.should == TestConfig.host
     end
@@ -72,7 +72,7 @@ describe Cdris::Api::Client do
   end
 
   describe 'self.port' do
-    
+
     it 'returns the port specified in the config when a config was given' do
       described_class.port.should == TestConfig.port
     end
@@ -80,7 +80,7 @@ describe Cdris::Api::Client do
   end
 
   describe 'self.auth_user' do
-    
+
     it 'returns the auth_user specified in the config when a config was given' do
       described_class.auth_user.should == TestConfig.auth_user
     end
@@ -88,7 +88,7 @@ describe Cdris::Api::Client do
   end
 
   describe 'self.auth_pass' do
-    
+
     it 'returns the auth_pass specified in the config when a config was given' do
       described_class.auth_pass.should == TestConfig.auth_pass
     end

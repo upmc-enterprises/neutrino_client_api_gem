@@ -111,7 +111,7 @@ module Cdris
                     .to_s
 
           path << current_if_specified_in(params)
-       
+
           request(path, options).to_hash
         end
 
@@ -122,7 +122,7 @@ module Cdris
         # @raise [Exceptions::BadRequestError] when `:root` or `:extension` are not specified
         def base_uri(params)
           if params[:root].nil? || params[:extension].nil?
-            raise Cdris::Gateway::Exceptions::BadRequestError, 'Must specify a root and extension' 
+            raise Cdris::Gateway::Exceptions::BadRequestError, 'Must specify a root and extension'
           end
 
           "#{api}/patient/#{params[:root]}/#{params[:extension]}"

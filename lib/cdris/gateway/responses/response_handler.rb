@@ -16,7 +16,7 @@ module Cdris
           self
         end
 
-        # Gets the response body 
+        # Gets the response body
         #
         # @return [String] the response body
         def to_s

@@ -25,7 +25,7 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
     end
 
     context 'when ejection fractions are included' do
-      
+
       before(:each) do
         subject.from_whitelists_in({ with_ejection_fractions: true })
       end
@@ -37,7 +37,7 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
     end
 
     context 'when empty values are given and the uri is built' do
-  
+
       let(:empty_values) { [] }
       let(:params) { {} }
 

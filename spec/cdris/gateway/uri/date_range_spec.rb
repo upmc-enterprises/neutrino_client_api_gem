@@ -7,7 +7,7 @@ describe Cdris::Gateway::Uri::DateRange do
   let(:date_in_2014) { '2014-01-01T01:01:01Z' }
 
   describe '.beginning_at' do
-    
+
     it 'raises a TimeFormatError when it is given a begin date that is not properly formatted' do
       expect { described_class.new.beginning_at('foo') }.to raise_error(Cdris::Gateway::Exceptions::TimeFormatError)
     end
@@ -25,7 +25,7 @@ describe Cdris::Gateway::Uri::DateRange do
     it 'raises a TimeFormatError when it is given a end date that is not properly formatted' do
       expect { described_class.new.ending_at('foo') }.to raise_error(Cdris::Gateway::Exceptions::TimeFormatError)
     end
-    
+
     it 'raises a TimeWindowError when it is given a begin date that is after its end date' do
       range = described_class.new.beginning_at(date_in_2014)
 
@@ -35,7 +35,7 @@ describe Cdris::Gateway::Uri::DateRange do
   end
 
   describe '.to_s' do
-    
+
     it 'returns the begin date and the end date separated by a forward slash given a valid beginning and ending date' do
       described_class.new
                .beginning_at(date_in_2013)
@@ -122,7 +122,7 @@ describe Cdris::Gateway::Uri::FormattedDate do
   end
 
   describe '.to_uri' do
-    
+
     it 'gets the original, beginning with a slash' do
       formatted_date = described_class.new date_in_2013
 

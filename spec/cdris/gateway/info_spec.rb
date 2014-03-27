@@ -39,7 +39,7 @@ describe Cdris::Gateway::Info do
   end
 
   describe 'self.configuration' do
-    
+
     FakeWeb.register_uri(
       :get,
       'http://testhost:4242/cdris/configuration/a_category?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',

@@ -22,7 +22,7 @@ module Cdris
         # @param [Hash] options specify query values
         # @return [Hash] the patient document
         def get(params, options={})
-          path = base_uri(params.merge({debug: true}))
+          path = base_uri(params, options)
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
                                 .to_hash
         end
@@ -152,7 +152,7 @@ module Cdris
         # @return [Hash] the patient document cluster
         def cluster(params, options={})
           document_source_updated_at = params[:document_source_updated_at]
-          document_source_updated_at_uri = document_source_updated_at.nil? ? "" : "/#{document_source_updated_at}" 
+          document_source_updated_at_uri = document_source_updated_at.nil? ? "" : "/#{document_source_updated_at}"
           path = "#{base_uri(params)}/cluster#{document_source_updated_at_uri}"
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
                                 .to_hash
@@ -194,16 +194,15 @@ module Cdris
         #
         # @param [Hash] params specify what patient to get, must specify either `:id` or `:root` and `extension`
         # @return [String] the base URI for a patient document
-        def base_uri(params)
-          url = "#{api}"
-          url << '/debug/true' if params[:debug]
+        def base_uri(params, options={})
+          url = "#{api(options)}"
           url << '/patient_document'
           if params[:id]
             url << "/#{params[:id]}"
           elsif params[:root] && params[:extension]
             url << "/#{params[:root]}/#{params[:extension]}"
             if params[:extension_suffix]
-              url << "/#{params[:extension_suffix]}" 
+              url << "/#{params[:extension_suffix]}"
               url << "/#{params[:document_source_updated_at]}" if params[:document_source_updated_at]
             end
           else

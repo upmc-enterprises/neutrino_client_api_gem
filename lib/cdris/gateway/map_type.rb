@@ -28,7 +28,7 @@ module Cdris
           path = base_uri
           request(path, options.merge({method: :post}), map_type_body).to_s
         end
-        
+
         # Gets the URI for a specific map type
         #
         # @param [Hash] params specify what map type to get, either `:unmapped`, or `:local_root` and `:local_extension`

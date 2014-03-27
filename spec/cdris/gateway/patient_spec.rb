@@ -175,7 +175,7 @@ describe Cdris::Gateway::Patient do
 
     let(:date_to) { '2014-01-01T01:01:01Z' }
     let(:date_from) { '2013-01-01T01:01:01Z' }
-    
+
     it 'raises a TimeWindowError if it is given a date range whose starting date is after the ending date' do
       described_class.stub(:base_uri).and_return('/fooey')
       expect {described_class.patient_documents({ :date_to => date_from, :date_from => date_to })}.to raise_error(Cdris::Gateway::Exceptions::TimeWindowError)
