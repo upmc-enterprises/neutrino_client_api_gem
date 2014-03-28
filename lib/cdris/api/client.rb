@@ -155,7 +155,10 @@ module Cdris
             request_klass = get_method(options)
             request = request_klass.new(path_with_params(path, options))
             request.basic_auth(auth_user, auth_pass) if basic_auth
-            request.body = body.to_query if request_klass == Net::HTTP::Post
+            if request_klass == Net::HTTP::Post
+              request.content_type = 'application/json'
+              request.body = JSON.dump(body)
+            end
             request = ApiAuth.sign!(request, hmac_id, hmac_key) unless hmac_id.blank? || hmac_key.blank?
             http.request(request)
           end
