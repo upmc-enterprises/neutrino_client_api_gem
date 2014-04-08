@@ -19,7 +19,7 @@ module Cdris
         # @param [String] date to end range
         # @return [DateRange] `self`, for method chaining
         def ending_at(date)
-          set_end_date_and_raise_TimeWindow_error_if_end_is_eariler_than_start(date)
+          set_end_date_and_raise_error_if_end_is_eariler_than_start(date)
           self
         end
 
@@ -27,26 +27,26 @@ module Cdris
         #
         # @return [String] the URI specifying dates, or an empty String if either date is `nil`
         def to_s
-          get_uri_or_empty_string_if_either_date_is_nil
+          uri_or_empty_string_if_either_date_is_nil
         end
 
         private
 
-        def set_end_date_and_raise_TimeWindow_error_if_end_is_eariler_than_start(end_date)
+        def set_end_date_and_raise_error_if_end_is_eariler_than_start(end_date)
           @end_date = FormattedDate.new end_date
-          raise Cdris::Gateway::Exceptions::TimeWindowError if @end_date.earlier_than? @start_date
+          fail Cdris::Gateway::Exceptions::TimeWindowError if @end_date.earlier_than? @start_date
         end
 
-        def get_uri_or_empty_string_if_either_date_is_nil
-          either_date_is_nil? ? '' : get_uri_from_dates
+        def uri_or_empty_string_if_either_date_is_nil
+          either_date_is_nil? ? '' : uri_from_dates
         end
 
-        def get_uri_from_dates
+        def uri_from_dates
           "/document_creation_between#{@start_date.to_uri}#{@end_date.to_uri}"
         end
 
         def either_date_is_nil?
-          return @start_date.nil? || @end_date.nil?
+          @start_date.nil? || @end_date.nil?
         end
 
       end
@@ -66,7 +66,8 @@ module Cdris
         # @param [FormattedDate] other date
         # @return [Boolean] `true` if `self` is earlier, `false` otherwise
         def earlier_than?(other)
-          is_earlier_than? other
+          return false if @date.nil? || other.to_s.nil?
+          s_to_date(other.to_s) > s_to_date(@date)
         end
 
         # Gets the formatted date
@@ -96,19 +97,12 @@ module Cdris
           @date.nil? ? '' : "/#{@date}"
         end
 
-        def is_earlier_than? other
-          return false if @date.nil? || other.to_s.nil?
-          s_to_date(other.to_s) > s_to_date(@date)
-        end
-
-        def s_to_date date_as_string
+        def s_to_date(date_as_string)
           Time.parse date_as_string
         end
 
         def validate_date
-          if not @date.nil?
-            raise Cdris::Gateway::Exceptions::TimeFormatError if not @date.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
-          end
+          fail Cdris::Gateway::Exceptions::TimeFormatError unless @date.nil? ||  @date.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
         end
 
       end

@@ -42,23 +42,23 @@ describe Cdris::Gateway::Uri::Whitelist do
     end
 
     it 'throws the specified error when the provided values are an empty list' do
-      expect {
+      expect do
         described_class.new
-                 .with_template(anything())
+                 .with_template(anything)
                  .and_values([])
-                 .error_on_empty("Uh Oh...")
+                 .error_on_empty('Uh Oh...')
                  .to_s
-      }.to raise_error("Uh Oh...")
+      end.to raise_error('Uh Oh...')
     end
 
     it 'throws the specified error when the provided value is the empty string' do
-      expect {
+      expect do
         described_class.new
-                 .with_template(anything())
+                 .with_template(anything)
                  .and_value('')
-                 .error_on_empty("Foobar")
+                 .error_on_empty('Foobar')
                  .to_s
-      }.to raise_error("Foobar")
+      end.to raise_error('Foobar')
     end
 
     it 'returns an empty string when an empty template and value are given' do

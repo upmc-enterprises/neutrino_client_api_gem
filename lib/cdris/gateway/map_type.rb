@@ -13,7 +13,7 @@ module Cdris
         # @param [Hash] options specify query values
         # @return [Hash] the map type
         # @raise [Exceptions::MapTypeNotFoundError] when CDRIS returns a 404 status code
-        def get(params={}, options={})
+        def get(params = {}, options = {})
           path = specific_map_type_uri(params)
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::MapTypeNotFoundError)
                                 .to_hash
@@ -24,9 +24,9 @@ module Cdris
         # @param [String] map_type_body the body of the map type
         # @param [Hash] options specify query values
         # @return [Hash] the CDRIS response body
-        def create_map_type(map_type_body, options={})
+        def create_map_type(map_type_body, options = {})
           path = base_uri
-          request(path, options.merge({method: :post}), map_type_body).to_s
+          request(path, options.merge(method: :post), map_type_body).to_s
         end
 
         # Gets the URI for a specific map type

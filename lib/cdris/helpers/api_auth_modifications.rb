@@ -17,11 +17,11 @@ module ApiAuth
 
     # Modifies existing canonical_string method to support https messages
     def canonical_string
-      [ @request.content_type,
-        @request.content_md5,
-        @request.request_uri.gsub(/https?:\/\/[^(,|\?|\/)]*/,''), # remove host
-        @request.timestamp
-      ].join(",")
+      [@request.content_type,
+       @request.content_md5,
+       @request.request_uri.gsub(/https?:\/\/[^(,|\?|\/)]*/, ''), # remove host
+       @request.timestamp
+      ].join(',')
     end
   end
 

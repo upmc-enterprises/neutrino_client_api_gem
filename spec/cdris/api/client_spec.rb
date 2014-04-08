@@ -24,15 +24,13 @@ describe Cdris::Api::Client do
       let(:hash) { nil }
 
       it 'returns nil' do
-        described_class.symbolize_keys(hash).should == nil
+        described_class.symbolize_keys(hash).should be_nil
       end
 
     end
 
     context 'given an empty Hash' do
       let(:hash) { {} }
-
-      before(:each) { hash = {} }
 
       it 'returns an empty hash' do
         described_class.symbolize_keys(hash).should == {}
@@ -151,12 +149,12 @@ describe Cdris::Api::Client do
 
     it 'raises "Connection refused" when the http request throws an Errno::ECONNREFUSED' do
       mock_http.stub(:request).and_raise(Errno::ECONNREFUSED)
-      expect { described_class.perform_request('bogus') }.to raise_error("Connection refused")
+      expect { described_class.perform_request('bogus') }.to raise_error('Connection refused')
     end
 
     it 'raises "Connection refused" when the http request throws an OpenSSL::SSL::SSLError' do
       mock_http.stub(:request).and_raise(OpenSSL::SSL::SSLError)
-      expect { described_class.perform_request('bogus') }.to raise_error("Connection refused")
+      expect { described_class.perform_request('bogus') }.to raise_error('Connection refused')
     end
 
   end

@@ -12,9 +12,9 @@ describe Cdris::Gateway::Requestor do
 
   describe 'self.request' do
 
-    let(:path) { "/foo/to/the/bar" }
-    let(:options) { { :blah => "halb", :racecar => "racecar" } }
-    let(:body) { "snatchers" }
+    let(:path) { '/foo/to/the/bar' }
+    let(:options) { { blah: 'halb', racecar: 'racecar' } }
+    let(:body) { 'snatchers' }
     let(:basic_auth) { true }
 
     it 'performs a request using the api client' do
@@ -27,7 +27,7 @@ describe Cdris::Gateway::Requestor do
 
   describe 'self.api' do
 
-    let(:debug_uri_matcher) { /\/debug\/true$/ }
+    let(:debug_uri_matcher) { %r{/debug/true$} }
 
     context 'when no options are given' do
 

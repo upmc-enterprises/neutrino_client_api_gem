@@ -21,7 +21,7 @@ describe Object do
     end
 
     it 'is blank when it is ""' do
-      "".blank?.should == true
+      ''.blank?.should == true
     end
 
     it 'is blank when it is a sequence of whitespace' do

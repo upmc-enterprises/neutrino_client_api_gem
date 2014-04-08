@@ -23,7 +23,7 @@ module Cdris
         # @param [Hash] options specify query values
         # @return [Hash] A CLU document
         # @raise [Exceptions::PatientDocumentNotFoundError] when CDRIS returns a 404 status code
-        def document(params, options={})
+        def document(params, options = {})
           path = base_uri(params, options)
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::CluPatientDocumentNotFoundError)
                                 .to_hash
@@ -35,7 +35,7 @@ module Cdris
         # @param [Hash] options specify query values
         # @return [String] A CLU document's data
         # @raise [Exceptions::PatientDocumentNotFoundError] when CDRIS returns a 404 status code
-        def data(params, options={})
+        def data(params, options = {})
           path = "#{base_uri(params, options)}/data"
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::CluPatientDocumentSourceTextNotFoundError)
                                 .data_and_type
@@ -54,7 +54,7 @@ module Cdris
           elsif params[:patient_document_id]
             path << "/patient_document_id/#{params[:patient_document_id]}"
           else
-            raise Cdris::Gateway::Exceptions::BadRequestError, 'Must provide an id or a patient_document_id'
+            fail Cdris::Gateway::Exceptions::BadRequestError, 'Must provide an id or a patient_document_id'
           end
           path
         end

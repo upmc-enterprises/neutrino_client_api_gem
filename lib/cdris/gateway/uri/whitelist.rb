@@ -65,7 +65,7 @@ module Cdris
         # @return [String] the URI component
         # @raise [Object] the custom exception specified earlier, when a value is empty
         def to_s
-          raise @error if @error && @value.empty?
+          fail @error if @error && @value.empty?
 
           @template.sub('{value}', @value.to_s) + @component
         end

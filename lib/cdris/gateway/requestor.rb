@@ -10,7 +10,7 @@ module Cdris
       #
       # @param [Hash] options whichmay specify `debug: true`
       # @return [String] the base URI for CDRIS
-      def self.api(options={})
+      def self.api(options = {})
         "/api/v#{Cdris::Api::Client.api_version}#{options[:debug] ? '/debug/true' : ''}"
       end
 
@@ -21,7 +21,7 @@ module Cdris
       # @param [String] body the body of the request
       # @param [Boolean] basic_auth whether to use basic authentication
       # @return [Responses::ResponseHandler] a `ResponseHandler` instance for handling response codes
-      def self.request(path, options = {}, body = nil, basic_auth=false)
+      def self.request(path, options = {}, body = nil, basic_auth = false)
         response = Cdris::Api::Client.perform_request(path, options, body, basic_auth)
 
         Responses::ResponseHandler.new.considering(response).if_500_raise(Exceptions::InternalServerError)

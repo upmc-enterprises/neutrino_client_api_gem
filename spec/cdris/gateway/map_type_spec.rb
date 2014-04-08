@@ -13,13 +13,13 @@ describe Cdris::Gateway::MapType do
 
   describe 'self.get' do
 
-    let(:param_unmapped) { { :unmapped => true } }
+    let(:param_unmapped) { { unmapped: true } }
 
     it 'gets a map_type' do
       FakeWeb.register_uri(
         :get,
         'http://testhost:4242/api/v1/map_type/unmapped?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        :body => DataSamples.map_type_get.to_s)
+        body: DataSamples.map_type_get.to_s)
 
       described_class.get(param_unmapped).should == DataSamples.map_type_get.to_hash
     end

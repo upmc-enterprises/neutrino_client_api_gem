@@ -15,7 +15,7 @@ module Cdris
         # @param [Hash] options specify query values
         # @return [Hash] the patient's demographics
         # @raise [Exceptions::PatientNotFoundError] when CDRIS returns a 404 status
-        def demographics(params, options={})
+        def demographics(params, options = {})
           path = "#{base_uri(params)}/demographics"
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
                                 .to_hash
@@ -27,7 +27,7 @@ module Cdris
         # @param [Hash] options specify query values
         # @return [Hash] the patient's identities
         # @raise [Exceptions::PatientNotFoundError] when CDRIS returns a 404 status
-        def identities(params, options={})
+        def identities(params, options = {})
           path = "#{base_uri(params)}/identities"
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
                                 .to_hash
@@ -38,9 +38,9 @@ module Cdris
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`
         # @param [Hash] options specify query values
         # @return [Hash] `true` if patient is valid
-        def valid?(params, options={})
+        def valid?(params, options = {})
           path = "#{base_uri(params)}/validate"
-          request(path, options).to_hash["valid"]
+          request(path, options).to_hash['valid']
         end
 
         # ???
@@ -49,7 +49,7 @@ module Cdris
         # @param [Hash] options specify query values
         # @return [Hash] the patient's ???
         # @raise [Exceptions::BadRequestError] when CDRIS returns a 400 status
-        def patient_document_search(params, options={})
+        def patient_document_search(params, options = {})
           path = "#{base_uri(params)}/patient_documents/search"
           request(path, options).if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
                                 .if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
@@ -61,7 +61,7 @@ module Cdris
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`
         # @param [Hash] options specify query values
         # @return [Hash] the patient's document's bounds
-        def patient_document_bounds(params, options={})
+        def patient_document_bounds(params, options = {})
           path = "#{base_uri(params)}/patient_document_bounds"
           path << current_if_specified_in(params)
           request(path, options).to_hash
@@ -72,7 +72,7 @@ module Cdris
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`
         # @param [Hash] options specify query values
         # @return [Hash] the patient's subject matter domains
-        def subject_matter_domains(params, options={})
+        def subject_matter_domains(params, options = {})
           path = "#{base_uri(params)}/patient_documents"
           path << current_if_specified_in(params)
           path << '/subject_matter_domain_extension'
@@ -84,7 +84,7 @@ module Cdris
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`
         # @param [Hash] options specify query values
         # @return [Hash] the patient's types of service
-        def types_of_service(params, options={})
+        def types_of_service(params, options = {})
           path = "#{base_uri(params)}/patient_documents"
           path << current_if_specified_in(params)
           path << '/type_of_service_extension'
@@ -97,7 +97,7 @@ module Cdris
         #   can specify `:date_from` and `:date_to` to filter a range, and/or various whitelists
         # @param [Hash] options specify query values
         # @return [Hash] the patient's documents
-        def patient_documents(params, options={})
+        def patient_documents(params, options = {})
           path = "#{base_uri(params)}/patient_documents"
 
           path << Uri::DateRange.new
@@ -122,7 +122,7 @@ module Cdris
         # @raise [Exceptions::BadRequestError] when `:root` or `:extension` are not specified
         def base_uri(params)
           if params[:root].nil? || params[:extension].nil?
-            raise Cdris::Gateway::Exceptions::BadRequestError, 'Must specify a root and extension'
+            fail Cdris::Gateway::Exceptions::BadRequestError, 'Must specify a root and extension'
           end
 
           "#{api}/patient/#{params[:root]}/#{params[:extension]}"

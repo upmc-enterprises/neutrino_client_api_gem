@@ -20,7 +20,7 @@ module Cdris
         #
         # @return [Whitelist] the constructed Whitelist
         def build
-          raise Cdris::Gateway::Exceptions::BadRequestError if @specified_whitelists.count > 1
+          fail Cdris::Gateway::Exceptions::BadRequestError if @specified_whitelists.count > 1
           whitelist = @specified_whitelists.first
           values = @whitelist_hash[whitelist]
 
@@ -43,26 +43,26 @@ module Cdris
 
           when :snomed_problem_whitelist
             Whitelist.new
-                     .with_template("/problem_whitelist/snomed/{value}")
+                     .with_template('/problem_whitelist/snomed/{value}')
                      .and_values(values)
                      .append_component(clinical_or_all)
                      .error_on_empty(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
 
           when :snomed_procedure_whitelist
             Whitelist.new
-                     .with_template("/procedure_whitelist/snomed/{value}/all")
+                     .with_template('/procedure_whitelist/snomed/{value}/all')
                      .and_values(values)
                      .error_on_empty(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
 
           when :snomed_vital_whitelist
             Whitelist.new
-                     .with_template("/vital_whitelist/snomed/{value}/all")
+                     .with_template('/vital_whitelist/snomed/{value}/all')
                      .and_values(values)
                      .error_on_empty(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
 
           when :icd9_problem_whitelist
             Whitelist.new
-                     .with_template("/problem_whitelist/icd9/{value}/all")
+                     .with_template('/problem_whitelist/icd9/{value}/all')
                      .and_values(values)
                      .error_on_empty(Cdris::Gateway::Exceptions::Icd9CodesNotProvided)
           else

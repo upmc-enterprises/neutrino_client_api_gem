@@ -7,11 +7,11 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
   describe '.build' do
 
     it 'raises a BadRequestError when multiple whitelists are specified' do
-      expect {
+      expect do
         described_class.new
-                        .from_whitelists_in({ :type_of_service_whitelist => [], :with_ejection_fractions => true })
+                        .from_whitelists_in(type_of_service_whitelist: [], with_ejection_fractions: true)
                         .build
-      }.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
+      end.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
     end
 
     context 'when params not specifying a whitelist are given' do
@@ -27,11 +27,11 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
     context 'when ejection fractions are included' do
 
       before(:each) do
-        subject.from_whitelists_in({ with_ejection_fractions: true })
+        subject.from_whitelists_in(with_ejection_fractions: true)
       end
 
       it 'builds a whitelist that builds a uri including the with ejection fractions uri component' do
-        subject.build.to_s.should match(/\/with\/ejection_fractions/)
+        subject.build.to_s.should match(%r{/with/ejection_fractions})
       end
 
     end
@@ -52,7 +52,7 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
       end
 
       context 'when snomed vital whitelist is specified' do
-        
+
         before(:each) { params[:snomed_vital_whitelist] = empty_values }
 
         it 'raises a Cdris::Gateway::Exceptions::SnomedCodesNotProvided' do

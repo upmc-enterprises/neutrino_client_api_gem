@@ -124,9 +124,9 @@ module Cdris
         # @return [Hash] the user and extension specified by `:user`
         def user_root_and_extension
           {
-            :user => {
-              :root => user_root,
-              :extension => user_extension
+            user: {
+              root: user_root,
+              extension: user_extension
             }
           }
         end
@@ -139,7 +139,7 @@ module Cdris
         # @param [Boolean] basic_auth specifies whether to use basic authentication
         # @return [Net::HTTPResponse] the response from the request
         # @raise [Exceptions::InternalServerError] when the CDRIS API responds with 500 code
-        def perform_request(path, options = {}, body = nil, basic_auth=false)
+        def perform_request(path, options = {}, body = nil, basic_auth = false)
           build_request("#{base_uri}#{path}", options, body, basic_auth)
         end
 
@@ -150,7 +150,7 @@ module Cdris
         # @param [Boolean] basic_auth Whether or now basic_auth should be used in lieu of HMAC, default false.
         # @return [Http::Response] response from the CDRIS API service
         # @raise [Exception] if a request raises either an Errno::ECONNREFUSED or an OpenSSL::SSLError exception
-        def build_request(path, options = {}, body = nil, basic_auth=false)
+        def build_request(path, options = {}, body = nil, basic_auth = false)
           Net::HTTP.start(host, port, use_ssl: protocol == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
             request_klass = get_method(options)
             request = request_klass.new(path_with_params(path, options))
@@ -194,7 +194,7 @@ module Cdris
         # @param [Hash] a_hash whose keys ought to be converted to symbols
         # @return [Hash] a new `Hash` with symbols as keys
         def symbolize_keys(a_hash)
-          return a_hash if not a_hash
+          return a_hash unless a_hash
           hash_with_symbols = {}
           a_hash.each { |key, value| hash_with_symbols[key.to_sym] = value }
           hash_with_symbols

@@ -11,7 +11,7 @@ class Object
   # @param [String] key the key to specify
   # @return [String] `self` made into query params
   def to_query(key)
-    require 'cgi' unless defined?(CGI) && defined?(CGI::escape)
+    require 'cgi' unless defined?(CGI) && defined?(CGI.escape)
     "#{CGI.escape(key.to_param)}=#{CGI.escape(to_param.to_s)}"
   end
 
@@ -20,7 +20,7 @@ class Object
   # @return [Boolean] `true` if `nil`, `false`, `[]`, `{}`, `''` or white space, otherwise `false`
   def blank?
     return true if [nil, false, [], {}, ''].include?(self)
-    return false if not self.is_a? String
+    return false unless self.is_a? String
     (self =~ /^\s+$/) == 0
   end
 end
@@ -31,7 +31,7 @@ class Hash
   # @param [String] namespace that the query uses
   # @return [String] `self` as query params
   def to_param(namespace = nil)
-    collect do |key, value|
+    map do |key, value|
       value.to_query(namespace ? "#{namespace}[#{key}]" : key)
     end.sort * '&'
   end

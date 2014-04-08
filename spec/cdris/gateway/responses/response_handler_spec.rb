@@ -6,7 +6,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
   describe '.to_s' do
 
     let(:ok_response) { Object.new }
-    let(:ok_body) { "I am the response body" }
+    let(:ok_body) { 'I am the response body' }
 
     before(:each) do
       ok_response.stub(:body).and_return(ok_body)
@@ -33,7 +33,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
 
     context 'when a response with the content-type header is considered' do
 
-      before(:each) { subject.considering({ 'content-type' => 'foo/bar' }) }
+      before(:each) { subject.considering('content-type' => 'foo/bar') }
 
       it "returns the header's content type" do
         subject.content_type.should == 'foo/bar'
@@ -60,13 +60,13 @@ describe Cdris::Gateway::Responses::ResponseHandler do
       let(:response) { Object.new }
 
       before(:each) do
-        response.stub(:body).and_return("Foo")
+        response.stub(:body).and_return('Foo')
         response.stub(:[]).and_return('text/foo')
         subject.considering(response)
       end
 
       it 'returns a hash of the body and content-type' do
-        subject.data_and_type.should == { data: "Foo", type: "text/foo" }
+        subject.data_and_type.should == { data: 'Foo', type: 'text/foo' }
       end
 
     end
@@ -76,18 +76,18 @@ describe Cdris::Gateway::Responses::ResponseHandler do
   describe '.if_404_raise' do
 
     let(:response_404) { Object.new }
-    let(:example_exception) { "example exception" }
+    let(:example_exception) { 'example exception' }
 
     before(:each) do
       response_404.stub(:code).and_return('404')
     end
 
     it 'raises the passed exception when a response with a 404 is given' do
-      expect {
+      expect do
         subject
         .considering(response_404)
         .if_404_raise(example_exception)
-      }.to raise_error(example_exception)
+      end.to raise_error(example_exception)
     end
 
   end
@@ -109,7 +109,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
 
     context 'when considering a response that has bad JSON' do
 
-      let(:bad_json) { "fdsagasf" }
+      let(:bad_json) { 'fdsagasf' }
       let(:response_with_bad_json) { Object.new }
 
       before(:each) do
@@ -184,77 +184,77 @@ describe Cdris::Gateway::Responses::ResponseHandler do
     end
 
     it 'raises a NoMethodError when a method that does not look like "if_<response-code>_raise is called"' do
-      expect {
+      expect do
         subject
-        .foobar_bla_blah_sadfdsa()
-      }.to raise_error(NoMethodError)
+        .foobar_bla_blah_sadfdsa
+      end.to raise_error(NoMethodError)
     end
 
     it 'raises the passed error when a response with the specified status code is passed' do
-      expect {
+      expect do
         subject
         .considering(response_300)
         .if_300_raise(example_exception)
-      }.to raise_error(example_exception)
+      end.to raise_error(example_exception)
     end
 
     it 'does not raise the passed error when a response with a different status code is passed' do
-      expect {
+      expect do
         subject
         .considering(response_505)
         .if_300_raise(example_exception)
-      }.not_to raise_error
+      end.not_to raise_error
     end
 
     it 'raises a NoMethodError when a method that does not contain a number where the status code should be is called' do
-      expect {
+      expect do
         subject
         .if_bar_raise(anything)
-      }.to raise_error(NoMethodError)
+      end.to raise_error(NoMethodError)
     end
 
     it 'raises a NoMethodError if a method is called whose status code is beyond 505' do
-      expect {
+      expect do
         subject
         .if_506_raise(anything)
-      }.to raise_error(NoMethodError)
+      end.to raise_error(NoMethodError)
     end
 
     it 'raises a NoMethodError if a method is called whose status code is below 100' do
-      expect {
+      expect do
         subject
         .if_99_raise(anything)
-      }.to raise_error(NoMethodError)
+      end.to raise_error(NoMethodError)
     end
 
     it 'does not raise a NoMethodError for a bunch of valid status codes following the "if_<response-code>_raise" pattern' do
-      expect {
+      expect do
         ['100', '200', '404', '505'].each do |code|
-        subject
-        .considering(response_300)
-        .send("if_#{code}_raise", anything)
+          subject
+            .considering(response_300)
+            .send("if_#{code}_raise", anything)
         end
-      }.not_to raise_error
+      end.not_to raise_error
     end
 
     it 'does not raise an exception when a series of if_<code>_raise are chained and the response in consideration does not have any of their codes' do
-      expect {
+      expect do
         subject
         .considering(response_300)
         .if_404_raise(anything)
         .if_301_raise(anything)
         .if_201_raise(anything)
-      }.not_to raise_error
+      end.not_to raise_error
     end
 
     it 'raises the custom exception provided at the end of a chain if that method has the code of the response' do
-      expect {
+      expect do
         subject
         .considering(response_300)
         .if_333_raise(anything)
         .if_222_raise(anything)
         .if_300_raise(example_exception)
-      }.to raise_error(example_exception)
+      end.to raise_error(example_exception)
     end
 
   end

@@ -15,7 +15,7 @@ describe Cdris::Gateway::Clu do
       FakeWeb.register_uri(
         :get,
         'http://testhost:4242/nlp/clu/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        :status => ["200", "OK"])
+        status: ['200', 'OK'])
 
       described_class.service_running?.should == true
     end
@@ -24,7 +24,7 @@ describe Cdris::Gateway::Clu do
       FakeWeb.register_uri(
         :get,
         'http://testhost:4242/nlp/clu/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        :status => ["502", "OK"])
+        status: ['502', 'OK'])
 
       described_class.service_running?.should == false
     end
@@ -35,11 +35,11 @@ describe Cdris::Gateway::Clu do
 
     FakeWeb.register_uri(
       :get,
-      "http://testhost:4242/api/v1/clu_patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-      :body => "{}")
+      'http://testhost:4242/api/v1/clu_patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      body: '{}')
 
     it 'gets a document' do
-      described_class.document({ :id => '42' }).should == JSON.parse("{}")
+      described_class.document(id: '42').should == JSON.parse('{}')
     end
 
     let(:empty_params) { {} }
@@ -54,11 +54,11 @@ describe Cdris::Gateway::Clu do
 
     FakeWeb.register_uri(
       :get,
-      "http://testhost:4242/api/v1/clu_patient_document/42/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-      :body => "Some Data")
+      'http://testhost:4242/api/v1/clu_patient_document/42/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      body: 'Some Data')
 
     it 'gets data' do
-      described_class.data({ :id => '42' }).should == { data: "Some Data", type: "text/plain" }
+      described_class.data(id: '42').should == { data: 'Some Data', type: 'text/plain' }
     end
 
     let(:empty_params) { {} }
@@ -82,7 +82,7 @@ describe Cdris::Gateway::Clu do
       end
 
       it 'returns a URI containing the debug component' do
-        described_class.base_uri(params, options).should match(/\/debug\/true/)
+        described_class.base_uri(params, options).should match(%r{/debug/true})
       end
 
     end
@@ -96,7 +96,7 @@ describe Cdris::Gateway::Clu do
       end
 
       it 'returns a URI containing the id component' do
-        described_class.base_uri(params, options).should match(/\/patient_document_id\/#{patient_document_id}/)
+        described_class.base_uri(params, options).should match(%r{/patient_document_id/#{patient_document_id}})
       end
 
     end

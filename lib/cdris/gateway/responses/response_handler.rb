@@ -29,7 +29,7 @@ module Cdris
         def to_hash
           begin
             JSON.parse(@response.body)
-          rescue JSON::ParserError => e
+          rescue JSON::ParserError
             raise Exceptions::JsonBodyParseError.new(@response.body)
           end
         end
@@ -56,7 +56,7 @@ module Cdris
         # @param [String|Integer] other_code the code to compare
         # @return [Boolean] `true` if the other code is the same as the response, `false` otherwise
         def code_is?(other_code)
-          is_same_as_response_code?(other_code)
+          same_as_response_code?(other_code)
         end
 
         # Whether the response code is not a code in question
@@ -64,7 +64,7 @@ module Cdris
         # @param [String|Integer] other_code the code to compare
         # @return [Boolean] `false` if the other code is the same as the response, `true` otherwise
         def code_is_not?(other_code)
-          not is_same_as_response_code?(other_code)
+          !same_as_response_code?(other_code)
         end
 
         # Checks for methods of form if_<code>_raise, where <code> is a valid HTTP status code
@@ -84,25 +84,25 @@ module Cdris
         private
 
         def if_asked_code_is_the_same_as_response_code_then_raise(exception)
-          raise exception if is_same_as_response_code?(@current_code)
+          fail exception if same_as_response_code?(@current_code)
         end
 
-        def is_same_as_response_code?(code)
+        def same_as_response_code?(code)
           @response.code.to_s == code.to_s
         end
 
         def ensure_format_and_bounds_are_observed_by(name)
-          raise NoMethodError if not name.to_s.match(/if_\d{3}_raise/)
+          fail NoMethodError unless name.to_s.match(/if_\d{3}_raise/)
           @current_code = get_code_from(name)
 
-          raise NoMethodError if @current_code > MAX_HTTP_STATUS
+          fail NoMethodError if @current_code > MAX_HTTP_STATUS
         end
 
         def get_code_from(name)
-          code = name.to_s
-                     .match(/if_(\d{3})_raise/)
-                     .to_a[1]
-                     .to_i
+          name.to_s
+            .match(/if_(\d{3})_raise/)
+            .to_a[1]
+            .to_i
         end
 
       end

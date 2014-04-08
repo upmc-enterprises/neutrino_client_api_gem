@@ -12,7 +12,7 @@ module Cdris
         # @param [String] name of the query
         # @param [Hash] options specify query values
         # @return [Hash] a named query
-        def get(name, options={})
+        def get(name, options = {})
           path = "#{base_uri}/#{name}"
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::NamedQueryNotFoundError)
                                 .to_hash
@@ -22,7 +22,7 @@ module Cdris
         #
         # @param [Hash] options specify query values
         # @return [Hash] known queries
-        def known_queries(options={})
+        def known_queries(options = {})
           path = base_uri
           request(path, options).to_hash
         end

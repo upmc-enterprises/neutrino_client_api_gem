@@ -17,9 +17,9 @@ describe Cdris::Gateway::Uri::DateRange do
   describe '.ending_at' do
 
     it 'works when an end date after the beginning start date is given' do
-      range = described_class.new
-                       .beginning_at(date_in_2013)
-                       .ending_at(date_in_2014)
+      described_class.new
+        .beginning_at(date_in_2013)
+        .ending_at(date_in_2014)
     end
 
     it 'raises a TimeFormatError when it is given a end date that is not properly formatted' do

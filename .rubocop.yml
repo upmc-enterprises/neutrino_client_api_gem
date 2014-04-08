@@ -1,6 +1,12 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
 
+ClassAndModuleChildren:
+  Enabled: false
+
 ClassLength:
+  Enabled: false
+
+CyclomaticComplexity:
   Enabled: false
 
 Documentation:
@@ -15,6 +21,9 @@ Encoding:
 FinalNewline:
   Enabled: false
 
+FormatString:
+  Enabled: false
+
 LineLength:
   Enabled: false
 
@@ -22,6 +31,15 @@ MethodLength:
   Enabled: false
 
 NumericLiterals:
+  Enabled: false
+
+RaiseArgs:
+  EnforcedStyle: compact
+
+RedundantBegin:
+  Enabled: false
+
+RescueModifier:
   Enabled: false
 
 SingleLineMethods:
@@ -34,9 +52,11 @@ WordArray:
   Enabled: false
 
 AllCops:
-  Includes:
+  Include:
     - Guardfile
     - Rakefile
     - config.ru
-  Excludes:
+    - Gemfile
+    - Capfile
+  Exclude:
    - db/schema.rb
