@@ -100,6 +100,20 @@ module Cdris
         end
       end
 
+      # Error class for when a nlp patient document source text is not found.
+      class NlpPatientDocumentSourceTextNotFoundError < BaseError
+        def initialize(errors = [], message = 'Nlp Patient Document Source Text Not Found')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when a nlp patient document is not found.
+      class NlpPatientDocumentNotFoundError < BaseError
+        def initialize(errors = [], message = 'Nlp Patient Document Not Found')
+          super(errors, message)
+        end
+      end
+
       # Error class for when a search cloud entry is not found.
       class SearchCloudEntryNotFoundError < BaseError
         def initialize(errors = [], message = 'Search Cloud Entry Not Found')
