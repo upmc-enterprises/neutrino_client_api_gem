@@ -108,7 +108,7 @@ describe Cdris::Gateway::Patient do
       before(:each) do
         params[:root] = root
         params[:extension] = extension
-        Cdris::Gateway::Requestor.stub(:request).and_return({})
+        Cdris::Gateway::Requestor.stub(:request).and_return(double.as_null_object)
       end
 
       context 'and current is specified in params' do
@@ -183,6 +183,21 @@ describe Cdris::Gateway::Patient do
 
     it 'raises a BadRequestError if more than one whitelist is specified' do
       expect { described_class.patient_documents(type_of_service_whitelist: [], with_ejection_fractions: true) }.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
+    end
+
+    context 'when requesting a patient who does not exist' do
+      let(:root) { 'somesys' }
+      let(:extension) { '12345' }
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient/somesys/12345/patient_documents?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        status: '404')
+
+        it 'raises a PatientNotFoundError' do
+          expect { described_class.patient_documents({ root: root, extension: extension }) }.to raise_error(Cdris::Gateway::Exceptions::PatientNotFoundError)
+        end
+
     end
 
   end

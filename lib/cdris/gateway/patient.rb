@@ -112,7 +112,9 @@ module Cdris
 
           path << current_if_specified_in(params)
 
-          request(path, options).to_hash
+          request(path, options)
+            .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
+            .to_hash
         end
 
         # Gets the base URI for a patient
