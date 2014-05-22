@@ -186,7 +186,7 @@ module Cdris
         # Provides the RESTFUL path and parameters for a call to the CDRIS CORE API
         # @return [String] The API path and parameters to be passed to the CDRIS CORE API
         def path_with_params(path, params)
-          "#{path}?#{params.merge(user_root_and_extension).to_query}"
+          "#{path}?#{params.merge(user_root_and_extension).gateway_to_query}"
         end
 
         # Gets a new `Hash` with symbols as keys

@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require './lib/cdris/helpers/monkey_patch'
 require 'json'
 Bundler.setup
 
@@ -15,6 +16,14 @@ RSpec.configure do |config|
   config.color_enabled = true
   config.formatter = :progress
   config.tty = true
+end
+
+# Stub out 'blank?' because ApiAuth.sign! underneath assumes
+# that this is a Rails environment, as does Cdris::Api::Client
+class Object
+  def blank?
+    true
+  end
 end
 
 class DataSamples
