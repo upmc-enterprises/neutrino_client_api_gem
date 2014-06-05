@@ -152,7 +152,7 @@ module Cdris
         # @return [Hash] the patient document cluster
         def cluster(params, options = {})
           document_source_updated_at = params[:document_source_updated_at]
-          document_source_updated_at_uri = document_source_updated_at.nil? ? '' : "/#{document_source_updated_at}"
+          document_source_updated_at_uri = document_source_updated_at.nil? ? '' : "/#{document_source_updated_at.iso8601(3)}"
           path = "#{base_uri(params)}/cluster#{document_source_updated_at_uri}"
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
                                 .to_hash
@@ -203,7 +203,7 @@ module Cdris
             url << "/#{params[:root]}/#{params[:extension]}"
             if params[:extension_suffix]
               url << "/#{params[:extension_suffix]}"
-              url << "/#{params[:document_source_updated_at]}" if params[:document_source_updated_at]
+              url << "/#{params[:document_source_updated_at].iso8601(3)}" if params[:document_source_updated_at]
             end
           else
             fail Cdris::Gateway::Exceptions::BadRequestError, 'Either id or root and extension are required to create patient document path'

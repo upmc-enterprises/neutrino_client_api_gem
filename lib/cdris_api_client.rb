@@ -1,5 +1,6 @@
 require 'cdris/api/client'
 require 'cdris/gateway/clu'
+require 'cdris/gateway/nlp'
 require 'cdris/gateway/info'
 require 'cdris/gateway/map_type'
 require 'cdris/gateway/named_query'

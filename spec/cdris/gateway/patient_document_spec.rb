@@ -357,11 +357,11 @@ describe Cdris::Gateway::PatientDocument do
 
         context 'when document source updated at is given' do
 
-          let(:document_source_updated_at) { 'some_time' }
+          let(:document_source_updated_at) { Time.now }
           before(:each) { params[:document_source_updated_at] = document_source_updated_at }
 
           it 'builds a URI containing the document source updated at URI component' do
-            described_class.base_uri(params).should match(/\/#{document_source_updated_at}/)
+            described_class.base_uri(params).should match(/\/#{document_source_updated_at.iso8601(3)}/)
           end
 
         end

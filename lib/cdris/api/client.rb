@@ -3,7 +3,6 @@ require 'net/http'
 require 'cdris/helpers/api_auth_modifications.rb'
 require 'cdris/helpers/monkey_patch'
 require 'cdris/gateway/exceptions'
-require 'json'
 
 module Cdris
   module Api
@@ -157,7 +156,7 @@ module Cdris
             request.basic_auth(auth_user, auth_pass) if basic_auth
             if request_klass == Net::HTTP::Post
               request.content_type = 'application/json'
-              request.body = JSON.dump(body)
+              request.body = body.to_json
             end
             request = ApiAuth.sign!(request, hmac_id, hmac_key) unless hmac_id.blank? || hmac_key.blank?
             http.request(request)
