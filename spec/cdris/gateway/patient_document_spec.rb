@@ -203,6 +203,23 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe '.procedures' do
+    subject { described_class.procedures({ id: document_id }) }
+
+    context 'when a valid document id is provided' do
+      let(:document_id) { 42 }
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/42/facts/procedures?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.patient_document_sample_all_procedures.to_s)
+
+       it { should == DataSamples.patient_document_sample_all_procedures.to_hash }
+
+    end
+
+  end
+
   describe 'self.ejection_fractions' do
 
     FakeWeb.register_uri(

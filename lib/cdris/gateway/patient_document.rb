@@ -120,6 +120,11 @@ module Cdris
           request(path, options).to_hash
         end
 
+        def procedures(params, options = {})
+          path = "#{base_uri(params)}/facts/procedures"
+          request(path, options).to_hash
+        end
+
         # Gets a patient document's ejection fractions
         #
         # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`

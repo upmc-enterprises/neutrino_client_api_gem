@@ -77,6 +77,11 @@ class DataSamples
     self
   end
 
+  def self.patient_document_sample_all_procedures
+    @current = File.read('./spec/fixtures/sample_all_procedures.json')
+    self
+  end
+
   def self.patient_document_snomed_procedure_codes
     @current = File.read('./spec/fixtures/sample_snomed_procedure_codes.json')
     self

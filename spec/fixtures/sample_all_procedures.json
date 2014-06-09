@@ -1,0 +1,15 @@
+{
+    "procedures":[
+    {
+        "icd9_name": "some display name",
+        "icd9_code": "2234.1",
+        "snomed_name": "some snomed name",
+        "snomed_code": "235-235",
+        "snomed_text": "some snomed text",
+        "status": ["ACTIVE"],
+        "section_code": "232",
+        "section_title": "SOME SECTION",
+        "section_display_name": "SOME SECTION",
+        "text_with_context": "This is a test of something..."
+    }]
+}
