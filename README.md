@@ -10,6 +10,8 @@ where
  - `<major_version` is the major version of the gem, indicating breaking changes for the given version of CDRIS
  - `<minor_version>` is the minor version of the gem, indicating non-breaking changes
 
+The gem version can be updated in cdris_api_client.gemspec
+
 ## Generating
 In the project's root execute:
 ```
@@ -79,6 +81,7 @@ Requests to CDRIS are made through `Gateway` classes:
  - `Cdris::Gateway::Clu`
  - `Cdris::Gateway::Info`
  - `Cdris::Gateway::MapType`
+ - `Cdris::Gateway::OidText`
  - `Cdris::Gateway::NamedQuery`
  - `Cdris::Gateway::PatientDocument`
  - `Cdris::Gateway::Patient`

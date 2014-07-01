@@ -182,6 +182,11 @@ class DataSamples
     self
   end
 
+  def self.oid_text_get
+    @current = File.read('./spec/fixtures/sample_oid_text_get.json')
+    self
+    end
+
 end
 
 class TestConfig
