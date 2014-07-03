@@ -27,6 +27,8 @@ module Cdris
         #
         # @return [Hash] the response body (from JSON)
         def to_hash
+          fail_on_non_200_family_if_specified
+
           begin
             JSON.parse(@response.body)
           rescue JSON::ParserError
@@ -45,6 +47,8 @@ module Cdris
         #
         # @return [Hash] `:data` specifying the data, and `:type` specifying the data's mime type
         def data_and_type
+          fail_on_non_200_family_if_specified
+
           {
             data: to_s,
             type: content_type
@@ -57,6 +61,16 @@ module Cdris
         # @return [Boolean] `true` if the other code is the same as the response, `false` otherwise
         def code_is?(other_code)
           same_as_response_code?(other_code)
+        end
+
+        # Tells the ResponseHandler to raise an exception, upon non-successful
+        #  status codes
+        #
+        # @param [Class] exception_klass class of exception to raise
+        # @return [ResponseHandler] `self`, for method chaining
+        def if_non_200_raise(exception_klass)
+          @non_200_exception = exception_klass
+          self
         end
 
         # Whether the response code is not a code in question
@@ -91,11 +105,15 @@ module Cdris
           @response.code.to_s == code.to_s
         end
 
+        def response_successful?
+          @response.code.to_s[0] == '2'
+        end
+
         def ensure_format_and_bounds_are_observed_by(name)
-          fail NoMethodError unless name.to_s.match(/if_\d{3}_raise/)
+          fail NoMethodError, name.to_s unless name.to_s.match(/if_\d{3}_raise/)
           @current_code = get_code_from(name)
 
-          fail NoMethodError if @current_code > MAX_HTTP_STATUS
+          fail NoMethodError, name.to_s if @current_code > MAX_HTTP_STATUS
         end
 
         def get_code_from(name)
@@ -103,6 +121,12 @@ module Cdris
             .match(/if_(\d{3})_raise/)
             .to_a[1]
             .to_i
+        end
+
+        def fail_on_non_200_family_if_specified
+          if @non_200_exception && !response_successful?
+            fail @non_200_exception, '', ["Returned response code: #{@response.code}, with body: #{@response.body}"]
+          end
         end
 
       end

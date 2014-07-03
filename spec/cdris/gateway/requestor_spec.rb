@@ -1,6 +1,7 @@
 require './spec/spec_helper'
 require './lib/cdris/api/client'
 require './lib/cdris/gateway/requestor'
+require './lib/cdris/gateway/exceptions'
 
 describe Cdris::Gateway::Requestor do
 
@@ -10,19 +11,65 @@ describe Cdris::Gateway::Requestor do
     Cdris::Api::Client.stub(:api_version).and_return(expected_api_version)
   end
 
-  describe 'self.request' do
+  describe '.request' do
+    subject { described_class.request(*params) }
 
-    let(:path) { '/foo/to/the/bar' }
-    let(:options) { { blah: 'halb', racecar: 'racecar' } }
-    let(:body) { 'snatchers' }
-    let(:basic_auth) { true }
+    let(:successful_response) { double('Response', code: '200').as_null_object }
 
-    it 'performs a request using the api client' do
-      Cdris::Gateway::Responses::ResponseHandler.any_instance.stub(:if_500_raise)
-      Cdris::Api::Client.should_receive(:perform_request).with(path, options, body, basic_auth)
-      described_class.request(path, options, body, basic_auth)
+    context 'when given a path' do
+      let(:params) { [path] }
+      let(:path) { double('Path') }
+
+      it 'performs a request using that path and some defaults' do
+        Cdris::Api::Client.
+          should_receive(:perform_request).
+          with(path, {}, nil, false).
+          and_return(successful_response)
+        subject
+      end
+
+      context 'and given the other parameters' do
+        before(:each) { params.concat([double, double, double]) }
+
+        it 'performs a request using the passed params, in the same order' do
+          Cdris::Api::Client.
+            should_receive(:perform_request).
+            with(*params).
+            and_return(successful_response)
+          subject
+        end
+      end
+
+      [
+        rand(199)+301, rand(199)+301, rand(199)+301, rand(199)+301, rand(199)+301
+      ].each do |code|
+        context "and the request produces a response with a non-200 family, non-500 code of #{code}" do
+          before(:each) do
+            Cdris::Api::Client.
+              stub(:perform_request).
+              and_return(double('Response', code: code.to_s, body: '{ "some": "body" }'))
+          end
+
+          describe '#to_hash' do
+            specify { expect { subject.to_hash }.to raise_error(Cdris::Gateway::Exceptions::FailedRequestError) }
+          end
+
+          describe '#data_and_type' do
+            specify { expect { subject.data_and_type }.to raise_error(Cdris::Gateway::Exceptions::FailedRequestError) }
+          end
+        end
+
+        context 'and the request produces a response with code 500' do
+          before(:each) do
+            Cdris::Api::Client.
+              stub(:perform_request).
+              and_return(double('Response', code: '500'))
+          end
+
+          specify { expect { subject }.to raise_error(Cdris::Gateway::Exceptions::InternalServerError) }
+        end
+      end
     end
-
   end
 
   describe 'self.api' do

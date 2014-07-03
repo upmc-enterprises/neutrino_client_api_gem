@@ -11,6 +11,14 @@ module Cdris
         end
       end
 
+      class FailedRequestError < BaseError
+        attr_accessor :field
+        def initialize(field = '', errors = [], message = "")
+          super(errors, message)
+          self.field = field
+        end
+      end
+
       # Error class for when a time isn't formatted correctly.
       class TimeFormatError < BaseError
         attr_accessor :field

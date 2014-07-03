@@ -2,6 +2,7 @@ require './spec/spec_helper'
 require './lib/cdris/gateway/responses/response_handler'
 
 describe Cdris::Gateway::Responses::ResponseHandler do
+  let(:response_handler) { Cdris::Gateway::Responses::ResponseHandler.new }
 
   describe '.to_s' do
 
@@ -53,24 +54,33 @@ describe Cdris::Gateway::Responses::ResponseHandler do
 
   end
 
-  describe '.data_and_type' do
+  describe '#data_and_type' do
+    subject { response_handler.data_and_type }
 
     context 'when considering a response with a body and content-type' do
+      let(:response) { double('Response', body: 'Foo', :[] => 'text/foo') }
+      before(:each) { response_handler.considering(response) }
 
-      let(:response) { Object.new }
+      it { should == { data: 'Foo', type: 'text/foo' } }
 
-      before(:each) do
-        response.stub(:body).and_return('Foo')
-        response.stub(:[]).and_return('text/foo')
-        subject.considering(response)
+      context 'and the response handler is told to raise an exception if a non successful code is given' do
+        before(:each) { response_handler.if_non_200_raise(Exception) }
+
+        ['200', rand(100)+201, rand(100)+201, rand(100)+201, rand(100)+201].each do |successful_code|
+          context "and the response has a 200-family response of #{successful_code}" do
+            before(:each) { response.stub(:code).and_return(successful_code) }
+
+            specify { expect { subject }.to_not raise_error }
+          end
+        end
+
+        context 'and the response has a non-200 family status code' do
+          before(:each) { response.stub(:code).and_return('329') }
+
+          specify { expect { subject }.to raise_error(Exception) }
+        end
       end
-
-      it 'returns a hash of the body and content-type' do
-        subject.data_and_type.should == { data: 'Foo', type: 'text/foo' }
-      end
-
     end
-
   end
 
   describe '.if_404_raise' do
@@ -92,37 +102,49 @@ describe Cdris::Gateway::Responses::ResponseHandler do
 
   end
 
-  describe '.to_hash' do
+  describe '#to_hash' do
+    subject { response_handler.to_hash }
 
-    let(:example_json_string) { '{ "foo": "bar", "fizz": "buzz", "cooler_than_winter": true }' }
-    let(:response_with_json_string_body) { Object.new }
+    let(:response) { double('Response', body: response_json, code: response_code) }
+    let(:response_code) { '200' }
+    let(:response_json) { '{}' }
 
-    before(:each) do
-      response_with_json_string_body.stub(:body).and_return(example_json_string)
-    end
+    context 'when considering a response' do
+      before(:each) { response_handler.considering(response) }
 
-    it 'returns the body of the considered request, parsed from json' do
-      subject
-      .considering(response_with_json_string_body)
-      .to_hash.should == JSON.parse(example_json_string)
-    end
+      context 'and that response has valid JSON' do
+        let(:valid_json_string) { '{ "foo": "bar", "fizz": "buzz", "cooler_than_winter": true }' }
+        let(:response_json) { valid_json_string }
 
-    context 'when considering a response that has bad JSON' do
-
-      let(:bad_json) { 'fdsagasf' }
-      let(:response_with_bad_json) { Object.new }
-
-      before(:each) do
-        response_with_bad_json.stub(:body).and_return(bad_json)
-        subject.considering(response_with_bad_json)
+        it { should == JSON.parse(response_json) }
       end
 
-      it 'raises a JsonBodyParseError with the body as the first error' do
-        begin
-          subject.to_hash
-        rescue Cdris::Gateway::Exceptions::JsonBodyParseError => e
-          e.errors.first.should == bad_json
+      context 'and that response has invalid JSON' do
+        let(:response_json) { "}foobar{" }
+
+        specify { expect { subject }.to raise_error(Cdris::Gateway::Exceptions::JsonBodyParseError) }
+      end
+
+      context 'and the ResponseHandler is told to raise an exception for non-200 codes' do
+        before(:each) { response_handler.if_non_200_raise(Exception) }
+
+        context 'and the response has a 200 code' do
+          let(:response_code) { '200' }
+
+          it { should == JSON.parse(response_json) }
         end
+
+        context 'and the response does not have a 200 code' do
+          let(:response_code) { '324' }
+
+          specify { expect { subject }.to raise_error(Exception) }
+
+          context 'and told to raise a more specific error type for the given status code' do
+            specify { expect { response_handler.if_324_raise(ArgumentError) }.to raise_error(ArgumentError) }
+          end
+
+        end
+
       end
 
     end

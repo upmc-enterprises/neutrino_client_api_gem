@@ -24,7 +24,10 @@ module Cdris
       def self.request(path, options = {}, body = nil, basic_auth = false)
         response = Cdris::Api::Client.perform_request(path, options, body, basic_auth)
 
-        Responses::ResponseHandler.new.considering(response).if_500_raise(Exceptions::InternalServerError)
+        Responses::ResponseHandler.new.
+          considering(response).
+          if_500_raise(Exceptions::InternalServerError).
+          if_non_200_raise(Exceptions::FailedRequestError)
       end
     end
   end
