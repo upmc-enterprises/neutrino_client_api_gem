@@ -191,6 +191,16 @@ describe Cdris::Api::Client do
 
     end
 
+    context 'when options contain the :post_multipart method' do
+
+      before(:each) { options[:method] = :post_multipart }
+
+      it 'returns Net::HTTP::Post::Multipart' do
+        described_class.get_method(options).should == Net::HTTP::Post::Multipart
+      end
+
+    end
+
     context 'when options contain the :delete method' do
 
       before(:each) { options[:method] = :delete }

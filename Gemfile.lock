@@ -1,8 +1,9 @@
 PATH
   remote: .
   specs:
-    cdris_api_client (2.3.0dev2.0)
+    cdris_api_client (2.3.0dev2.1)
       api-auth (= 1.0.3)
+      multipart-post (= 2.0.0)
       rest-client (= 1.6.7)
 
 GEM
@@ -39,6 +40,7 @@ GEM
     method_source (0.8.2)
     mime-types (2.1)
     multi_json (1.8.4)
+    multipart-post (2.0.0)
     nio4r (1.0.0)
     nio4r (1.0.0-java)
     pry (0.9.12.6)

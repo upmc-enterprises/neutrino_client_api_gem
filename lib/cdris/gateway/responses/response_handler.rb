@@ -25,14 +25,19 @@ module Cdris
 
         # Gets the response body
         #
-        # @return [Hash] the response body (from JSON)
+        # @return [Hash, String] the response body (from JSON) if content
+        #   type is json, raw body as string otherwise
         def to_hash
           fail_on_non_200_family_if_specified
 
-          begin
-            JSON.parse(@response.body)
-          rescue JSON::ParserError
-            raise Exceptions::JsonBodyParseError.new(@response.body)
+          if @response['content-type'].nil? || @response['content-type'].include?('json')
+            begin
+              JSON.parse(@response.body)
+            rescue JSON::ParserError
+              raise Exceptions::JsonBodyParseError.new(@response.body)
+            end
+          else
+            @response.body
           end
         end
 

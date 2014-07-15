@@ -1,5 +1,6 @@
 require './spec/spec_helper'
 require './lib/cdris/gateway/responses/response_handler'
+require './lib/cdris/gateway/exceptions'
 
 describe Cdris::Gateway::Responses::ResponseHandler do
   let(:response_handler) { Cdris::Gateway::Responses::ResponseHandler.new }
@@ -105,12 +106,21 @@ describe Cdris::Gateway::Responses::ResponseHandler do
   describe '#to_hash' do
     subject { response_handler.to_hash }
 
-    let(:response) { double('Response', body: response_json, code: response_code) }
+    let(:response) { double('Response', body: response_json, code: response_code, :'[]' => 'application/json' ) }
     let(:response_code) { '200' }
     let(:response_json) { '{}' }
 
     context 'when considering a response' do
       before(:each) { response_handler.considering(response) }
+
+      context 'and that response is of non-JSON format' do
+
+        let(:response) { double('Response', body: response_non_json, code: response_code, :'[]' => 'text/csv' ) }
+        let(:response_non_json) { 'i,am,not,json' }
+
+        it { should == response_non_json }
+
+      end
 
       context 'and that response has valid JSON' do
         let(:valid_json_string) { '{ "foo": "bar", "fizz": "buzz", "cooler_than_winter": true }' }
@@ -131,7 +141,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
         context 'and the response has a 200 code' do
           let(:response_code) { '200' }
 
-          it { should == JSON.parse(response_json) }
+          it { puts "DEBUG : should: #{should}"; should == JSON.parse(response_json) }
         end
 
         context 'and the response does not have a 200 code' do

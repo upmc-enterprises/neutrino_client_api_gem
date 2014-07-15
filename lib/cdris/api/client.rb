@@ -152,7 +152,11 @@ module Cdris
         def build_request(path, options = {}, body = nil, basic_auth = false)
           Net::HTTP.start(host, port, use_ssl: protocol == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
             request_klass = get_method(options)
-            request = request_klass.new(path_with_params(path, options))
+            if request_klass == Net::HTTP::Post::Multipart
+              request = request_klass.new(path_with_params(path, options), body)
+            else
+              request = request_klass.new(path_with_params(path, options))
+            end
             request.basic_auth(auth_user, auth_pass) if basic_auth
             if request_klass == Net::HTTP::Post
               request.content_type = 'application/json'
@@ -171,14 +175,15 @@ module Cdris
         # @return [HTTPRequest] the HTTP method specified in `options`, defaults to `Get`
         def get_method(options)
           return Net::HTTP::Get if options[:method].nil?
-
           case options[:method]
-          when :post
-            Net::HTTP::Post
-          when :delete
-            Net::HTTP::Delete
-          when :get
-            Net::HTTP::Get
+            when :post_multipart
+              Net::HTTP::Post::Multipart
+            when :post
+              Net::HTTP::Post
+            when :delete
+              Net::HTTP::Delete
+            when :get
+              Net::HTTP::Get
           end
         end
 
