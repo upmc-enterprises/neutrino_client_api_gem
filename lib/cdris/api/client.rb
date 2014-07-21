@@ -162,7 +162,7 @@ module Cdris
               request.content_type = 'application/json'
               request.body = body.to_json
             end
-            request = ApiAuth.sign!(request, hmac_id, hmac_key) unless hmac_id.blank? || hmac_key.blank?
+            request = ApiAuth.sign!(request, hmac_id, hmac_key) unless basic_auth || hmac_id.blank? || hmac_key.blank?
             http.request(request)
           end
         rescue Errno::ECONNREFUSED, OpenSSL::SSL::SSLError

@@ -141,7 +141,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
         context 'and the response has a 200 code' do
           let(:response_code) { '200' }
 
-          it { puts "DEBUG : should: #{should}"; should == JSON.parse(response_json) }
+          it { should == JSON.parse(response_json) }
         end
 
         context 'and the response does not have a 200 code' do

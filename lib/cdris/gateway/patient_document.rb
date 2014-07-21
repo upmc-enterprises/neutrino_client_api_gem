@@ -178,10 +178,12 @@ module Cdris
         #
         # @param [Hash] params specify what patient to get, must specify either `:id` or `:root` and `extension`
         # @param [Hash] options specify query values
+        # @param [Boolean] basic_auth optional param, whether to use basic auth
+        #   instead of HMAC for document creation (default: false)
         # @return [Hash] CDRIS response
-        def create(body = nil, options = {})
+        def create(body = nil, options = {}, basic_auth = false)
           path = "#{api}/patient_document"
-          request(path, options.merge!(method: :post), body).to_hash
+          request(path, options.merge!(method: :post), body, basic_auth).to_hash
         end
 
         # Deletes a patient document

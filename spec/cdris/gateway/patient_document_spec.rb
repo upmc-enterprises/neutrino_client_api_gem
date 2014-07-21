@@ -309,13 +309,27 @@ describe Cdris::Gateway::PatientDocument do
   describe 'self.create' do
 
     it 'performs a post request' do
-      Cdris::Gateway::Requestor.should_receive(:request).with(anything, { method: :post }, anything).and_return({})
+      Cdris::Gateway::Requestor.should_receive(:request).with(anything, { method: :post }, anything, anything).and_return({})
       described_class.create
     end
 
     it 'performs a request with the passed body' do
-      Cdris::Gateway::Requestor.should_receive(:request).with(anything, anything, 'foobar').and_return({})
+      Cdris::Gateway::Requestor.should_receive(:request).with(anything, anything, 'foobar', anything).and_return({})
       described_class.create('foobar')
+    end
+
+    it 'performs a request without basic auth' do
+      Cdris::Gateway::Requestor.should_receive(:request).with(anything, anything, anything, false).and_return({})
+      described_class.create('foobar')
+    end
+
+    context 'when basic auth is requested' do
+
+      it 'performs a request with basic auth' do
+        Cdris::Gateway::Requestor.should_receive(:request).with(anything, anything, anything, true).and_return({})
+        described_class.create('foobar', {}, true)
+      end
+
     end
 
   end
