@@ -50,6 +50,18 @@ module Cdris
                                 .to_s
         end
 
+        # Gets the information originally ingested for the desired patient document
+        #
+        # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`
+        # @param [Hash] options options specify query values
+        # @return [Hash] the original ingestion information
+        def original_metadata(params, options = {})
+          path = "#{base_uri(params)}/original_metadata"
+          request(path, options).
+            if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).
+            to_hash
+        end
+
         # Gets a patient document's facts
         #
         # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`

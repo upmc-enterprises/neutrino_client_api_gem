@@ -79,6 +79,34 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe '.original_metadata' do
+    subject { described_class.original_metadata(id: document_id) }
+
+    context 'when a non-existent document id is provided' do
+      let(:document_id) { 'i_dont_exist' }
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/i_dont_exist/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        status: ['404', 'OK'])
+
+      specify { expect { subject }.to raise_error(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError) }
+    end
+
+    context 'when an existent document id is provided' do
+      let(:document_id) { 42 }
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/42/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.original_metadata.to_s)
+
+      it 'requests and returns the expected patient document original metadata' do
+        subject.should == DataSamples.original_metadata.to_hash
+      end
+    end
+  end
+
   describe 'self.facts' do
 
     FakeWeb.register_uri(
@@ -204,7 +232,7 @@ describe Cdris::Gateway::PatientDocument do
   end
 
   describe '.procedures' do
-    subject { described_class.procedures({ id: document_id }) }
+    subject { described_class.procedures(id: document_id) }
 
     context 'when a valid document id is provided' do
       let(:document_id) { 42 }
@@ -214,10 +242,10 @@ describe Cdris::Gateway::PatientDocument do
         'http://testhost:4242/api/v1/patient_document/42/facts/procedures?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         body: DataSamples.patient_document_sample_all_procedures.to_s)
 
-       it { should == DataSamples.patient_document_sample_all_procedures.to_hash }
-
+      it 'requests and returns the expected procedures' do
+       subject.should == DataSamples.patient_document_sample_all_procedures.to_hash
+      end
     end
-
   end
 
   describe 'self.ejection_fractions' do

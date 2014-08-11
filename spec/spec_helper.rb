@@ -37,6 +37,10 @@ class DataSamples
     JSON.parse(@current)
   end
 
+  def self.read_fixture(file_name)
+    @current = File.read("./spec/fixtures/#{file_name}")
+  end
+
   def self.patient_document_data
     @current = "some\ndocument\ndata"
     self
@@ -48,145 +52,149 @@ class DataSamples
   end
 
   def self.patient_document_facts
-    @current = File.read('./spec/fixtures/sample_facts.json')
+    read_fixture('sample_facts.json')
     self
   end
 
   def self.patient_document_icd9_problem_codes
-    @current = File.read('./spec/fixtures/sample_icd9_problem_codes.json')
+    read_fixture('sample_icd9_problem_codes.json')
     self
   end
 
   def self.patient_document_icd9_problem_codes_simple
-    @current = File.read('./spec/fixtures/sample_icd9_problem_codes_simple.json')
+    read_fixture('sample_icd9_problem_codes_simple.json')
     self
   end
 
   def self.patient_document_snomed_problem_codes
-    @current = File.read('./spec/fixtures/sample_snomed_problem_codes.json')
+    read_fixture('sample_snomed_problem_codes.json')
     self
   end
 
   def self.patient_document_snomed_vitals
-    @current = File.read('./spec/fixtures/sample_snomed_vitals.json')
+    read_fixture('sample_snomed_vitals.json')
     self
   end
 
   def self.patient_document_snomed_problem_codes_clinical
-    @current = File.read('./spec/fixtures/sample_snomed_problem_codes_clinical.json')
+    read_fixture('sample_snomed_problem_codes_clinical.json')
     self
   end
 
   def self.patient_document_sample_all_procedures
-    @current = File.read('./spec/fixtures/sample_all_procedures.json')
+    read_fixture('sample_all_procedures.json')
     self
   end
 
   def self.patient_document_snomed_procedure_codes
-    @current = File.read('./spec/fixtures/sample_snomed_procedure_codes.json')
+    read_fixture('sample_snomed_procedure_codes.json')
     self
   end
 
   def self.patient_document_ejection_fractions
-    @current = File.read('./spec/fixtures/sample_ejection_fractions.json')
+    read_fixture('sample_ejection_fractions.json')
     self
   end
 
   def self.patient_demographics
-    @current = File.read('./spec/fixtures/sample_patient_demographics.json')
+    read_fixture('sample_patient_demographics.json')
     self
   end
 
   def self.patient_identities
-    @current = File.read('./spec/fixtures/sample_patient_identities.json')
+    read_fixture('sample_patient_identities.json')
     self
   end
 
   def self.patient_patient_document_search
-    @current = File.read('./spec/fixtures/sample_patient_patient_document_search.json')
+    read_fixture('sample_patient_patient_document_search.json')
     self
   end
 
   def self.patient_patient_document_bounds
-    @current = File.read('./spec/fixtures/sample_patient_patient_document_bounds.json')
+    read_fixture('sample_patient_patient_document_bounds.json')
     self
   end
 
   def self.patient_subject_matter_domains
-    @current = File.read('./spec/fixtures/sample_patient_subject_matter_domains.json')
+    read_fixture('sample_patient_subject_matter_domains.json')
     self
   end
 
   def self.patient_types_of_service
-    @current = File.read('./spec/fixtures/sample_patient_types_of_service.json')
+    read_fixture('sample_patient_types_of_service.json')
     self
   end
 
   def self.patient_document_test_patient_document
-    @current = File.read('./spec/fixtures/sample_patient_document_test_patient_document.json')
+    read_fixture('sample_patient_document_test_patient_document.json')
     self
   end
 
   def self.patient_document_search
-    @current = File.read('./spec/fixtures/sample_patient_document_search.json')
+    read_fixture('sample_patient_document_search.json')
     self
   end
 
   def self.patient_document_cluster
-    @current = File.read('./spec/fixtures/sample_patient_document_cluster.json')
+    read_fixture('sample_patient_document_cluster.json')
     self
   end
 
   def self.patient_document_set
-    @current = File.read('./spec/fixtures/sample_patient_document_set.json')
+    read_fixture('sample_patient_document_set.json')
     self
   end
 
   def self.cdris_create_patient_document_error
-    @current = File.read('./spec/fixtures/sample_cdris_create_patient_document_error.json')
+    read_fixture('sample_cdris_create_patient_document_error.json')
     self
   end
 
   def self.info_deployments
-    @current = File.read('./spec/fixtures/sample_info_deployments.json')
+    read_fixture('sample_info_deployments.json')
     self
   end
 
   def self.info_current_deployment
-    @current = File.read('./spec/fixtures/sample_info_current_deployment.json')
+    read_fixture('sample_info_current_deployment.json')
     self
   end
 
   def self.info_configurations
-    @current = File.read('./spec/fixtures/sample_info_configurations.json')
+    read_fixture('sample_info_configurations.json')
     self
   end
 
   def self.info_configuration
-    @current = File.read('./spec/fixtures/sample_info_configuration.json')
+    read_fixture('sample_info_configuration.json')
     self
   end
 
   def self.named_query_not_found_error
-    @current = File.read('./spec/fixtures/sample_named_query_not_found_error.json')
+    read_fixture('sample_named_query_not_found_error.json')
     self
   end
 
   def self.named_query_list_of_queries
-    @current = File.read('./spec/fixtures/sample_named_query_list_of_queries.json')
+    read_fixture('sample_named_query_list_of_queries.json')
     self
   end
 
   def self.map_type_get
-    @current = File.read('./spec/fixtures/sample_map_type_get.json')
+    read_fixture('sample_map_type_get.json')
     self
   end
 
   def self.oid_text_get
-    @current = File.read('./spec/fixtures/sample_oid_text_get.json')
+    read_fixture('sample_oid_text_get.json')
     self
-    end
+  end
 
+  def self.original_metadata
+    read_fixture('sample_patient_document_original_metadata.json')
+    self
+  end
 end
 
 class TestConfig

@@ -2,7 +2,7 @@ require 'rake'
 
 Gem::Specification.new do |s|
   s.name     = 'cdris_api_client'
-  s.version  = '2.3.0dev2.2'
+  s.version  = '2.4.0dev0.0'
   s.date     = '2014-03-07'
   s.summary  = 'Provides gateway to the CDRIS RESTful API'
   s.authors  = 'TDC data transformation, CDRIS'
@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
                         'Gemfile*',
                         '*.gemspec'].to_a
   s.homepage = 'http://wiki.tdc.upmc.com/mediawiki/index.php/CDRIS'
-#  s.license  = '???'
 
   s.add_runtime_dependency 'api-auth',        '1.0.3'
   s.add_runtime_dependency 'rest-client',     '1.6.7'
