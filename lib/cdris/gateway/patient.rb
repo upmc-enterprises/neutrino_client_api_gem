@@ -33,6 +33,19 @@ module Cdris
                                 .to_hash
         end
 
+        # Gets a patient's active identities
+        #
+        # @param [Hash] params specify what patient to get, must specify `:root` and `extension`
+        # @param [Hash] options specify query values
+        # @return [Hash] the patient's identities
+        # @raise [Exceptions::PatientNotFoundError] when CDRIS returns a 404 status
+        def active_identities(params, options = {})
+          path = "#{base_uri(params)}/active_identities"
+          request(path, options).
+            if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError).
+            to_hash
+        end
+
         # Whether a patient is valid
         #
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`

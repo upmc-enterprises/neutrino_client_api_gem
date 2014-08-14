@@ -67,7 +67,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
       context 'and the response handler is told to raise an exception if a non successful code is given' do
         before(:each) { response_handler.if_non_200_raise(Exception) }
 
-        ['200', rand(100)+201, rand(100)+201, rand(100)+201, rand(100)+201].each do |successful_code|
+        ['200', rand(100)+200, rand(100)+200, rand(100)+200, rand(100)+200].each do |successful_code|
           context "and the response has a 200-family response of #{successful_code}" do
             before(:each) { response.stub(:code).and_return(successful_code) }
 

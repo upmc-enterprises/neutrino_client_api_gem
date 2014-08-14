@@ -62,6 +62,19 @@ module Cdris
             to_hash
         end
 
+        # Gets a patient's demographics by patient document id
+        #
+        # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`
+        # @param [Hash] options specify query values
+        # @return [String] the patient document's data
+        # @raise [Exceptions::PatientDocumentNotFoundError] when CDRIS returns a 404 status code
+        def patient_demographics(params, options = {})
+          path = "#{base_uri(params)}/patient_demographics"
+          request(path, options).
+            if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).
+            to_hash
+        end
+
         # Gets a patient document's facts
         #
         # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`

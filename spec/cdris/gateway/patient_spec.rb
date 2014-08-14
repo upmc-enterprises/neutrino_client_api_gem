@@ -59,6 +59,42 @@ describe Cdris::Gateway::Patient do
 
   end
 
+  describe '.active_identities' do
+    subject { described_class.active_identities(params) }
+
+    context 'when a patient exists with root: root42 and extension: ext42' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient/root42/ext42/active_identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.patient_identities.to_s)
+
+      [
+        { root: 'non-exist', extension: 'non-exist' },
+        { root: 'root42', extension: 'non-exist' },
+        { root: 'non-exist', extension: 'ext42' },
+      ].each do |root_and_ext|
+        context "when querying for #{root_and_ext.inspect}" do
+          let(:params) { root_and_ext }
+
+          FakeWeb.register_uri(
+            :get,
+            "http://testhost:4242/api/v1/patient/#{root_and_ext[:root]}/#{root_and_ext[:extension]}/active_identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
+            status: 404)
+
+          specify { expect { subject }.to raise_error(Cdris::Gateway::Exceptions::PatientNotFoundError) }
+        end
+      end
+
+      context 'and querying for root: root42, extension: ext42' do
+        let(:params) { { root: 'root42', extension: 'ext42' } }
+
+        it 'is the identities returned from CDRIS as a hash' do
+          expect(subject).to eq(DataSamples.patient_identities.to_hash)
+        end
+      end
+    end
+  end
+
   describe 'self.valid?' do
 
     FakeWeb.register_uri(

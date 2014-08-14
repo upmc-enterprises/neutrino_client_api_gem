@@ -107,6 +107,36 @@ describe Cdris::Gateway::PatientDocument do
     end
   end
 
+  describe '.patient_demographics' do
+    subject { described_class.patient_demographics(params) }
+
+    context 'when a patient document exists' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/42/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.patient_demographics.to_s)
+
+      context 'and a non-existent id is queried for' do
+        let(:params) { { id: '35' } }
+
+        FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/35/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          status: 404)
+
+        specify { expect { subject }.to raise_error(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError) }
+      end
+
+      context 'and its id is queried for' do
+        let(:params) { { id: '42' } }
+
+        it 'gets the patient documents from CDRIS and returns them as a hash' do
+          expect(subject).to eq(DataSamples.patient_demographics.to_hash)
+        end
+      end
+    end
+  end
+
   describe 'self.facts' do
 
     FakeWeb.register_uri(
@@ -232,7 +262,7 @@ describe Cdris::Gateway::PatientDocument do
   end
 
   describe '.procedures' do
-    subject { described_class.procedures(id: document_id) }
+    subject { described_class.procedures({ id: document_id }) }
 
     context 'when a valid document id is provided' do
       let(:document_id) { 42 }
@@ -242,10 +272,10 @@ describe Cdris::Gateway::PatientDocument do
         'http://testhost:4242/api/v1/patient_document/42/facts/procedures?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         body: DataSamples.patient_document_sample_all_procedures.to_s)
 
-      it 'requests and returns the expected procedures' do
-       subject.should == DataSamples.patient_document_sample_all_procedures.to_hash
-      end
+       it { should == DataSamples.patient_document_sample_all_procedures.to_hash }
+
     end
+
   end
 
   describe 'self.ejection_fractions' do
