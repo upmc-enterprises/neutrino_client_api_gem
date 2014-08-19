@@ -43,7 +43,7 @@ module Cdris
 
         # Gets the base URI for a NLP document
         #
-        # @param [Hash] params specify what document to get, either `:id` or `:patient_document_id`
+        # @param [Hash] params specify what document to get, either `:id`, `:patient_document_id` or ':transaction_id'
         # @param [Hash] options specify query values
         # @return [String] the base URI for a NLP document
         # @raise [Exceptions::BadRequestError] when `:id` and `:patient_document_id` are not specified
@@ -53,8 +53,10 @@ module Cdris
             path << "/#{params[:id]}"
           elsif params[:patient_document_id]
             path << "/patient_document_id/#{params[:patient_document_id]}"
+          elsif params[:transaction_id]
+            path << "/transaction_id/#{params[:transaction_id]}"
           else
-            fail Cdris::Gateway::Exceptions::BadRequestError, 'Must provide an id or a patient_document_id'
+            fail Cdris::Gateway::Exceptions::BadRequestError, 'Must provide an id, a patient_document_id or an nlp transaction id'
           end
           path
         end

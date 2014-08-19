@@ -101,6 +101,20 @@ describe Cdris::Gateway::Nlp do
 
     end
 
+    context 'when the params contain :transaction_id' do
+
+      let(:transaction_id) { '1212121212' }
+
+      before(:each) do
+        params[:transaction_id] = transaction_id
+      end
+
+      it 'returns a URI containing the id component' do
+        described_class.base_uri(params, options).should match(%r{/transaction_id/#{transaction_id}})
+      end
+
+    end
+
   end
 
 end
