@@ -1,6 +1,9 @@
 require 'bundler/setup'
+require 'active_support'
+require 'active_support/all'
 require './lib/cdris/helpers/monkey_patch'
 require 'json'
+
 Bundler.setup
 
 require 'simplecov'
@@ -18,13 +21,7 @@ RSpec.configure do |config|
   config.tty = true
 end
 
-# Stub out 'blank?' because ApiAuth.sign! underneath assumes
-# that this is a Rails environment, as does Cdris::Api::Client
-class Object
-  def blank?
-    true
-  end
-end
+Time.zone = 'UTC'
 
 class DataSamples
   @current = ''
@@ -325,3 +322,4 @@ module ActionDispatch
     end
   end
 end
+
