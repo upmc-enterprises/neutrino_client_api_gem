@@ -1,2 +1,2 @@
-rvm use jruby-1.7.13@cdris_api_client --create
+rvm use jruby-1.7.4@cdris_api_client --create
 export JRUBY_OPTS='--1.9 -Xcext.enabled=true --debug'
