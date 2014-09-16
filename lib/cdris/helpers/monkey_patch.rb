@@ -29,6 +29,9 @@ class Hash
   alias_method :gateway_to_query, :gateway_to_param
 end
 
+# Force Json gem to load before we apply the monkey patch
+{}.to_json
+
 # Add millisecond to time
 module ActiveSupport
   class TimeWithZone

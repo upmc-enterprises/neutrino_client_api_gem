@@ -1,5 +1,6 @@
 require 'api-auth'
 require 'net/http'
+require 'net/http/post/multipart'
 require 'cdris/helpers/api_auth_modifications.rb'
 require 'cdris/helpers/monkey_patch'
 require 'cdris/gateway/exceptions'
@@ -152,6 +153,7 @@ module Cdris
         def build_request(path, options = {}, body = nil, basic_auth = false)
           Net::HTTP.start(host, port, use_ssl: protocol == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
             request_klass = get_method(options)
+            options = options.reject { |x| x == :method } if options[:method]
             if request_klass == Net::HTTP::Post::Multipart
               request = request_klass.new(path_with_params(path, options), body)
             else

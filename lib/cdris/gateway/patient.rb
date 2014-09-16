@@ -33,6 +33,18 @@ module Cdris
                                 .to_hash
         end
 
+        # Sets a patient's identities in error
+        #
+        # @param [Hash] params specify what patient to set into error, must specify `:root` and `extension`
+        # @param [Hash] options specify query values
+        # @return [boolean] true if patient's identities were not already in error, false if they were
+        # @raise [Exceptions::PatientNotFoundError] when CDRIS returns a 404 status
+        def set_in_error(params, options = {})
+          path = "#{base_uri(params)}/set_in_error"
+          request(path, options.merge(method: :post), {})
+            .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError).to_hash['data_status']
+        end
+
         # Gets a patient's active identities
         #
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`

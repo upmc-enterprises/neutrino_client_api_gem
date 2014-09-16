@@ -95,6 +95,49 @@ describe Cdris::Gateway::Patient do
     end
   end
 
+  describe 'self.set_in_error' do
+
+    context 'when identity is not in error' do
+
+      before(:each) do
+        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
+                             body: '{ "data_status": true }', parameters: { format: 'json' })
+      end
+      
+      it 'performs a request returning true' do
+        described_class.set_in_error(params_root_and_extension,
+                                     user_root_and_extension).should == true
+      end
+    end
+
+    context 'when identity is in error' do
+
+      before(:each) do
+        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
+                             body: '{ "data_status": false }', parameters: { format: 'json' })
+      end
+
+      it 'performs a request returning false' do
+        described_class.set_in_error(params_root_and_extension,
+                                     user_root_and_extension).should == false
+      end
+    end
+
+    context 'when patient does not exist' do
+
+      before(:each) do
+        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
+                             body: 'Patient not found.', status: ['404', 'OK'], parameters: { format: 'json' })
+      end
+      
+      it 'raises a PatientNotFoundError when it receives a 404 error' do
+        expect do
+          described_class.set_in_error(params_root_and_extension, user_root_and_extension)
+        end.to raise_error(Cdris::Gateway::Exceptions::PatientNotFoundError)
+      end
+    end
+  end
+
   describe 'self.valid?' do
 
     FakeWeb.register_uri(

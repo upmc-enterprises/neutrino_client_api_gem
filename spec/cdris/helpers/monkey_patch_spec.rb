@@ -19,6 +19,14 @@ end
 describe 'Time' do
   describe '#as_json' do
     subject { time.as_json }
+
+    context 'when to_json has been called after then monkey patch has loaded' do
+      let(:time) { Time.now.utc }
+
+      {}.to_json
+      it_behaves_like 'a UTC ISO8601 formatted Date/Time with millisecond resolution'
+    end
+
     context 'when already in UTC time' do
       let(:time) { Time.now.utc }
       it_behaves_like 'a UTC ISO8601 formatted Date/Time with millisecond resolution'
