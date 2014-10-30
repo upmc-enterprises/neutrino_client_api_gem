@@ -82,7 +82,8 @@ module Cdris
         # @return [Hash] the patient document's facts
         def facts(params, options = {})
           path = "#{base_uri(params)}/facts"
-          request(path, options).to_hash
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
         end
 
         # Gets a patient document's ICD9 problem codes (and code information)
@@ -92,7 +93,8 @@ module Cdris
         # @return [Hash] the patient document's ICD9 problem codes
         def icd9_problem_codes(params, options = {})
           path = "#{base_uri(params)}/facts/problems/icd9/all"
-          request(path, options).to_hash
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
         end
 
         # Gets a patient document's ICD9 codes (codes only)
@@ -102,7 +104,8 @@ module Cdris
         # @return [Hash] the patient document's ICD9 codes
         def icd9_problem_codes_simple(params, options = {})
           path = "#{base_uri(params)}/facts/icd9"
-          request(path, options).to_hash
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
         end
 
         # Gets a patient document's SNOMED problem codes
@@ -112,7 +115,8 @@ module Cdris
         # @return [Hash] the patient document's SNOMED problem codes
         def snomed_problem_codes(params, options = {})
           path = "#{base_uri(params)}/facts/problems/snomed/all"
-          request(path, options).to_hash
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
         end
 
         # Gets a patient document's SNOMED vitals
@@ -122,7 +126,8 @@ module Cdris
         # @return [Hash] the patient document's SNOMED vital information
         def snomed_vitals(params, options = {})
           path = "#{base_uri(params)}/facts/vitals/snomed/all"
-          request(path, options).to_hash
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
         end
 
         # Gets a patient document's clinical, SNOMED problem codes
@@ -132,7 +137,8 @@ module Cdris
         # @return [Hash] the patient document's clinical, SNOMED problem codes
         def snomed_problem_codes_clinical(params, options = {})
           path = "#{base_uri(params)}/facts/problems/snomed/clinical"
-          request(path, options).to_hash
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
         end
 
         # Gets a patient document's SNOMED procedure codes
@@ -142,12 +148,14 @@ module Cdris
         # @return [Hash] the patient document's SNOMED procedure codes
         def snomed_procedure_codes(params, options = {})
           path = "#{base_uri(params)}/facts/procedures/snomed/all"
-          request(path, options).to_hash
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
         end
 
         def procedures(params, options = {})
           path = "#{base_uri(params)}/facts/procedures"
-          request(path, options).to_hash
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
         end
 
         # Gets a patient document's ejection fractions

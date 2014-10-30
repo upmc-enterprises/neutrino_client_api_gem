@@ -139,16 +139,35 @@ describe Cdris::Gateway::PatientDocument do
 
   describe 'self.facts' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/42/facts?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_facts.to_s)
+    context 'when NLP annotations are available' do
 
-    it 'requests and returns the expected patient document facts' do
-      described_class.facts(
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/42/facts?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.patient_document_facts.to_s)
 
-        id: '42'
-      ).should == DataSamples.patient_document_facts.to_hash
+      it 'requests and returns the expected patient document facts' do
+        described_class.facts(id: '42').should == DataSamples.patient_document_facts.to_hash
+      end
+
+    end
+
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.facts(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
+
     end
 
   end
@@ -169,6 +188,24 @@ describe Cdris::Gateway::PatientDocument do
       }).should == DataSamples.patient_document_icd9_problem_codes.to_hash
     end
 
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts/problems/icd9/all?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.icd9_problem_codes(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
+
+    end
+
   end
 
   describe 'self.icd9_problem_codes_simple' do
@@ -185,6 +222,24 @@ describe Cdris::Gateway::PatientDocument do
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
       }).should == DataSamples.patient_document_icd9_problem_codes_simple.to_hash
+    end
+
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts/icd9?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.icd9_problem_codes_simple(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
+
     end
 
   end
@@ -205,6 +260,24 @@ describe Cdris::Gateway::PatientDocument do
       }).should == DataSamples.patient_document_snomed_problem_codes.to_hash
     end
 
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts/problems/snomed/all?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.snomed_problem_codes(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
+
+    end
+
   end
 
   describe 'self.snomed_vitals' do
@@ -221,6 +294,24 @@ describe Cdris::Gateway::PatientDocument do
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
       }).should == DataSamples.patient_document_snomed_vitals.to_hash
+    end
+
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts/vitals/snomed/all?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.snomed_vitals(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
+
     end
 
   end
@@ -241,6 +332,24 @@ describe Cdris::Gateway::PatientDocument do
       }).should == DataSamples.patient_document_snomed_problem_codes_clinical.to_hash
     end
 
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts/problems/snomed/clinical?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.snomed_problem_codes_clinical(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
+
+    end
+
   end
 
   describe 'self.snomed_procedure_codes' do
@@ -259,6 +368,24 @@ describe Cdris::Gateway::PatientDocument do
       }).should == DataSamples.patient_document_snomed_procedure_codes.to_hash
     end
 
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts/procedures/snomed/all?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.snomed_procedure_codes(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
+
+    end
+
   end
 
   describe '.procedures' do
@@ -273,6 +400,24 @@ describe Cdris::Gateway::PatientDocument do
         body: DataSamples.patient_document_sample_all_procedures.to_s)
 
        it { should == DataSamples.patient_document_sample_all_procedures.to_hash }
+
+    end
+
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts/procedures?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.procedures(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
 
     end
 
