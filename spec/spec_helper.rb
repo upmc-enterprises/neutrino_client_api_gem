@@ -128,6 +128,11 @@ class DataSamples
     self
   end
 
+  def self.tenants
+    read_fixture('sample_tenants.json')
+    self
+  end
+
   def self.patient_document_search
     read_fixture('sample_patient_document_search.json')
     self
@@ -327,4 +332,5 @@ module ActionDispatch
     end
   end
 end
+
 

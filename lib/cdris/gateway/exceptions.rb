@@ -228,6 +228,13 @@ module Cdris
         end
       end
 
+      # Error class for when CDRIS is unable to retrieve the list of tenants
+      class UnableToRetrieveTenantsError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to retrieve tenants')
+          super(errors, message)
+        end
+      end
+
       # Error class for when CDRIS is unable to retrieve configurations
       class UnableToRetrieveConfigurations < BaseError
         def initialize(errors = [], message = 'CDRIS was unable to parse version history')

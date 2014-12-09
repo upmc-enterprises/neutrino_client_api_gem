@@ -1,0 +1,8 @@
+[
+    { "name": "Fezzik", "tid": "Fezzik", "id": "123" },
+    { "name": "Westley", "tid": "Westley", "id": "321" },
+    { "name": "Inigo", "tid":"Inigo", "id": "456" },
+    { "name": "Buttercup", "tid": "Buttercup", "id": "654" },
+    { "name": "Vicini", "tid": "Vicini", "id": "789" },
+    { "name": "Humperdink", "tid": "Humperdink", "id": "987" }
+]
