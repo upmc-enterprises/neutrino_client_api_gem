@@ -80,6 +80,13 @@ module Cdris
         end
       end
 
+      # Error class for when a patient identity set is not error.
+      class PatientIdentitySetInError < BaseError
+        def initialize(errors = [], message = 'Patient Identity Set is in Error')
+          super(errors, message)
+        end
+      end
+
       # Error class for when a patient document is found by confidential.
       class PatientDocumentConfidentialError < BaseError
         def initialize(errors = [], message = 'Patient Document is designated confidential')

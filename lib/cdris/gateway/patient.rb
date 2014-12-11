@@ -29,8 +29,10 @@ module Cdris
         # @raise [Exceptions::PatientNotFoundError] when CDRIS returns a 404 status
         def identities(params, options = {})
           path = "#{base_uri(params)}/identities"
-          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
-                                .to_hash
+          request(path, options)
+            .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
+            .if_403_raise(Cdris::Gateway::Exceptions::PatientIdentitySetInError)
+            .to_hash
         end
 
         # Sets a patient's identities in error

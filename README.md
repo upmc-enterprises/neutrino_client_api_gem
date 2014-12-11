@@ -33,11 +33,6 @@ gem 'cdris_api_client', '<version>', :path => 'vendor/gems/cdris_api_client-<ver
 ```
 where `<version>` is the version of the cdris_api_client
 
-## Installing
-After generating the gem, in the project's root execute:
-```
-gem install cdris_api_client -v <version>
-```
 
 ## Usage
 
