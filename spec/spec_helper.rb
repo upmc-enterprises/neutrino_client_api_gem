@@ -192,6 +192,11 @@ class DataSamples
     read_fixture('sample_patient_document_original_metadata.json')
     self
   end
+
+  def self.application_accounts
+    read_fixture('sample_application_accounts.json')
+    self
+  end
 end
 
 class TestConfig

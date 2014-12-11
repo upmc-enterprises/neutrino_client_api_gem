@@ -214,6 +214,13 @@ module Cdris
         end
       end
 
+      # Error class for when CDRIS is unable to retrieve list of application accounts
+      class UnableToRetrieveApplicationAccountsError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to retrieve application accounts')
+          super(errors, message)
+        end
+      end
+
       # Error class for when CDRIS is unable to retrieve configurations
       class UnableToRetrieveConfigurations < BaseError
         def initialize(errors = [], message = 'CDRIS was unable to parse version history')
