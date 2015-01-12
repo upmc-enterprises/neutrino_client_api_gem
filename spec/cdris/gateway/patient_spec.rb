@@ -59,6 +59,19 @@ describe Cdris::Gateway::Patient do
 
   end
 
+  describe 'self.identities_in_error' do
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient/identities_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      body: DataSamples.patient_identities_in_error.to_s)
+
+    it 'performs a request returning identities in error' do
+      described_class.identities_in_error.should == DataSamples.patient_identities_in_error.to_hash
+    end
+
+  end
+
   describe '.active_identities' do
     subject { described_class.active_identities(params) }
 
@@ -133,6 +146,52 @@ describe Cdris::Gateway::Patient do
       it 'raises a PatientNotFoundError when it receives a 404 error' do
         expect do
           described_class.set_in_error(params_root_and_extension, user_root_and_extension)
+        end.to raise_error(Cdris::Gateway::Exceptions::PatientNotFoundError)
+      end
+    end
+  end
+
+  describe 'self.self_healing' do
+
+    let(:success_message) { {"message" => "Self-healing successful"} }
+
+    context 'when self healing is successful' do
+
+      before(:each) do
+        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
+                             body: '{ "message": "Self-healing successful" }', parameters: { format: 'json' })
+      end
+      
+      it 'performs a request returning a success message' do
+        described_class.self_healing(params_root_and_extension,
+                                     user_root_and_extension).should == success_message['message']
+      end
+    end
+
+    context 'when a tenant is not authorized to invoke self healing' do
+
+      before(:each) do
+        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
+                             body: 'Operation not permitted for tenant.', status: ['403', 'OK'], parameters: { format: 'json' })
+      end
+      
+      it 'raises a InvalidTenantOperation error when it receives a 403 error' do
+        expect do
+          described_class.self_healing(params_root_and_extension, user_root_and_extension)
+        end.to raise_error(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+      end
+    end
+
+    context 'when patient does not exist in the initiate empi service' do
+
+      before(:each) do
+        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
+                             body: 'Patient not found.', status: ['404', 'OK'], parameters: { format: 'json' })
+      end
+      
+      it 'raises a PatientNotFoundError when it receives a 404 error' do
+        expect do
+          described_class.self_healing(params_root_and_extension, user_root_and_extension)
         end.to raise_error(Cdris::Gateway::Exceptions::PatientNotFoundError)
       end
     end

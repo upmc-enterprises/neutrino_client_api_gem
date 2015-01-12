@@ -103,6 +103,11 @@ class DataSamples
     self
   end
 
+  def self.patient_identities_in_error
+    read_fixture('sample_patient_identities_in_error.json')
+    self
+  end
+
   def self.patient_patient_document_search
     read_fixture('sample_patient_patient_document_search.json')
     self

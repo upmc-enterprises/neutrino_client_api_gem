@@ -242,6 +242,13 @@ module Cdris
         end
       end
 
+      # Error class for when an operation is not permitted for a tenant
+      class InvalidTenantOperation < BaseError
+        def initialize(errors = [], message = 'Operation is not permitted for the tenant')
+          super(errors, message)
+        end
+      end
+
       # Error class for when an no import file is provded for file import.
       class ImportFileNotProvided < BaseError
         def initialize(errors = [], message = 'No file provided. File expected with key fileUpload.')

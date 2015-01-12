@@ -35,6 +35,17 @@ module Cdris
             .to_hash
         end
 
+        # Gets patient identities that are in error
+        #
+        # @param [Hash] options specify query values
+        # @return [Array] array of hashes of identities in error
+        # @raise [Exceptions::InvalidTenantOperation] when CDRIS returns a 403 status
+        def identities_in_error(options = {})
+          path = "#{api}/patient/identities_in_error"
+          request(path, options)
+            .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation).to_hash
+        end
+
         # Sets a patient's identities in error
         #
         # @param [Hash] params specify what patient to set into error, must specify `:root` and `extension`
@@ -45,6 +56,21 @@ module Cdris
           path = "#{base_uri(params)}/set_in_error"
           request(path, options.merge(method: :post), {})
             .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError).to_hash['data_status']
+        end
+
+        # Invoke self-healing on all members of a patient identity set
+        #
+        # @param [Hash] params specify what patient to invoke self healing on, must specify `:root` and `extension`
+        # @param [Hash] options specify query values
+        # @return [boolean] true if patient self healing was successful, false if not
+        # @raise [Exceptions::InvalidTenantOperation] when CDRIS returns a 403 status
+        # @raise [Exceptions::PatientNotFoundError] when CDRIS returns a 404 status
+        def self_healing(params, options = {})
+          path = "#{base_uri(params)}/self_healing"
+          request(path, options.merge(method: :post), {})
+            .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
+            .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+            .to_hash['message']
         end
 
         # Gets a patient's active identities
