@@ -19,7 +19,7 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
       let(:params_not_specifying_whitelist) { {} }
 
       it 'builds a Whitelist that become an empty string on to_s' do
-        subject.from_whitelists_in(params_not_specifying_whitelist).build.to_s.should == ''
+        expect(subject.from_whitelists_in(params_not_specifying_whitelist).build.to_s).to eq('')
       end
 
     end
@@ -31,7 +31,7 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
       end
 
       it 'builds a whitelist that builds a uri including the with ejection fractions uri component' do
-        subject.build.to_s.should match(%r{/with/ejection_fractions})
+        expect(subject.build.to_s).to match(%r{/with/ejection_fractions})
       end
 
     end

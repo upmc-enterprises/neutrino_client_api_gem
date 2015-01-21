@@ -17,7 +17,7 @@ describe Cdris::Gateway::NamedQuery do
       body: '{}')
 
     it 'gets query results when an existing query name is passed' do
-      described_class.get('i_exist').should == JSON.parse('{}')
+      expect(described_class.get('i_exist')).to eq(JSON.parse('{}'))
     end
 
     FakeWeb.register_uri(
@@ -26,7 +26,7 @@ describe Cdris::Gateway::NamedQuery do
       body: DataSamples.named_query_not_found_error.to_s)
 
     it 'gets a "named query not found" error when the passed query name is not know by cdris' do
-      described_class.get('i_dont_exist').should == DataSamples.named_query_not_found_error.to_hash
+      expect(described_class.get('i_dont_exist')).to eq(DataSamples.named_query_not_found_error.to_hash)
     end
 
   end
@@ -39,7 +39,7 @@ describe Cdris::Gateway::NamedQuery do
       body: DataSamples.named_query_list_of_queries.to_s)
 
     it 'gets query results when an existing query name is passed' do
-      described_class.known_queries.should == DataSamples.named_query_list_of_queries.to_hash
+      expect(described_class.known_queries).to eq(DataSamples.named_query_list_of_queries.to_hash)
     end
 
   end

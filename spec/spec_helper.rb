@@ -16,7 +16,7 @@ SimpleCov.coverage_dir 'coverage/rspec'
 
 RSpec.configure do |config|
   config.order = 'random'
-  config.color_enabled = true
+  config.color = true
   config.formatter = :progress
   config.tty = true
 end

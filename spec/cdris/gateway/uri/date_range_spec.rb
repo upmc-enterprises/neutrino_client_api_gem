@@ -37,24 +37,24 @@ describe Cdris::Gateway::Uri::DateRange do
   describe '.to_s' do
 
     it 'returns the begin date and the end date separated by a forward slash given a valid beginning and ending date' do
-      described_class.new
+      expect(described_class.new
                .beginning_at(date_in_2013)
                .ending_at(date_in_2014)
-               .to_s.should == "/document_creation_between/#{date_in_2013}/#{date_in_2014}"
+               .to_s).to eq("/document_creation_between/#{date_in_2013}/#{date_in_2014}")
     end
 
     it 'returns empty string given the beginning date is nil' do
-      described_class.new
+      expect(described_class.new
                .beginning_at(nil)
                .ending_at(date_in_2014)
-               .to_s.should == ''
+               .to_s).to eq('')
     end
 
     it 'returns empty string given the beginning date is nil' do
-      described_class.new
+      expect(described_class.new
                .beginning_at(date_in_2013)
                .ending_at(nil)
-               .to_s.should == ''
+               .to_s).to eq('')
     end
 
   end
@@ -88,35 +88,35 @@ describe Cdris::Gateway::Uri::FormattedDate do
       calling_object = described_class.new date_in_2013
       passed_object = described_class.new date_in_2014
 
-      (calling_object.earlier_than? passed_object).should == true
+      expect(calling_object.earlier_than? passed_object).to eq(true)
     end
 
     it 'is false given the calling object was initialized with a later date than the passed object' do
       calling_object = described_class.new date_in_2014
       passed_object = described_class.new date_in_2013
 
-      (calling_object.earlier_than? passed_object).should == false
+      expect(calling_object.earlier_than? passed_object).to eq(false)
     end
 
     it 'is false given the calling object was initialized with the same date as the passed object' do
       calling_object = described_class.new date_in_2014
       passed_object = described_class.new date_in_2014
 
-      (calling_object.earlier_than? passed_object).should == false
+      expect(calling_object.earlier_than? passed_object).to eq(false)
     end
 
     it 'is false given the calling object was initialized with nil' do
       calling_object = described_class.new nil
       passed_object = described_class.new date_in_2014
 
-      (calling_object.earlier_than? passed_object).should == false
+      expect(calling_object.earlier_than? passed_object).to eq(false)
     end
 
     it 'is false given the passed object was initialized with nil' do
       calling_object = described_class.new date_in_2013
       passed_object = described_class.new nil
 
-      (calling_object.earlier_than? passed_object).should == false
+      expect(calling_object.earlier_than? passed_object).to eq(false)
     end
 
   end
@@ -126,13 +126,13 @@ describe Cdris::Gateway::Uri::FormattedDate do
     it 'gets the original, beginning with a slash' do
       formatted_date = described_class.new date_in_2013
 
-      formatted_date.to_uri.should == "/#{date_in_2013}"
+      expect(formatted_date.to_uri).to eq("/#{date_in_2013}")
     end
 
     it 'gets an empty string if the original value was nil' do
       formatted_date = described_class.new nil
 
-      formatted_date.to_uri.should == ''
+      expect(formatted_date.to_uri).to eq('')
     end
 
   end
@@ -142,7 +142,7 @@ describe Cdris::Gateway::Uri::FormattedDate do
     it 'returns true if object was initialized with nil' do
       formatted_date = described_class.new nil
 
-      formatted_date.nil?.should == true
+      expect(formatted_date.nil?).to eq(true)
     end
 
   end

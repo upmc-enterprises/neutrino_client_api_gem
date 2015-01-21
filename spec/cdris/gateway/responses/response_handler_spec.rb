@@ -11,22 +11,22 @@ describe Cdris::Gateway::Responses::ResponseHandler do
     let(:ok_body) { 'I am the response body' }
 
     before(:each) do
-      ok_response.stub(:body).and_return(ok_body)
-      ok_response.stub(:code).and_return('200')
+      allow(ok_response).to receive(:body).and_return(ok_body)
+      allow(ok_response).to receive(:code).and_return('200')
 
     end
 
     it 'returns the body of a response' do
-      subject
+      expect(subject
         .considering(ok_response)
-        .to_s.should == ok_body
+        .to_s).to eq(ok_body)
     end
 
     it 'returns the body of a response when a status code error out is given that is not the status code of the response' do
-      subject
+      expect(subject
         .considering(ok_response)
         .if_424_raise(anything)
-        .to_s.should == ok_body
+        .to_s).to eq(ok_body)
     end
 
   end
@@ -38,7 +38,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
       before(:each) { subject.considering('content-type' => 'foo/bar') }
 
       it "returns the header's content type" do
-        subject.content_type.should == 'foo/bar'
+        expect(subject.content_type).to eq('foo/bar')
       end
 
     end
@@ -48,7 +48,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
       before(:each) { subject.considering({}) }
 
       it 'returns a default content type of text/plain' do
-        subject.content_type.should == 'text/plain'
+        expect(subject.content_type).to eq('text/plain')
       end
 
     end
@@ -69,14 +69,14 @@ describe Cdris::Gateway::Responses::ResponseHandler do
 
         ['200', rand(100)+200, rand(100)+200, rand(100)+200, rand(100)+200].each do |successful_code|
           context "and the response has a 200-family response of #{successful_code}" do
-            before(:each) { response.stub(:code).and_return(successful_code) }
+            before(:each) { allow(response).to receive(:code).and_return(successful_code) }
 
             specify { expect { subject }.to_not raise_error }
           end
         end
 
         context 'and the response has a non-200 family status code' do
-          before(:each) { response.stub(:code).and_return('329') }
+          before(:each) { allow(response).to receive(:code).and_return('329') }
 
           specify { expect { subject }.to raise_error(Exception) }
         end
@@ -90,7 +90,7 @@ describe Cdris::Gateway::Responses::ResponseHandler do
     let(:example_exception) { 'example exception' }
 
     before(:each) do
-      response_404.stub(:code).and_return('404')
+      allow(response_404).to receive(:code).and_return('404')
     end
 
     it 'raises the passed exception when a response with a 404 is given' do
@@ -166,19 +166,19 @@ describe Cdris::Gateway::Responses::ResponseHandler do
     let(:response_300) { Object.new }
 
     before(:each) do
-      response_300.stub(:code).and_return('300')
+      allow(response_300).to receive(:code).and_return('300')
     end
 
     it 'returns true if the considered request has the checked code' do
-      subject
+      expect(subject
       .considering(response_300)
-      .code_is?(300).should == true
+      .code_is?(300)).to eq(true)
     end
 
     it 'returns false if the considered request has a different code than is checked' do
-      subject
+      expect(subject
       .considering(response_300)
-      .code_is?(200).should == false
+      .code_is?(200)).to eq(false)
     end
 
   end
@@ -188,18 +188,18 @@ describe Cdris::Gateway::Responses::ResponseHandler do
     let(:response_300) { Object.new }
 
     before(:each) do
-      response_300.stub(:code).and_return('300')
+      allow(response_300).to receive(:code).and_return('300')
     end
 
     it 'returns true if the considered request has a code that is different than the checked code' do
-      subject.considering(response_300)
-             .code_is_not?(301).should == true
+      expect(subject.considering(response_300)
+             .code_is_not?(301)).to eq(true)
     end
 
     it 'returns false if the considered request has the same code as is checked' do
-      subject
+      expect(subject
       .considering(response_300)
-      .code_is_not?(300).should == false
+      .code_is_not?(300)).to eq(false)
     end
 
   end
@@ -211,8 +211,8 @@ describe Cdris::Gateway::Responses::ResponseHandler do
     let(:response_505) { Object.new }
 
     before(:each) do
-      response_300.stub(:code).and_return('300')
-      response_505.stub(:code).and_return('505')
+      allow(response_300).to receive(:code).and_return('300')
+      allow(response_505).to receive(:code).and_return('505')
     end
 
     it 'raises a NoMethodError when a method that does not look like "if_<response-code>_raise is called"' do

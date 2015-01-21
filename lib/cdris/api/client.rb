@@ -4,6 +4,7 @@ require 'net/http/post/multipart'
 require 'cdris/helpers/api_auth_modifications.rb'
 require 'cdris/helpers/monkey_patch'
 require 'cdris/gateway/exceptions'
+require 'digest/sha2'
 
 module Cdris
   module Api
@@ -102,6 +103,20 @@ module Cdris
           @config[:hmac_key]
         end
 
+        # Gets the Tenant ID
+        #
+        # @return [Object] the Tenant ID
+        def tenant_id
+          @config[:tenant_id]
+        end
+
+        # Gets the Tenant key
+        #
+        # @return [Object] the Tenant key
+        def tenant_key
+          @config[:tenant_key]
+        end
+
         # Gets the API version
         #
         # @return [Object] the API version
@@ -144,6 +159,9 @@ module Cdris
         end
 
         # Builds a REST request to be sent to the CDRIS API.
+        #   Tenant id is added if specified in the configuration.  If the tenant
+        #   id is added to the request, the HMAC key is created by taking a SHA2-512
+        #   bit hash of the application key and the tenant key.
         # @param [String] path Path of CDRIS API from which to request information.
         # @param [Hash] options Optional parameters required by request.
         # @param [String] body HTTP body to be transmitted, if any.
@@ -153,18 +171,34 @@ module Cdris
         def build_request(path, options = {}, body = nil, basic_auth = false)
           Net::HTTP.start(host, port, use_ssl: protocol == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
             request_klass = get_method(options)
+            tenant_is_from_configuration = false
+
             options = options.reject { |x| x == :method } if options[:method]
+
+            if tenant_configured? && options[:tid].nil?
+              options[:tid] = tenant_id
+              tenant_is_from_configuration = true
+            end
+
             if request_klass == Net::HTTP::Post::Multipart
               request = request_klass.new(path_with_params(path, options), body)
             else
               request = request_klass.new(path_with_params(path, options))
             end
-            request.basic_auth(auth_user, auth_pass) if basic_auth
+
             if request_klass == Net::HTTP::Post
               request.content_type = 'application/json'
               request.body = body.to_json
             end
-            request = ApiAuth.sign!(request, hmac_id, hmac_key) unless basic_auth || hmac_id.blank? || hmac_key.blank?
+
+            request.basic_auth(auth_user, auth_pass) if basic_auth
+
+            unless basic_auth || app_hmac_not_configured?
+              request = ApiAuth.sign!(request,
+                                      hmac_id,
+                                      generate_hmac_key(tenant_is_from_configuration))
+            end
+
             http.request(request)
           end
         rescue Errno::ECONNREFUSED, OpenSSL::SSL::SSLError
@@ -204,6 +238,43 @@ module Cdris
           hash_with_symbols = {}
           a_hash.each { |key, value| hash_with_symbols[key.to_sym] = value }
           hash_with_symbols
+        end
+
+        private
+
+        # Checks the configuration to see if the application hmac was not configured
+        #
+        # @return [Boolean] true if hmac was not configured, false hmac if is was configured
+        def app_hmac_not_configured?
+          if config_nil_or_doesnt_contain?(:hmac_id) || config_nil_or_doesnt_contain?(:hmac_key)
+            true
+          else
+            false
+          end
+        end
+
+        # Checks the configuration to see if the tenant is configured
+        #
+        # @return [Boolean] true if tenant is configured, false if not
+        def tenant_configured?
+          if config_nil_or_doesnt_contain?(:tenant_id) || config_nil_or_doesnt_contain?(:tenant_key)
+            false
+          else
+            true
+          end
+        end
+
+        # Generates the HMAC key depending on the configuration of the gem.
+        #
+        # @param [Boolean] configured the tenant id and tenant key are
+        #   present in the configuration file.
+        # @return [String] a string that is HMAC key
+        def generate_hmac_key(tid_is_not_from_request)
+          if tenant_configured? && tid_is_not_from_request
+            Digest::SHA512.new.update(hmac_key + tenant_key).to_s
+          else
+            hmac_key
+          end
         end
 
       end

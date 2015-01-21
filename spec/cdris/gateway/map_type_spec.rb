@@ -21,7 +21,7 @@ describe Cdris::Gateway::MapType do
         'http://testhost:4242/api/v1/map_type/unmapped?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         body: DataSamples.map_type_get.to_s)
 
-      described_class.get(param_unmapped).should == DataSamples.map_type_get.to_hash
+      expect(described_class.get(param_unmapped)).to eq(DataSamples.map_type_get.to_hash)
     end
 
   end
@@ -36,7 +36,7 @@ describe Cdris::Gateway::MapType do
           'http://testhost:4242/api/v1/map_type/total_count_to_update?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
           body: sample_document_to_update_count)
 
-      described_class.get_total_document_count_to_update.should == sample_document_to_update_count
+      expect(described_class.get_total_document_count_to_update).to eq(sample_document_to_update_count)
     end
 
   end
@@ -54,7 +54,7 @@ describe Cdris::Gateway::MapType do
     end
 
     it 'performs a request against the map type URI' do
-      Cdris::Gateway::Requestor.stub(:api).and_return('api_uri')
+      allow(Cdris::Gateway::Requestor).to receive(:api).and_return('api_uri')
       expect(Cdris::Gateway::Requestor).to receive(:request).with('api_uri/map_type', anything, anything)
       described_class.create_map_type(anything)
     end
@@ -79,13 +79,13 @@ describe Cdris::Gateway::MapType do
     end
 
     it 'performs a request against the map type import URI' do
-      Cdris::Gateway::Requestor.stub(:api).and_return('api_uri')
+      allow(Cdris::Gateway::Requestor).to receive(:api).and_return('api_uri')
       expect(Cdris::Gateway::Requestor).to receive(:request).with('api_uri/map_type/import/file', anything, anything, anything)
       described_class.import_map_type_file(sample_uploaded_file)
     end
 
     it 'performs a request using basic auth' do
-      Cdris::Gateway::Requestor.stub(:api).and_return('api_uri')
+      allow(Cdris::Gateway::Requestor).to receive(:api).and_return('api_uri')
       expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, true)
       described_class.import_map_type_file(sample_uploaded_file)
     end

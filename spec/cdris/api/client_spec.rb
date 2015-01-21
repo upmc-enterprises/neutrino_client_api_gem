@@ -13,7 +13,7 @@ describe Cdris::Api::Client do
   describe 'self.config' do
 
     it 'returns a config dictionary when one has been set' do
-      described_class.config.should == TestConfig.to_hash
+      expect(described_class.config).to eq(TestConfig.to_hash)
     end
 
   end
@@ -24,7 +24,7 @@ describe Cdris::Api::Client do
       let(:hash) { nil }
 
       it 'returns nil' do
-        described_class.symbolize_keys(hash).should be_nil
+        expect(described_class.symbolize_keys(hash)).to be_nil
       end
 
     end
@@ -33,7 +33,7 @@ describe Cdris::Api::Client do
       let(:hash) { {} }
 
       it 'returns an empty hash' do
-        described_class.symbolize_keys(hash).should == {}
+        expect(described_class.symbolize_keys(hash)).to eq({})
       end
 
     end
@@ -42,11 +42,11 @@ describe Cdris::Api::Client do
       let(:hash) { { 'foo' => 5, 'bar' => [] } }
 
       it 'returns a hash that has the same number of keys as the passed' do
-        described_class.symbolize_keys(hash).keys.count.should == hash.keys.count
+        expect(described_class.symbolize_keys(hash).keys.count).to eq(hash.keys.count)
       end
 
       it 'returns a hash where all the keys are strings' do
-        described_class.symbolize_keys(hash).keys.each { |key| key.should be_an_instance_of(Symbol) }
+        described_class.symbolize_keys(hash).keys.each { |key| expect(key).to be_an_instance_of(Symbol) }
       end
 
     end
@@ -56,7 +56,7 @@ describe Cdris::Api::Client do
   describe 'self.protocol' do
 
     it 'returns the protocol specified in the config when a config was given' do
-      described_class.protocol.should == TestConfig.protocol
+      expect(described_class.protocol).to eq(TestConfig.protocol)
     end
 
   end
@@ -64,7 +64,7 @@ describe Cdris::Api::Client do
   describe 'self.host' do
 
     it 'returns the host specified in the config when a config was given' do
-      described_class.host.should == TestConfig.host
+      expect(described_class.host).to eq(TestConfig.host)
     end
 
   end
@@ -72,7 +72,7 @@ describe Cdris::Api::Client do
   describe 'self.port' do
 
     it 'returns the port specified in the config when a config was given' do
-      described_class.port.should == TestConfig.port
+      expect(described_class.port).to eq(TestConfig.port)
     end
 
   end
@@ -80,7 +80,7 @@ describe Cdris::Api::Client do
   describe 'self.auth_user' do
 
     it 'returns the auth_user specified in the config when a config was given' do
-      described_class.auth_user.should == TestConfig.auth_user
+      expect(described_class.auth_user).to eq(TestConfig.auth_user)
     end
 
   end
@@ -88,7 +88,7 @@ describe Cdris::Api::Client do
   describe 'self.auth_pass' do
 
     it 'returns the auth_pass specified in the config when a config was given' do
-      described_class.auth_pass.should == TestConfig.auth_pass
+      expect(described_class.auth_pass).to eq(TestConfig.auth_pass)
     end
 
   end
@@ -96,7 +96,7 @@ describe Cdris::Api::Client do
   describe 'self.user_root' do
 
     it 'returns the user_root specified in the config when a config was given' do
-      described_class.user_root.should == TestConfig.user_root
+      expect(described_class.user_root).to eq(TestConfig.user_root)
     end
 
   end
@@ -104,7 +104,7 @@ describe Cdris::Api::Client do
   describe 'self.user_extension' do
 
     it 'returns the user_extension specified in the config when a config was given' do
-      described_class.user_extension.should == TestConfig.user_extension
+      expect(described_class.user_extension).to eq(TestConfig.user_extension)
     end
 
   end
@@ -112,17 +112,17 @@ describe Cdris::Api::Client do
   describe 'self.api_version' do
 
     it 'returns the api_version specified in the config when a config was given' do
-      described_class.api_version.should == TestConfig.api_version
+      expect(described_class.api_version).to eq(TestConfig.api_version)
     end
 
     it 'returns the default api_version when a config was not given' do
       described_class.config = nil
-      described_class.api_version.should == described_class::DEFAULT_API_VERSION
+      expect(described_class.api_version).to eq(described_class::DEFAULT_API_VERSION)
     end
 
     it 'returns the default api_version when the given config contains no api_version' do
       described_class.config = {}
-      described_class.api_version.should == described_class::DEFAULT_API_VERSION
+      expect(described_class.api_version).to eq(described_class::DEFAULT_API_VERSION)
     end
 
   end
@@ -139,24 +139,107 @@ describe Cdris::Api::Client do
     let(:response_body) { 'I am the response body' }
 
     before(:each) do
-      mock_http.stub(:body)
-      Net::HTTP.stub(:start).and_yield(mock_http)
-      not_found_response.stub(:code).and_return('404')
+      allow(mock_http).to receive(:body)
+      allow(Net::HTTP).to receive(:start).and_yield(mock_http)
+      allow(not_found_response).to receive(:code).and_return('404')
 
-      server_error_response.stub(:code).and_return('500')
-      server_error_response.stub(:body).and_return('')
+      allow(server_error_response).to receive(:code).and_return('500')
+      allow(server_error_response).to receive(:body).and_return('')
     end
 
     it 'raises "Connection refused" when the http request throws an Errno::ECONNREFUSED' do
-      mock_http.stub(:request).and_raise(Errno::ECONNREFUSED)
+      allow(mock_http).to receive(:request).and_raise(Errno::ECONNREFUSED)
       expect { described_class.perform_request('bogus') }.to raise_error('Connection refused')
     end
 
     it 'raises "Connection refused" when the http request throws an OpenSSL::SSL::SSLError' do
-      mock_http.stub(:request).and_raise(OpenSSL::SSL::SSLError)
+      allow(mock_http).to receive(:request).and_raise(OpenSSL::SSL::SSLError)
       expect { described_class.perform_request('bogus') }.to raise_error('Connection refused')
     end
 
+  end
+
+  describe 'self.build_request' do
+
+    let(:mock_http) { double }
+    let(:mock_request) { Net::HTTP::Get }
+    let(:mock_hmac_id) { 'fake_hmac_id' }
+    let(:mock_hmac_key) { 'fake_hmac_key' }
+    let(:fake_path) { 'https://goto:123/api' }
+    let(:params_with_tid) { { tid: 'optional_tid' } }
+    let(:empty_params) { {} }
+
+    before(:each) do
+      allow(mock_http).to receive(:body)
+      allow(Net::HTTP).to receive(:start).and_yield(mock_http)
+      allow(mock_http).to receive(:request)
+
+      allow(described_class).to receive(:hmac_id).and_return(mock_hmac_id)
+      allow(described_class).to receive(:hmac_key).and_return(mock_hmac_key)
+    end
+
+    context 'HMAC authentication' do
+      let(:mock_tenant_id) { 'fake_tenant' }
+      let(:mock_tenant_key) { 'fake_tenant_key' }
+
+      context 'without tenant configured' do
+
+        before(:each) do
+          allow(described_class).to receive(:tenant_id).and_return(nil)
+          allow(described_class).to receive(:tenant_key).and_return(nil)
+        end
+
+        it 'and request has been signed' do
+          expect(ApiAuth).to receive(:sign!).with(mock_request, mock_hmac_id, mock_hmac_key)
+          described_class.build_request(fake_path)
+        end
+
+        it 'request has been signed with tid specified in options' do
+          expect(ApiAuth).to receive(:sign!).with(mock_request, mock_hmac_id, mock_hmac_key)
+          described_class.build_request(fake_path, params_with_tid)
+        end
+
+      end
+
+      context 'with tenant configured' do
+
+        before(:each) do
+          allow(described_class).to receive(:tenant_id).and_return(mock_tenant_id)
+          allow(described_class).to receive(:tenant_key).and_return(mock_tenant_key)
+        end
+
+        it 'and request has been signed' do
+          expect(ApiAuth).to receive(:sign!).with(mock_request, mock_hmac_id, anything)
+          described_class.build_request(fake_path)
+        end
+
+        it 'and request has been signed with tid specified in option hash' do
+          expect(ApiAuth).to receive(:sign!).with(mock_request, mock_hmac_id, mock_hmac_key)
+          described_class.build_request(fake_path, params_with_tid)
+        end
+
+        context 'when basic authentication is specified on request' do
+
+          it 'should not sign request' do
+            expect(ApiAuth).to_not receive(:sign!)
+            described_class.build_request(fake_path, empty_params, nil, true)
+          end
+        end
+      end
+
+      context 'without application configured' do
+
+        before(:each) do
+          described_class.config[:hmac_id] = nil
+          described_class.config[:hmac_key] = nil
+        end
+
+        it 'should not sign request' do
+          expect(ApiAuth).to_not receive(:sign!)
+          described_class.build_request(fake_path)
+        end
+      end
+    end
   end
 
   describe 'self.get_method' do
@@ -166,7 +249,7 @@ describe Cdris::Api::Client do
     context 'when options specify no methods' do
 
       it 'returns Net::HTTP::Get' do
-        described_class.get_method(options).should == Net::HTTP::Get
+        expect(described_class.get_method(options)).to eq(Net::HTTP::Get)
       end
 
     end
@@ -176,7 +259,7 @@ describe Cdris::Api::Client do
       before(:each) { options[:method] = :get }
 
       it 'returns Net::HTTP::Get' do
-        described_class.get_method(options).should == Net::HTTP::Get
+        expect(described_class.get_method(options)).to eq(Net::HTTP::Get)
       end
 
     end
@@ -186,7 +269,7 @@ describe Cdris::Api::Client do
       before(:each) { options[:method] = :post }
 
       it 'returns Net::HTTP::Post' do
-        described_class.get_method(options).should == Net::HTTP::Post
+        expect(described_class.get_method(options)).to eq(Net::HTTP::Post)
       end
 
     end
@@ -196,7 +279,7 @@ describe Cdris::Api::Client do
       before(:each) { options[:method] = :post_multipart }
 
       it 'returns Net::HTTP::Post::Multipart' do
-        described_class.get_method(options).should == Net::HTTP::Post::Multipart
+        expect(described_class.get_method(options)).to eq(Net::HTTP::Post::Multipart)
       end
 
     end
@@ -206,7 +289,7 @@ describe Cdris::Api::Client do
       before(:each) { options[:method] = :delete }
 
       it 'returns Net::HTTP::Delete' do
-        described_class.get_method(options).should == Net::HTTP::Delete
+        expect(described_class.get_method(options)).to eq(Net::HTTP::Delete)
       end
     end
 

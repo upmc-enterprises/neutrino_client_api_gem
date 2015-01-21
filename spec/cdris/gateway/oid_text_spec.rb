@@ -19,7 +19,7 @@ describe Cdris::Gateway::OidText do
         'http://testhost:4242/api/v1/oid_text?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         body: DataSamples.oid_text_get.to_s)
 
-      described_class.get().should == DataSamples.oid_text_get.to_hash
+      expect(described_class.get()).to eq(DataSamples.oid_text_get.to_hash)
     end
 
     it 'gets a oid_text with group' do
@@ -28,7 +28,7 @@ describe Cdris::Gateway::OidText do
         'http://testhost:4242/api/v1/oid_text/MRN?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         body: DataSamples.oid_text_get.to_s)
 
-      described_class.get({ 'group' => 'MRN' }).should == DataSamples.oid_text_get.to_hash
+      expect(described_class.get({ 'group' => 'MRN' })).to eq(DataSamples.oid_text_get.to_hash)
     end
 
     it 'gets a oid_text with group and oid' do
@@ -37,7 +37,7 @@ describe Cdris::Gateway::OidText do
         'http://testhost:4242/api/v1/oid_text/MRN/MRN.OID?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         body: DataSamples.oid_text_get.to_s)
 
-      described_class.get({ 'group' => 'MRN', 'oid' => 'MRN.OID' }).should == DataSamples.oid_text_get.to_hash
+      expect(described_class.get({ 'group' => 'MRN', 'oid' => 'MRN.OID' })).to eq(DataSamples.oid_text_get.to_hash)
     end
 
   end

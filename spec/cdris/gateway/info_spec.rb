@@ -18,7 +18,7 @@ describe Cdris::Gateway::Info do
       body: DataSamples.info_deployments.to_s)
 
     it 'returns the expected deployments' do
-      described_class.deployments.should == DataSamples.info_deployments.to_hash
+      expect(described_class.deployments).to eq(DataSamples.info_deployments.to_hash)
     end
 
   end
@@ -31,7 +31,7 @@ describe Cdris::Gateway::Info do
       body: DataSamples.info_current_deployment.to_s)
 
     it 'returns the expected current_deployment' do
-      described_class.current_deployment.should == DataSamples.info_current_deployment.to_hash
+      expect(described_class.current_deployment).to eq(DataSamples.info_current_deployment.to_hash)
     end
 
     let(:expected_current_deployments_uri) { '/cdris/deployment/current' }
@@ -46,7 +46,7 @@ describe Cdris::Gateway::Info do
       body: DataSamples.info_configuration.to_s)
 
     it 'returns the expected configuration when a category is given' do
-      described_class.configuration('a_category').should == DataSamples.info_configuration.to_hash
+      expect(described_class.configuration('a_category')).to eq(DataSamples.info_configuration.to_hash)
     end
 
     FakeWeb.register_uri(
@@ -55,7 +55,7 @@ describe Cdris::Gateway::Info do
       body: DataSamples.info_configurations.to_s)
 
     it 'returns all configurations when a category is not given' do
-      described_class.configuration.should == DataSamples.info_configurations.to_hash
+      expect(described_class.configuration).to eq(DataSamples.info_configurations.to_hash)
     end
 
     let(:example_config_category) { 'foobar' }

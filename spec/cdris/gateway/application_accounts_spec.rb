@@ -19,7 +19,7 @@ describe Cdris::Gateway::ApplicationAccounts do
         'http://testhost:4242/api/v1/admin/application_accounts?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         body: DataSamples.application_accounts.to_s)
 
-      described_class.get.should == DataSamples.application_accounts.to_hash
+      expect(described_class.get).to eq(DataSamples.application_accounts.to_hash)
     end
 
   end

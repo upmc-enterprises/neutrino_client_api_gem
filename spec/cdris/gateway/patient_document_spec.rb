@@ -18,7 +18,7 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_test_patient_document.to_s)
 
     it 'requests and returns the expected patient document' do
-      described_class.get(id: '42').should == DataSamples.patient_document_test_patient_document.to_hash
+      expect(described_class.get(id: '42')).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
   end
@@ -31,10 +31,10 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_data.to_s)
 
     it 'requests and returns the expected patient document data' do
-      described_class.data(
+      expect(described_class.data(
 
           id: '530c9f64e4b02eb001555cfc'
-        ).should == { data: DataSamples.patient_document_data.to_s, type: 'text/plain' }
+        )).to eq({ data: DataSamples.patient_document_data.to_s, type: 'text/plain' })
     end
 
     FakeWeb.register_uri(
@@ -58,7 +58,7 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_test_patient_document.to_s)
 
     it 'requests and returns the expected patient test_patient_document' do
-      described_class.test_patient_document.should == DataSamples.patient_document_test_patient_document.to_hash
+      expect(described_class.test_patient_document).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
   end
@@ -71,10 +71,10 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_text.to_s)
 
     it 'requests and returns the expected patient document text' do
-      described_class.text(
+      expect(described_class.text(
 
         id: '1234'
-      ).should == DataSamples.patient_document_text.to_s
+      )).to eq(DataSamples.patient_document_text.to_s)
     end
 
   end
@@ -102,7 +102,7 @@ describe Cdris::Gateway::PatientDocument do
         body: DataSamples.original_metadata.to_s)
 
       it 'requests and returns the expected patient document original metadata' do
-        subject.should == DataSamples.original_metadata.to_hash
+        expect(subject).to eq(DataSamples.original_metadata.to_hash)
       end
     end
   end
@@ -147,7 +147,7 @@ describe Cdris::Gateway::PatientDocument do
         body: DataSamples.patient_document_facts.to_s)
 
       it 'requests and returns the expected patient document facts' do
-        described_class.facts(id: '42').should == DataSamples.patient_document_facts.to_hash
+        expect(described_class.facts(id: '42')).to eq(DataSamples.patient_document_facts.to_hash)
       end
 
     end
@@ -180,12 +180,12 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_icd9_problem_codes.to_s)
 
     it 'requests and returns the expected patient document icd9 problem codes' do
-      described_class.icd9_problem_codes(
+      expect(described_class.icd9_problem_codes(
       {
         id: '42'
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
-      }).should == DataSamples.patient_document_icd9_problem_codes.to_hash
+      })).to eq(DataSamples.patient_document_icd9_problem_codes.to_hash)
     end
 
     context 'when NLP annotations are not available' do
@@ -216,12 +216,12 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_icd9_problem_codes_simple.to_s)
 
     it 'requests and returns the expected simple patient document icd9 problem codes' do
-      described_class.icd9_problem_codes_simple(
+      expect(described_class.icd9_problem_codes_simple(
       {
         id: '42'
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
-      }).should == DataSamples.patient_document_icd9_problem_codes_simple.to_hash
+      })).to eq(DataSamples.patient_document_icd9_problem_codes_simple.to_hash)
     end
 
     context 'when NLP annotations are not available' do
@@ -252,12 +252,12 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_snomed_problem_codes.to_s)
 
     it 'requests and returns the expected snomed problem codes' do
-      described_class.snomed_problem_codes(
+      expect(described_class.snomed_problem_codes(
       {
         id: '42'
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
-      }).should == DataSamples.patient_document_snomed_problem_codes.to_hash
+      })).to eq(DataSamples.patient_document_snomed_problem_codes.to_hash)
     end
 
     context 'when NLP annotations are not available' do
@@ -288,12 +288,12 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_snomed_vitals.to_s)
 
     it 'requests and returns the expected snomed vitals' do
-      described_class.snomed_vitals(
+      expect(described_class.snomed_vitals(
       {
         id: '42'
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
-      }).should == DataSamples.patient_document_snomed_vitals.to_hash
+      })).to eq(DataSamples.patient_document_snomed_vitals.to_hash)
     end
 
     context 'when NLP annotations are not available' do
@@ -324,12 +324,12 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_snomed_problem_codes_clinical.to_s)
 
     it 'requests and returns the expected clinical snomed problem codes' do
-      described_class.snomed_problem_codes_clinical(
+      expect(described_class.snomed_problem_codes_clinical(
       {
         id: '42'
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
-      }).should == DataSamples.patient_document_snomed_problem_codes_clinical.to_hash
+      })).to eq(DataSamples.patient_document_snomed_problem_codes_clinical.to_hash)
     end
 
     context 'when NLP annotations are not available' do
@@ -360,12 +360,12 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_snomed_procedure_codes.to_s)
 
     it 'requests and returns the expected snomed procedure codes' do
-      described_class.snomed_procedure_codes(
+      expect(described_class.snomed_procedure_codes(
       {
         id: '42'
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
-      }).should == DataSamples.patient_document_snomed_procedure_codes.to_hash
+      })).to eq(DataSamples.patient_document_snomed_procedure_codes.to_hash)
     end
 
     context 'when NLP annotations are not available' do
@@ -431,13 +431,13 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_ejection_fractions.to_s)
 
     it 'requests and returns the expected ejection fractions' do
-      described_class.ejection_fractions(
+      expect(described_class.ejection_fractions(
       {
         root: 'foo',
         extension: 'bar'
       }, {
         user: { root: 'foobar', extension: 'spameggs' }
-      }).should == DataSamples.patient_document_ejection_fractions.to_hash
+      })).to eq(DataSamples.patient_document_ejection_fractions.to_hash)
     end
 
     context 'when an id is given' do
@@ -446,8 +446,8 @@ describe Cdris::Gateway::PatientDocument do
       let(:params) { { id: id } }
 
       it 'performs a request using the patient document (with id) route' do
-        Cdris::Gateway::Requestor.stub(:api).and_return('foo')
-        Cdris::Gateway::Requestor.should_receive(:request).with(
+        allow(Cdris::Gateway::Requestor).to receive(:api).and_return('foo')
+        expect(Cdris::Gateway::Requestor).to receive(:request).with(
           %r{/patient_document/#{id}/facts/ejection_fraction},
           anything).and_return({})
         described_class.ejection_fractions(params)
@@ -465,10 +465,10 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_search.to_s)
 
     it 'requests and returns the expected patient document search' do
-      described_class.search(
+      expect(described_class.search(
 
           user: { root: 'foobar', extension: 'spameggs' }
-        ).should == DataSamples.patient_document_search.to_hash
+        )).to eq(DataSamples.patient_document_search.to_hash)
     end
 
   end
@@ -481,12 +481,12 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_cluster.to_s)
 
     it 'requests and returns the expected patient cluster' do
-      described_class.cluster(
+      expect(described_class.cluster(
         {
           id: 42
         }, {
           user: { root: 'foobar', extension: 'spameggs' }
-        }).should == DataSamples.patient_document_cluster.to_hash
+        })).to eq(DataSamples.patient_document_cluster.to_hash)
     end
 
   end
@@ -499,12 +499,12 @@ describe Cdris::Gateway::PatientDocument do
       body: DataSamples.patient_document_set.to_s)
 
     it 'requests and returns the expected patient set' do
-      described_class.set(
+      expect(described_class.set(
         {
           id: 42
         }, {
           user: { root: 'foobar', extension: 'spameggs' }
-        }).should == DataSamples.patient_document_set.to_hash
+        })).to eq(DataSamples.patient_document_set.to_hash)
     end
 
   end
@@ -512,24 +512,24 @@ describe Cdris::Gateway::PatientDocument do
   describe 'self.create' do
 
     it 'performs a post request' do
-      Cdris::Gateway::Requestor.should_receive(:request).with(anything, { method: :post }, anything, anything).and_return({})
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, { method: :post }, anything, anything).and_return({})
       described_class.create
     end
 
     it 'performs a request with the passed body' do
-      Cdris::Gateway::Requestor.should_receive(:request).with(anything, anything, 'foobar', anything).and_return({})
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar', anything).and_return({})
       described_class.create('foobar')
     end
 
     it 'performs a request without basic auth' do
-      Cdris::Gateway::Requestor.should_receive(:request).with(anything, anything, anything, false).and_return({})
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, false).and_return({})
       described_class.create('foobar')
     end
 
     context 'when basic auth is requested' do
 
       it 'performs a request with basic auth' do
-        Cdris::Gateway::Requestor.should_receive(:request).with(anything, anything, anything, true).and_return({})
+        expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, true).and_return({})
         described_class.create('foobar', {}, true)
       end
 
@@ -555,7 +555,7 @@ describe Cdris::Gateway::PatientDocument do
       let(:params) { { id: id } }
 
       it 'builds a URI containing the id URI component' do
-        described_class.base_uri(params).should match(/\/#{id}/)
+        expect(described_class.base_uri(params)).to match(/\/#{id}/)
       end
 
       context 'when debug is specified' do
@@ -563,7 +563,7 @@ describe Cdris::Gateway::PatientDocument do
         let(:options) { { debug: true } }
 
         it 'builds a URI containing the debug URI component' do
-          described_class.base_uri(params, options).should match(/\/debug/)
+          expect(described_class.base_uri(params, options)).to match(/\/debug/)
         end
 
       end
@@ -577,7 +577,7 @@ describe Cdris::Gateway::PatientDocument do
       let(:params) { { root: root, extension: extension } }
 
       it 'builds a URI containing the root and extension URI components' do
-        described_class.base_uri(params).should match(%r{/#{root}/#{extension}})
+        expect(described_class.base_uri(params)).to match(%r{/#{root}/#{extension}})
       end
 
       context 'when extension suffix is given' do
@@ -586,7 +586,7 @@ describe Cdris::Gateway::PatientDocument do
         before(:each) { params[:extension_suffix] = extension_suffix }
 
         it 'builds a URI containing the extension suffix URI component' do
-          described_class.base_uri(params).should match(/\/#{extension_suffix}/)
+          expect(described_class.base_uri(params)).to match(/\/#{extension_suffix}/)
         end
 
         context 'when document source updated at is given' do
@@ -595,7 +595,7 @@ describe Cdris::Gateway::PatientDocument do
           before(:each) { params[:document_source_updated_at] = document_source_updated_at }
 
           it 'builds a URI containing the document source updated at URI component' do
-            described_class.base_uri(params).should match(/\/#{document_source_updated_at.iso8601(3)}/)
+            expect(described_class.base_uri(params)).to match(/\/#{document_source_updated_at.iso8601(3)}/)
           end
 
         end

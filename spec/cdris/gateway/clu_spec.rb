@@ -17,7 +17,7 @@ describe Cdris::Gateway::Clu do
         'http://testhost:4242/nlp/clu/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         status: ['200', 'OK'])
 
-      described_class.service_running?.should == true
+      expect(described_class.service_running?).to eq(true)
     end
 
     it 'returns false when the api return a 502' do
@@ -26,7 +26,7 @@ describe Cdris::Gateway::Clu do
         'http://testhost:4242/nlp/clu/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         status: ['502', 'OK'])
 
-      described_class.service_running?.should == false
+      expect(described_class.service_running?).to eq(false)
     end
 
   end
@@ -39,7 +39,7 @@ describe Cdris::Gateway::Clu do
       body: '{}')
 
     it 'gets a document' do
-      described_class.document(id: '42').should == JSON.parse('{}')
+      expect(described_class.document(id: '42')).to eq(JSON.parse('{}'))
     end
 
     let(:empty_params) { {} }
@@ -58,7 +58,7 @@ describe Cdris::Gateway::Clu do
       body: 'Some Data')
 
     it 'gets data' do
-      described_class.data(id: '42').should == { data: 'Some Data', type: 'text/plain' }
+      expect(described_class.data(id: '42')).to eq({ data: 'Some Data', type: 'text/plain' })
     end
 
     let(:empty_params) { {} }
@@ -82,7 +82,7 @@ describe Cdris::Gateway::Clu do
       end
 
       it 'returns a URI containing the debug component' do
-        described_class.base_uri(params, options).should match(%r{/debug/true})
+        expect(described_class.base_uri(params, options)).to match(%r{/debug/true})
       end
 
     end
@@ -96,7 +96,7 @@ describe Cdris::Gateway::Clu do
       end
 
       it 'returns a URI containing the id component' do
-        described_class.base_uri(params, options).should match(%r{/patient_document_id/#{patient_document_id}})
+        expect(described_class.base_uri(params, options)).to match(%r{/patient_document_id/#{patient_document_id}})
       end
 
     end

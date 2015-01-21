@@ -19,7 +19,7 @@ describe Cdris::Gateway::Tenants do
           'http://testhost:4242/api/v1/admin/tenants?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
           body: DataSamples.tenants.to_s)
 
-      described_class.get.should == DataSamples.tenants.to_hash
+      expect(described_class.get).to eq(DataSamples.tenants.to_hash)
     end
 
   end
