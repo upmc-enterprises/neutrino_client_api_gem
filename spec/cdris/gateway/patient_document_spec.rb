@@ -511,26 +511,54 @@ describe Cdris::Gateway::PatientDocument do
 
   describe 'self.create' do
 
+    before(:each) do
+      FakeWeb.register_uri(
+        :post,
+        'http://testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
+    end
+
     it 'performs a post request' do
-      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, { method: :post }, anything, anything).and_return({})
-      described_class.create
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, { method: :post }, anything, anything).and_call_original
+      expect(described_class.create).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
     it 'performs a request with the passed body' do
-      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar', anything).and_return({})
-      described_class.create('foobar')
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar', anything).and_call_original
+      expect(described_class.create('foobar')).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
     it 'performs a request without basic auth' do
-      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, false).and_return({})
-      described_class.create('foobar')
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, false).and_call_original
+      expect(described_class.create('foobar')).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
     context 'when basic auth is requested' do
 
+      FakeWeb.register_uri(
+        :post,
+        'http://john:doe@testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
+
       it 'performs a request with basic auth' do
-        expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, true).and_return({})
-        described_class.create('foobar', {}, true)
+        expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, true).and_call_original
+        expect(described_class.create('foobar', {}, true)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
+      end
+
+    end
+
+    context 'when the server returns a 400 error' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :post,
+          'http://testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: DataSamples.patient_document_test_patient_document.to_s, status: ['400', 'Bad Request'])
+      end
+
+      it 'raises a bad request error' do
+        expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, anything).and_call_original
+        expect { described_class.create }.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
       end
 
     end
