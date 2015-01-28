@@ -271,7 +271,7 @@ module Cdris
         # @return [String] a string that is HMAC key
         def generate_hmac_key(tid_is_not_from_request)
           if tenant_configured? && tid_is_not_from_request
-            Digest::SHA512.new.update(hmac_key + tenant_key).to_s
+            Digest::SHA512.new.update(hmac_key + tenant_key).digest
           else
             hmac_key
           end
