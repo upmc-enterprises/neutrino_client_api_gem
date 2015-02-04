@@ -340,4 +340,15 @@ describe Cdris::Gateway::Patient do
 
   end
 
+  describe 'self.request' do
+    let(:unauthorized_response) { double('Response', code: '401') }
+    let(:unauthorized_error) { Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError }
+
+    it 'raises an patient identity unauthorized error if request is unauthorized' do
+      expect {
+        allow(Cdris::Api::Client).to receive(:perform_request).and_return(unauthorized_response)
+        described_class.request('/some/where')
+      }.to raise_error(unauthorized_error)
+    end
+  end
 end

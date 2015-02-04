@@ -9,6 +9,18 @@ module Cdris
       private_class_method :new
       class << self
 
+        # Override for patient class request
+        # This raises a PatientIdentityGatewayNotAuthorizedError error if
+        # repo returns a 401
+        #
+        # @param [Array] args is a splat of arguements
+        # @return [Responses::ResponseHandler] a `ResponseHandler` instance for handling response codes
+        # @raise [Cdris::Gateway::Exceptions::PatientNotFoundError] when repo returns a 401
+        def request(*args)
+          super(*args)
+            .if_401_raise(Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError)
+        end
+
         # Gets a patient's demographics
         #
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`

@@ -87,6 +87,13 @@ module Cdris
         end
       end
 
+      # Error class for when a patient identity set is not error.
+      class PatientIdentityGatewayNotAuthorizedError < BaseError
+        def initialize(errors = [], message = 'Application is not authorized to perform lookup with Patient Identity')
+          super(errors, message)
+        end
+      end
+
       # Error class for when a patient document is found by confidential.
       class PatientDocumentConfidentialError < BaseError
         def initialize(errors = [], message = 'Patient Document is designated confidential')
