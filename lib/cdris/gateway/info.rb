@@ -32,9 +32,9 @@ module Cdris
         # @param [String] category the category of configuration to get, if omitted gets all categories
         # @return [Hash] information about the requested configuration(s)
         # @raise [Exceptions::UnableToRetrieveConfigurations] when CDRIS returns a 400 status code
-        def configuration(category = nil)
+        def configuration(category = nil, options = {})
           path = "#{base_uri}/configuration#{category ? '/'+category : ''}"
-          request(path).if_400_raise(Cdris::Gateway::Exceptions::UnableToRetrieveConfigurations)
+          request(path, options).if_400_raise(Cdris::Gateway::Exceptions::UnableToRetrieveConfigurations)
                        .to_hash
         end
 

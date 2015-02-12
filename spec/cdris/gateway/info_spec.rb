@@ -40,26 +40,51 @@ describe Cdris::Gateway::Info do
 
   describe 'self.configuration' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/cdris/configuration/a_category?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.info_configuration.to_s)
+    context 'with an implicit tenant' do
 
-    it 'returns the expected configuration when a category is given' do
-      expect(described_class.configuration('a_category')).to eq(DataSamples.info_configuration.to_hash)
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/cdris/configuration/a_category?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.info_configuration.to_s)
+
+      it 'returns the expected configuration when a category is given' do
+        expect(described_class.configuration('a_category')).to eq(DataSamples.info_configuration.to_hash)
+      end
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/cdris/configuration?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.info_configurations.to_s)
+
+      it 'returns all configurations when a category is not given' do
+        expect(described_class.configuration).to eq(DataSamples.info_configurations.to_hash)
+      end
+
     end
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/cdris/configuration?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.info_configurations.to_s)
+    context 'with an explicit tenant' do
 
-    it 'returns all configurations when a category is not given' do
-      expect(described_class.configuration).to eq(DataSamples.info_configurations.to_hash)
+      let(:tenant) {{ tid: 'some_tenant'}}
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/cdris/configuration/a_category?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&tid=some_tenant',
+          body: DataSamples.info_configuration.to_s)
+
+      it 'returns the expected configuration when a category is given' do
+        expect(described_class.configuration('a_category', tenant)).to eq(DataSamples.info_configuration.to_hash)
+      end
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/cdris/configuration?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&tid=some_tenant',
+          body: DataSamples.info_configurations.to_s)
+
+      it 'returns all configurations when a category is not given' do
+        expect(described_class.configuration(nil, tenant)).to eq(DataSamples.info_configurations.to_hash)
+      end
+
     end
-
-    let(:example_config_category) { 'foobar' }
-    let(:expected_configuration_uri) { "/cdris/configuration/#{example_config_category}" }
 
   end
 
