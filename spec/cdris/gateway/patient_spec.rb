@@ -17,6 +17,22 @@ describe Cdris::Gateway::Patient do
   let(:params_root_and_extension) { { root: root, extension: extension } }
   let(:invalid_user_params_root_and_extension) { { root: 'fdsaf', extension: 'gsaewags' } }
   let(:user_root_and_extension) { { user: { root: 'foobar', extension: 'spameggs' } } }
+  let(:set_in_error_exception) { Cdris::Gateway::Exceptions::PatientIdentitySetInError }
+
+  shared_examples 'the_patient_identity_set_is_in_error' do
+
+    let(:mock_response) { double('Mock Response', code: 403) }
+
+    before(:each) do
+      allow(Cdris::Api::Client).to receive(:perform_request).and_return(mock_response)
+    end
+
+    it 'raises a patient set in error exception' do
+      expect {
+        described_class.send(patient_method, params_root_and_extension)
+      }.to raise_error(set_in_error_exception)
+    end
+  end
 
   describe 'self.demographics' do
 
@@ -46,6 +62,10 @@ describe Cdris::Gateway::Patient do
 
   describe 'self.identities' do
 
+    let(:patient_method) { :identities }
+
+    it_behaves_like 'the_patient_identity_set_is_in_error'
+
     FakeWeb.register_uri(
       :get,
       'http://testhost:4242/api/v1/patient/srcsys/1234/identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
@@ -74,6 +94,10 @@ describe Cdris::Gateway::Patient do
 
   describe '.active_identities' do
     subject { described_class.active_identities(params) }
+
+    let(:patient_method) { :active_identities }
+
+    it_behaves_like 'the_patient_identity_set_is_in_error'
 
     context 'when a patient exists with root: root42 and extension: ext42' do
       FakeWeb.register_uri(
@@ -225,12 +249,15 @@ describe Cdris::Gateway::Patient do
 
   describe 'self.patient_document_search' do
 
+    let(:patient_method) { :patient_document_search }
     let(:params) { {} }
 
     FakeWeb.register_uri(
       :get,
       'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
       body: DataSamples.patient_patient_document_search.to_s)
+
+    it_behaves_like 'the_patient_identity_set_is_in_error'
 
     it 'performs a request returning valid patient documents' do
       expect(described_class.patient_document_search(
@@ -265,6 +292,7 @@ describe Cdris::Gateway::Patient do
   end
 
   describe 'self.patient_document_bounds' do
+    let(:patient_method) { :patient_document_bounds }
 
     FakeWeb.register_uri(
       :get,
@@ -276,6 +304,8 @@ describe Cdris::Gateway::Patient do
         params_root_and_extension,
         user_root_and_extension)).to eq(DataSamples.patient_patient_document_bounds.to_hash)
     end
+
+    it_behaves_like 'the_patient_identity_set_is_in_error'
 
   end
 
@@ -313,6 +343,7 @@ describe Cdris::Gateway::Patient do
 
     let(:date_to) { '2014-01-01T01:01:01Z' }
     let(:date_from) { '2013-01-01T01:01:01Z' }
+    let(:patient_method) { :patient_documents }
 
     it 'raises a TimeWindowError if it is given a date range whose starting date is after the ending date' do
       allow(described_class).to receive(:base_uri).and_return('/fooey')
@@ -337,6 +368,8 @@ describe Cdris::Gateway::Patient do
         end
 
     end
+
+    it_behaves_like 'the_patient_identity_set_is_in_error'
 
   end
 

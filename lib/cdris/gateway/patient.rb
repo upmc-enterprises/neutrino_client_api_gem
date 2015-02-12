@@ -42,9 +42,9 @@ module Cdris
         def identities(params, options = {})
           path = "#{base_uri(params)}/identities"
           request(path, options)
-            .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
-            .if_403_raise(Cdris::Gateway::Exceptions::PatientIdentitySetInError)
-            .to_hash
+              .with_patient_identity_set_in_error_check
+              .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
+              .to_hash
         end
 
         # Gets patient identities that are in error
@@ -93,9 +93,10 @@ module Cdris
         # @raise [Exceptions::PatientNotFoundError] when CDRIS returns a 404 status
         def active_identities(params, options = {})
           path = "#{base_uri(params)}/active_identities"
-          request(path, options).
-            if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError).
-            to_hash
+          request(path, options)
+              .with_patient_identity_set_in_error_check
+              .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
+              .to_hash
         end
 
         # Whether a patient is valid
@@ -116,9 +117,11 @@ module Cdris
         # @raise [Exceptions::BadRequestError] when CDRIS returns a 400 status
         def patient_document_search(params, options = {})
           path = "#{base_uri(params)}/patient_documents/search"
-          request(path, options).if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
-                                .if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
-                                .to_hash
+          request(path, options)
+              .with_patient_identity_set_in_error_check
+              .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
+              .if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
+              .to_hash
         end
 
         # Gets a patient's document's bounds
@@ -129,7 +132,9 @@ module Cdris
         def patient_document_bounds(params, options = {})
           path = "#{base_uri(params)}/patient_document_bounds"
           path << current_if_specified_in(params)
-          request(path, options).to_hash
+          request(path, options)
+              .with_patient_identity_set_in_error_check
+              .to_hash
         end
 
         # Gets a patient's subject matter domains
@@ -178,6 +183,7 @@ module Cdris
           path << current_if_specified_in(params)
 
           request(path, options)
+            .with_patient_identity_set_in_error_check
             .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
             .to_hash
         end

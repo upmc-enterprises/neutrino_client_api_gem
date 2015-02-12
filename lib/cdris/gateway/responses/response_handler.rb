@@ -100,6 +100,13 @@ module Cdris
           self
         end
 
+        # Returns the result of the ResponseHandler block unless the patient identity set was in error
+        # @return [Responses::ResponseHandler] the http response that was passed to the method
+        # @raise [Cdris::Gateway::Exceptions::PatientIdentitySetInError] if the patient identity set is in error
+        def with_patient_identity_set_in_error_check
+          if_403_raise(Cdris::Gateway::Exceptions::PatientIdentitySetInError)
+        end
+
         private
 
         def if_asked_code_is_the_same_as_response_code_then_raise(exception)
