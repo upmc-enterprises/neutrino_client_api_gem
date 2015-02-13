@@ -34,7 +34,9 @@ module Cdris
         # @raise [Exceptions::UnableToRetrieveConfigurations] when CDRIS returns a 400 status code
         def configuration(category = nil, options = {})
           path = "#{base_uri}/configuration#{category ? '/'+category : ''}"
-          request(path, options).if_400_raise(Cdris::Gateway::Exceptions::UnableToRetrieveConfigurations)
+          request(path, options)
+                        .if_404_raise(Cdris::Gateway::Exceptions::MissingConfiguration.new)
+                        .if_400_raise(Cdris::Gateway::Exceptions::UnableToRetrieveConfigurations)
                        .to_hash
         end
 

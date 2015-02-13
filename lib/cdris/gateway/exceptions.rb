@@ -244,7 +244,13 @@ module Cdris
 
       # Error class for when CDRIS is unable to retrieve configurations
       class UnableToRetrieveConfigurations < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to parse version history')
+        def initialize(errors = [], message = 'CDRIS was unable to retrieve configuration')
+          super(errors, message)
+        end
+      end
+
+      class MissingConfiguration < BaseError
+        def initialize(errors = [], message = 'Configuration not found')
           super(errors, message)
         end
       end
