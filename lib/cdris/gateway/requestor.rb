@@ -27,6 +27,7 @@ module Cdris
         Responses::ResponseHandler.new.
           considering(response).
           if_500_raise(Exceptions::InternalServerError).
+          with_tenant_access_check.
           if_non_200_raise(Exceptions::FailedRequestError)
       end
     end

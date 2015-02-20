@@ -107,6 +107,19 @@ module Cdris
           if_403_raise(Cdris::Gateway::Exceptions::PatientIdentitySetInError)
         end
 
+        # Returns the result of the ResponseHandler block unless the current tenant is disabled
+        # @return [Responses::ResponseHandler] the http response that was passed to the method
+        # @raise [Cdris::Gateway::Exceptions::TenantDisabledError] if the current tenant is disabled
+        def with_tenant_access_check
+          if @response.code == '403' && JSON.parse(@response.body)['error'] == 'Tenant status is disabled'
+            raise(Cdris::Gateway::Exceptions::TenantDisabledError)
+          else
+            self
+          end
+        rescue JSON::ParserError
+          self
+        end
+
         private
 
         def if_asked_code_is_the_same_as_response_code_then_raise(exception)

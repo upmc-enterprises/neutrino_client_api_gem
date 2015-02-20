@@ -21,7 +21,7 @@ describe Cdris::Gateway::Patient do
 
   shared_examples 'the_patient_identity_set_is_in_error' do
 
-    let(:mock_response) { double('Mock Response', code: 403) }
+    let(:mock_response) { double('Mock Response', code: 403, body: {}) }
 
     before(:each) do
       allow(Cdris::Api::Client).to receive(:perform_request).and_return(mock_response)
@@ -374,7 +374,7 @@ describe Cdris::Gateway::Patient do
   end
 
   describe 'self.request' do
-    let(:unauthorized_response) { double('Response', code: '401') }
+    let(:unauthorized_response) { double('Response', code: '401', body: {}) }
     let(:unauthorized_error) { Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError }
 
     it 'raises an patient identity unauthorized error if request is unauthorized' do

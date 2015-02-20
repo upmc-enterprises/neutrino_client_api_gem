@@ -291,4 +291,46 @@ describe Cdris::Gateway::Responses::ResponseHandler do
 
   end
 
+  describe '.with_tenant_access_check' do
+
+    let(:access_response) { Object.new }
+    let(:access_body_ok) { { message: 'I am a response' }.to_json }
+    let(:access_body_error) { { error: 'I am an error' }.to_json }
+    let(:access_body_tenant_error) { { error: 'Tenant status is disabled' }.to_json }
+
+    context 'tenant is enabled and response is ok' do
+      before(:each) do
+        allow(access_response).to receive(:body).and_return(access_body_ok)
+        allow(access_response).to receive(:code).and_return('200')
+      end
+
+      it 'returns the result of the ResponseHandler block if no error detected' do
+        expect(subject.considering(access_response).with_tenant_access_check).to eq(subject.considering(access_response))
+      end
+    end
+
+    context 'tenant is enabled and response is in error' do
+      before(:each) do
+        allow(access_response).to receive(:body).and_return(access_body_error)
+        allow(access_response).to receive(:code).and_return('403')
+      end
+
+      it 'returns the result of the ResponseHandler block if non-matching error detected' do
+        expect(subject.considering(access_response).with_tenant_access_check).to eq(subject.considering(access_response))
+      end
+    end
+
+    context 'tenant is disabled' do
+      before(:each) do
+        allow(access_response).to receive(:body).and_return(access_body_tenant_error)
+        allow(access_response).to receive(:code).and_return('403')
+      end
+
+      it 'raises a TenantDisabled error if tenant access error detected' do
+        expect { subject.considering(access_response).with_tenant_access_check }.to raise_error(Cdris::Gateway::Exceptions::TenantDisabledError)
+      end
+    end
+
+  end
+
 end

@@ -303,6 +303,13 @@ module Cdris
           super(errors, message)
         end
       end
+
+      # Error class for when a tenant is disabled
+      class TenantDisabledError < BaseError
+        def initialize(errors = [], message = 'Access Forbidden - Current tenant is disabled')
+          super(errors, message)
+        end
+      end
     end
   end
 end
