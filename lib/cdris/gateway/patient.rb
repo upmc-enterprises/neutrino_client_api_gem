@@ -11,14 +11,15 @@ module Cdris
 
         # Override for patient class request
         # This raises a PatientIdentityGatewayNotAuthorizedError error if
-        # repo returns a 401
+        # repo returns a 403
         #
         # @param [Array] args is a splat of arguements
         # @return [Responses::ResponseHandler] a `ResponseHandler` instance for handling response codes
-        # @raise [Cdris::Gateway::Exceptions::PatientNotFoundError] when repo returns a 401
+        # @raise [Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError] when repo returns a 403
         def request(*args)
           super(*args)
-            .if_401_raise(Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError)
+            .with_general_exception_check('403', /authorized.*patient.*identity|patient.*identity.*authorized/i,
+                                          Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError)
         end
 
         # Gets a patient's demographics

@@ -310,6 +310,13 @@ module Cdris
           super(errors, message)
         end
       end
+
+      # Error class for when invalid authentication is provided
+      class AuthenticationFailureError < BaseError
+        def initialize(errors = [], message = 'Authentication Failure')
+          super(errors, message)
+        end
+      end
     end
   end
 end

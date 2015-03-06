@@ -374,7 +374,8 @@ describe Cdris::Gateway::Patient do
   end
 
   describe 'self.request' do
-    let(:unauthorized_response) { double('Response', code: '401', body: {}) }
+    let(:unauthorized_response) { double('Response', code: '403',
+                                         body: { error: 'Application is not authorized to perform lookup with Patient Identity' }.to_json) }
     let(:unauthorized_error) { Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError }
 
     it 'raises an patient identity unauthorized error if request is unauthorized' do

@@ -107,12 +107,15 @@ module Cdris
           if_403_raise(Cdris::Gateway::Exceptions::PatientIdentitySetInError)
         end
 
-        # Returns the result of the ResponseHandler block unless the current tenant is disabled
+        # Returns the result of the ResponseHandler block unless the exception arguments match
+        # @param exception_code [String] exception code
+        # @param exception_regexp [Regexp] regular expression matching the exception message
+        # @param exception [Exception] exception to raise
         # @return [Responses::ResponseHandler] the http response that was passed to the method
-        # @raise [Cdris::Gateway::Exceptions::TenantDisabledError] if the current tenant is disabled
-        def with_tenant_access_check
-          if @response.code == '403' && JSON.parse(@response.body)['error'] == 'Tenant status is disabled'
-            raise(Cdris::Gateway::Exceptions::TenantDisabledError)
+        # @raise [Exception] if the exception_code and exception_message match
+        def with_general_exception_check(exception_code, exception_regexp, exception)
+          if @response.code == exception_code && exception_regexp.match(JSON.parse(@response.body)['error'])
+            raise(exception)
           else
             self
           end

@@ -27,7 +27,8 @@ module Cdris
         Responses::ResponseHandler.new.
           considering(response).
           if_500_raise(Exceptions::InternalServerError).
-          with_tenant_access_check.
+          with_general_exception_check('403', /tenant.*disabled|disabled.*tenant/i,
+                                       Cdris::Gateway::Exceptions::TenantDisabledError).
           if_non_200_raise(Exceptions::FailedRequestError)
       end
     end

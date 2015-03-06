@@ -291,43 +291,33 @@ describe Cdris::Gateway::Responses::ResponseHandler do
 
   end
 
-  describe '.with_tenant_access_check' do
+  describe '.with_general_exception_check' do
 
-    let(:access_response) { Object.new }
-    let(:access_body_ok) { { message: 'I am a response' }.to_json }
-    let(:access_body_error) { { error: 'I am an error' }.to_json }
-    let(:access_body_tenant_error) { { error: 'Tenant status is disabled' }.to_json }
+    let(:response) { Object.new }
+    let(:response_code) { '12345' }
+    let(:response_message) { {error: 'some error'}.to_json }
+    let(:exception) { Exception.new('some exception') }
 
-    context 'tenant is enabled and response is ok' do
-      before(:each) do
-        allow(access_response).to receive(:body).and_return(access_body_ok)
-        allow(access_response).to receive(:code).and_return('200')
-      end
+    before(:each) do
+      allow(response).to receive(:code).and_return(response_code)
+      allow(response).to receive(:body).and_return(response_message)
+    end
 
-      it 'returns the result of the ResponseHandler block if no error detected' do
-        expect(subject.considering(access_response).with_tenant_access_check).to eq(subject.considering(access_response))
+    context 'when exception code matches response code but exception message does not match response error' do
+      it 'returns the result of the ResponseHandler block' do
+        expect(subject.considering(response).with_general_exception_check('12345', /another.*error/i , exception)).to eq(subject.considering(response))
       end
     end
 
-    context 'tenant is enabled and response is in error' do
-      before(:each) do
-        allow(access_response).to receive(:body).and_return(access_body_error)
-        allow(access_response).to receive(:code).and_return('403')
-      end
-
-      it 'returns the result of the ResponseHandler block if non-matching error detected' do
-        expect(subject.considering(access_response).with_tenant_access_check).to eq(subject.considering(access_response))
+    context 'when exception code and exception message do not match' do
+      it 'returns the result of the ResponseHandler block' do
+        expect(subject.considering(response).with_general_exception_check('90210', /beverly.*hills/i , exception)).to eq(subject.considering(response))
       end
     end
 
-    context 'tenant is disabled' do
-      before(:each) do
-        allow(access_response).to receive(:body).and_return(access_body_tenant_error)
-        allow(access_response).to receive(:code).and_return('403')
-      end
-
-      it 'raises a TenantDisabled error if tenant access error detected' do
-        expect { subject.considering(access_response).with_tenant_access_check }.to raise_error(Cdris::Gateway::Exceptions::TenantDisabledError)
+    context 'when exception code and exception message match' do
+      it 'raises the specified exception' do
+        expect{ subject.considering(response).with_general_exception_check('12345', /some.*error/i , exception) }.to raise_error(exception)
       end
     end
 
