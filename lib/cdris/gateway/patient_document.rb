@@ -239,13 +239,13 @@ module Cdris
         def base_uri(params, options = {})
           url = "#{api(options)}"
           url << '/patient_document'
-          if params[:id]
+          if params[:id].present?
             url << "/#{params[:id]}"
-          elsif params[:root] && params[:extension]
+          elsif params[:root].present? && params[:extension].present?
             url << "/#{params[:root]}/#{params[:extension]}"
-            if params[:extension_suffix]
+            if params[:extension_suffix].present?
               url << "/#{params[:extension_suffix]}"
-              url << "/#{params[:document_source_updated_at].iso8601(3)}" if params[:document_source_updated_at]
+              url << "/#{params[:document_source_updated_at].iso8601(3)}" if params[:document_source_updated_at].present?
             end
           else
             fail Cdris::Gateway::Exceptions::BadRequestError, 'Either id or root and extension are required to create patient document path'
