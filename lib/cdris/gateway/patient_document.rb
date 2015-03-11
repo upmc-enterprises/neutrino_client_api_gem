@@ -242,7 +242,7 @@ module Cdris
           if params[:id].present?
             url << "/#{params[:id]}"
           elsif params[:root].present? && params[:extension].present?
-            url << "/#{params[:root]}/#{params[:extension]}"
+            url << "/#{params[:root]}/#{CGI::escape(params[:extension])}"
             if params[:extension_suffix].present?
               url << "/#{params[:extension_suffix]}"
               url << "/#{params[:document_source_updated_at].iso8601(3)}" if params[:document_source_updated_at].present?

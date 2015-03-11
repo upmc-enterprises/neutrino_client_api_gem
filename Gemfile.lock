@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cdris_api_client (3.0.0dev0.11)
+    cdris_api_client (3.0.0dev0.12)
       api-auth (= 1.0.3)
       multipart-post (= 2.0.0)
       rest-client (= 1.6.7)
