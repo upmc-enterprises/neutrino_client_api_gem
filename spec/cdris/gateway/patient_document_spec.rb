@@ -208,6 +208,42 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.icd10_problem_codes' do
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient_document/42/facts/problems/icd10/all?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      body: DataSamples.patient_document_icd10_problem_codes.to_s)
+
+    it 'requests and returns the expected patient document icd10 problem codes' do
+      expect(described_class.icd10_problem_codes(
+      {
+        id: '42'
+      }, {
+        user: { root: 'foobar', extension: 'spameggs' }
+      })).to eq(DataSamples.patient_document_icd10_problem_codes.to_hash)
+    end
+
+    context 'when NLP annotations are not available' do
+
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/43/facts/problems/icd10/all?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: { 'error' => 'Search Cloud Entry Not Found',
+                  'errors' => [] }.to_json,
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a search cloud not found error' do
+        expect {
+          described_class.icd10_problem_codes(id: '43')
+        }.to raise_error(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+      end
+
+    end
+
+  end
+
   describe 'self.icd9_problem_codes_simple' do
 
     FakeWeb.register_uri(

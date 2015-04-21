@@ -97,6 +97,17 @@ module Cdris
                                 .to_hash
         end
 
+        # Gets a patient document's ICD10 problem codes (and code information)
+        #
+        # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`
+        # @param [Hash] options specify query values
+        # @return [Hash] the patient document's ICD10 problem codes
+        def icd10_problem_codes(params, options = {})
+          path = "#{base_uri(params)}/facts/problems/icd10/all"
+          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::SearchCloudEntryNotFoundError)
+                                .to_hash
+        end
+
         # Gets a patient document's ICD9 codes (codes only)
         #
         # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`

@@ -58,6 +58,11 @@ class DataSamples
     self
   end
 
+  def self.patient_document_icd10_problem_codes
+    read_fixture('sample_icd10_problem_codes.json')
+    self
+  end
+
   def self.patient_document_icd9_problem_codes_simple
     read_fixture('sample_icd9_problem_codes_simple.json')
     self
