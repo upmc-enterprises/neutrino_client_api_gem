@@ -24,28 +24,49 @@ describe Cdris::Gateway::PatientDocument do
   end
 
   describe 'self.data' do
+    formats = { html: 'text/html', rtf: 'text/rtf', pdf: 'application/pdf', txt: 'text/plain' }
+    doc_id = '530c9f64e4b02eb001555cfc'
+    doc_url = "http://testhost:4242/api/v1/patient_document/#{doc_id}"
+    query_string = '?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar'
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/530c9f64e4b02eb001555cfc/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_data.to_s)
+    context 'When a document exists' do
 
-    it 'requests and returns the expected patient document data' do
-      expect(described_class.data(
+      FakeWeb.register_uri(:get, "#{doc_url}/data#{query_string}", body: DataSamples.patient_document_data.to_s)
 
-          id: '530c9f64e4b02eb001555cfc'
-        )).to eq({ data: DataSamples.patient_document_data.to_s, type: 'text/plain' })
+      it 'returns the expected patient document data' do
+        expect(described_class.data(id: doc_id)).to eq(
+          { data: DataSamples.patient_document_data.to_s, type: 'text/plain' })
+      end
+
+      formats.each do |format, type|
+        context "and #{format} is the requested format" do
+
+          FakeWeb.register_uri(:get, "#{doc_url}/data.#{format}#{query_string}",
+            body: "#{format} data", content_type: type)
+
+          it 'returns the expected patient document data' do
+            expect(described_class.data(id: doc_id, format: format)).to eq(
+              { data: "#{format} data", type: type })
+          end
+        end
+
+      end
+
     end
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/i_dont_exist/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      status: ['404', 'OK'])
+    context 'When a document does not exist' do
 
-    it 'raises a PatientDocumentNotFoundError when it it receives a 404 after requesting patient document data' do
-      expect do
-        described_class.data(id: 'i_dont_exist')
-      end.to raise_error(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/i_dont_exist/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        status: ['404', 'OK'])
+
+      it 'raises a PatientDocumentNotFoundError when it it receives a 404 after requesting patient document data' do
+        expect do
+          described_class.data(id: 'i_dont_exist')
+        end.to raise_error(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
+      end
+
     end
 
   end

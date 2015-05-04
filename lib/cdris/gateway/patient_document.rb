@@ -35,6 +35,7 @@ module Cdris
         # @raise [Exceptions::PatientDocumentNotFoundError] when CDRIS returns a 404 status code
         def data(params, options = {})
           path = "#{base_uri(params)}/data"
+          path += ".#{params[:format]}" if params[:format]
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
                                 .data_and_type
         end
