@@ -110,6 +110,19 @@ module Cdris
           request(path, options).to_hash['valid']
         end
 
+        # Deletes a patient identity
+        #
+        # @param [Hash] params specifies which patient to get, must specify `:root` and `:extension`
+        # @param [Hash] options specifies query values
+        # @return [Hash] data about the patient that was deleted
+        def delete(params, options={})
+          request("#{base_uri(params)}/delete", options.merge(method: :delete))
+          .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+          .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
+          .if_409_raise(Cdris::Gateway::Exceptions::PatientIdentityNotInError)
+          .to_hash['data_status']
+        end
+
         # ???
         #
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`

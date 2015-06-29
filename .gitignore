@@ -32,6 +32,9 @@
 /.metadata/
 /.shell_history
 /.idea/
+/.project
+/*.iml
+
 /cucumber_timing_data.csv
 
 # ignore compiled gem

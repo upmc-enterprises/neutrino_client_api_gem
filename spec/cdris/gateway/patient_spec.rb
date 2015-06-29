@@ -140,7 +140,7 @@ describe Cdris::Gateway::Patient do
         FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
                              body: '{ "data_status": true }', parameters: { format: 'json' })
       end
-      
+
       it 'performs a request returning true' do
         expect(described_class.set_in_error(params_root_and_extension,
                                      user_root_and_extension)).to eq(true)
@@ -166,7 +166,7 @@ describe Cdris::Gateway::Patient do
         FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
                              body: 'Patient not found.', status: ['404', 'OK'], parameters: { format: 'json' })
       end
-      
+
       it 'raises a PatientNotFoundError when it receives a 404 error' do
         expect do
           described_class.set_in_error(params_root_and_extension, user_root_and_extension)
@@ -185,7 +185,7 @@ describe Cdris::Gateway::Patient do
         FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
                              body: '{ "message": "Self-healing successful" }', parameters: { format: 'json' })
       end
-      
+
       it 'performs a request returning a success message' do
         expect(described_class.self_healing(params_root_and_extension,
                                      user_root_and_extension)).to eq(success_message['message'])
@@ -198,7 +198,7 @@ describe Cdris::Gateway::Patient do
         FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
                              body: 'Operation not permitted for tenant.', status: ['403', 'OK'], parameters: { format: 'json' })
       end
-      
+
       it 'raises a InvalidTenantOperation error when it receives a 403 error' do
         expect do
           described_class.self_healing(params_root_and_extension, user_root_and_extension)
@@ -212,7 +212,7 @@ describe Cdris::Gateway::Patient do
         FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
                              body: 'Patient not found.', status: ['404', 'OK'], parameters: { format: 'json' })
       end
-      
+
       it 'raises a PatientNotFoundError when it receives a 404 error' do
         expect do
           described_class.self_healing(params_root_and_extension, user_root_and_extension)
@@ -243,6 +243,44 @@ describe Cdris::Gateway::Patient do
       expect(described_class.valid?(
         invalid_user_params_root_and_extension,
         user_root_and_extension)).to eq(false)
+    end
+
+  end
+
+  describe 'self.delete' do
+
+    FakeWeb.register_uri(
+        :delete,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/delete?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: '{"data_status": "success"}',
+        status: 200)
+
+    FakeWeb.register_uri(
+        :delete,
+        'http://testhost:4242/api/v1/patient/fdsaf/gsaewags/delete?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        status: 500)
+
+    it 'performs a request returning 200 - the identity in error was deleted' do
+      expect(described_class.delete(params_root_and_extension, user_root_and_extension)).to eq('success')
+    end
+
+    it 'performs a request returning 403 - requesting application or tenant is not authorized to perform lookup with Patient Identity' do
+      allow(Cdris::Api::Client).to receive(:perform_request).and_return( double('Mock Response', code: 403, body: { message: 'Application is not authorized to perform lookup with Patient Identity' }))
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension) }.to raise_error(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+    end
+
+    it 'performs a request returning 404 - requested identity does not exist in the system' do
+      allow(Cdris::Api::Client).to receive(:perform_request).and_return( double('Mock Response', code: 404, body: {}))
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension) }.to raise_error(Cdris::Gateway::Exceptions::PatientNotFoundError)
+    end
+
+    it 'performs a request returning 409 - requested identity is not "in error"' do
+      allow(Cdris::Api::Client).to receive(:perform_request).and_return(double('Mock Response', code: 409, body: {}))
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension) }.to raise_error(Cdris::Gateway::Exceptions::PatientIdentityNotInError)
+    end
+
+    it 'performs a request returning 500 - an unknown error occurred' do
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension) }.to raise_error(Cdris::Gateway::Exceptions::InternalServerError)
     end
 
   end
