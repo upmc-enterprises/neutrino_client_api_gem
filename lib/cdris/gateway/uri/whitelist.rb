@@ -67,7 +67,7 @@ module Cdris
         def to_s
           fail @error if @error && @value.empty?
 
-          @template.sub('{value}', @value.to_s) + @component
+          @template.sub('{value}', URI.encode(@value.to_s)) + @component
         end
 
       end

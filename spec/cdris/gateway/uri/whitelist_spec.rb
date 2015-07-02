@@ -41,6 +41,15 @@ describe Cdris::Gateway::Uri::Whitelist do
                .to_s).to eq('foobar/spam,eggs')
     end
 
+    it 'encodes the whitelist with space to "%20"' do
+      {'has space' => 'has%20space'}.each do |key, value|
+        expect(described_class.new
+                    .with_template('foobar/{value}')
+                    .and_value(key)
+                    .to_s).to eq("foobar/#{value}")
+      end
+    end
+
     it 'throws the specified error when the provided values are an empty list' do
       expect do
         described_class.new
