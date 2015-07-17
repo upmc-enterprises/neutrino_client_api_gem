@@ -94,6 +94,13 @@ module Cdris
         end
       end
 
+      # Error class for when a patient identity has documents.
+      class PatientIdentityHasDocumentsError < BaseError
+        def initialize(errors = [], message = 'Patient Identity Has Documents')
+          super(errors, message)
+        end
+      end
+
       # Error class for when a patient identity set is not error.
       class PatientIdentityGatewayNotAuthorizedError < BaseError
         def initialize(errors = [], message = 'Application is not authorized to perform lookup with Patient Identity')

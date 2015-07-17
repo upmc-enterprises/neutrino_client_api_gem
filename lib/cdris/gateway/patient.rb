@@ -119,7 +119,8 @@ module Cdris
           request("#{base_uri(params)}/delete", options.merge(method: :delete))
           .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
           .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
-          .if_409_raise(Cdris::Gateway::Exceptions::PatientIdentityNotInError)
+          .with_general_exception_check(409, /has documents/, Cdris::Gateway::Exceptions::PatientIdentityHasDocumentsError)
+          .with_general_exception_check(409, /is not in Error/, Cdris::Gateway::Exceptions::PatientIdentityNotInError)
           .to_hash['data_status']
         end
 
