@@ -276,12 +276,12 @@ describe Cdris::Gateway::Patient do
     end
 
     it 'performs a request returning 409 - requested identity is not "in error"' do
-      allow(Cdris::Api::Client).to receive(:perform_request).and_return(double('Mock Response', code: 409, body: '{ "error": "Patient Identity is not in Error" }' ))
+      allow(Cdris::Api::Client).to receive(:perform_request).and_return(double('Mock Response', code: '409', body: '{ "error": "Patient Identity is not in Error" }' ))
       expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension) }.to raise_error(Cdris::Gateway::Exceptions::PatientIdentityNotInError)
     end
 
     it 'performs a request returning 409 - requested identity has documents' do
-      allow(Cdris::Api::Client).to receive(:perform_request).and_return(double('Mock Response', code: 409, body: '{ "error": "Patient Identity has documents" }'))
+      allow(Cdris::Api::Client).to receive(:perform_request).and_return(double('Mock Response', code: '409', body: '{ "error": "Patient Identity has documents" }'))
       expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension) }.to raise_error(Cdris::Gateway::Exceptions::PatientIdentityHasDocumentsError)
     end
 
