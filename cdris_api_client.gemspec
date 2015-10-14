@@ -2,8 +2,8 @@ require 'rake'
 
 Gem::Specification.new do |s|
   s.name     = 'cdris_api_client'
-  s.version  = '3.1.0dev0.05'
-  s.date     = '2015-06-30'
+  s.version  = '3.2.0dev0.01'
+  s.date     = '2015-10-13'
   s.summary  = 'Provides gateway to the CDRIS RESTful API'
   s.authors  = 'TDC data transformation, CDRIS'
   s.email    = 'tdccdrissupport@upmc.edu'

@@ -180,10 +180,11 @@ module Cdris
               tenant_is_from_configuration = true
             end
 
+            uri = URI(path_with_params(path, options))
             if request_klass == Net::HTTP::Post::Multipart
-              request = request_klass.new(path_with_params(path, options), body)
+              request = request_klass.new(uri.request_uri, body)
             else
-              request = request_klass.new(path_with_params(path, options))
+              request = request_klass.new(uri.request_uri)
             end
 
             if request_klass == Net::HTTP::Post

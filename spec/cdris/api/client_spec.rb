@@ -130,7 +130,7 @@ describe Cdris::Api::Client do
   describe 'self.perform_request' do
 
     it 'raises an error when a bogus uri is given' do
-      expect { described_class.perform_request('bogus') }.to raise_error
+      expect { described_class.perform_request('/bogus') }.to raise_error
     end
 
     let(:mock_http) { Object.new }
@@ -149,12 +149,12 @@ describe Cdris::Api::Client do
 
     it 'raises "Connection refused" when the http request throws an Errno::ECONNREFUSED' do
       allow(mock_http).to receive(:request).and_raise(Errno::ECONNREFUSED)
-      expect { described_class.perform_request('bogus') }.to raise_error('Connection refused')
+      expect { described_class.perform_request('/bogus') }.to raise_error('Connection refused')
     end
 
     it 'raises "Connection refused" when the http request throws an OpenSSL::SSL::SSLError' do
       allow(mock_http).to receive(:request).and_raise(OpenSSL::SSL::SSLError)
-      expect { described_class.perform_request('bogus') }.to raise_error('Connection refused')
+      expect { described_class.perform_request('/bogus') }.to raise_error('Connection refused')
     end
 
   end
