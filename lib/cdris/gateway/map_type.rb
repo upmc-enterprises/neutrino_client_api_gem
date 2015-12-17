@@ -51,7 +51,7 @@ module Cdris
         def import_map_type_file(uploaded_file, options = {})
           path = "#{base_uri}/import/file"
           map_type_body = map_type_import_body(uploaded_file)
-          request(path, options.merge(method: :post_multipart), map_type_body, true).to_s
+          request(path, options.merge(method: :post_multipart), map_type_body).to_s
         end
 
         # Gets the URI for a specific map type

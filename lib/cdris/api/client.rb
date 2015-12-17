@@ -183,6 +183,10 @@ module Cdris
             uri = URI(path_with_params(path, options))
             if request_klass == Net::HTTP::Post::Multipart
               request = request_klass.new(uri.request_uri, body)
+              # If body is not set ApiAuth signing won't get the content md5 right
+              # And multipart places the content in body_steam as a stream object
+              # So read the stream and set body
+              request.body = request.body_stream.read
             else
               request = request_klass.new(uri.request_uri)
             end
