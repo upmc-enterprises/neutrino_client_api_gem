@@ -498,15 +498,20 @@ describe Cdris::Gateway::PatientDocument do
     end
 
     context 'when an id is given' do
-
       let(:id) { '42' }
       let(:params) { { id: id } }
+      let(:request) { double('Request') }
+
+      before(:each) do
+        allow(Cdris::Gateway::Requestor).to receive(:api).and_return('foo')
+        allow(request).to receive(:if_404_raise).and_return(request)
+        allow(request).to receive(:to_hash).and_return({})
+      end
 
       it 'performs a request using the patient document (with id) route' do
-        allow(Cdris::Gateway::Requestor).to receive(:api).and_return('foo')
         expect(Cdris::Gateway::Requestor).to receive(:request).with(
           %r{/patient_document/#{id}/facts/ejection_fraction},
-          anything).and_return({})
+          anything).and_return(request)
         described_class.ejection_fractions(params)
       end
 
@@ -663,6 +668,16 @@ describe Cdris::Gateway::PatientDocument do
 
       it 'builds a URI containing the root and extension URI components' do
         expect(described_class.base_uri(params)).to match(%r{/#{root}/#{extension}})
+      end
+
+      context 'when the root and extension contain special characters' do
+        let(:root) { 'some_root/\;:&-_$@' }
+        let(:extension) { 'some_extension/\;:&-_$@' }
+
+        it 'builds a URI containing the root and extension URI components' do
+          expect(described_class.base_uri(params)).to match(%r{/#{CGI.escape(root)}/#{CGI.escape(extension)}})
+        end
+
       end
 
       context 'when extension suffix is given' do

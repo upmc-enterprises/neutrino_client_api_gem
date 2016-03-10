@@ -429,4 +429,41 @@ describe Cdris::Gateway::Patient do
       }.to raise_error(unauthorized_error)
     end
   end
+
+  describe 'self.base_uri' do
+
+    context 'when id, root and extension are not given' do
+
+      let(:params) { {} }
+
+      it 'raises a BadRequestError' do
+        expect { described_class.base_uri(params) }.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
+      end
+
+    end
+
+    context 'when root and extension are given' do
+
+      let(:root) { 'some_root' }
+      let(:extension) { 'some_extension' }
+      let(:params) { { root: root, extension: extension } }
+
+      it 'builds a URI containing the root and extension URI components' do
+        expect(described_class.base_uri(params)).to match(%r{/#{root}/#{extension}})
+      end
+
+      context 'when the root and extension contain special characters' do
+        let(:root) { 'some_root/\;:&-_$@' }
+        let(:extension) { 'some_extension/\;:&-_$@' }
+
+        it 'builds a URI containing the root and extension URI components' do
+          expect(described_class.base_uri(params)).to match(%r{/#{CGI.escape(root)}/#{CGI.escape(extension)}})
+        end
+
+      end
+
+    end
+
+  end
+
 end
