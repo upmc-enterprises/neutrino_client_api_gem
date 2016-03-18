@@ -213,7 +213,7 @@ module Cdris
             fail Cdris::Gateway::Exceptions::BadRequestError, 'Must specify a root and extension'
           end
 
-          "#{api}/patient/#{CGI.escape(params[:root])}/#{CGI.escape(params[:extension])}"
+          "#{api}/patient/#{URI.escape(params[:root])}/#{URI.escape(params[:extension])}"
         end
 
         # Gets a URI component indicating current if `:current` in `params`, else gets an empty string

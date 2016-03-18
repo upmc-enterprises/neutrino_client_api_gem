@@ -675,7 +675,7 @@ describe Cdris::Gateway::PatientDocument do
         let(:extension) { 'some_extension/\;:&-_$@' }
 
         it 'builds a URI containing the root and extension URI components' do
-          expect(described_class.base_uri(params)).to match(%r{/#{CGI.escape(root)}/#{CGI.escape(extension)}})
+          expect(described_class.base_uri(params)).to include("/#{URI.escape(root)}/#{URI.escape(extension)}")
         end
 
       end

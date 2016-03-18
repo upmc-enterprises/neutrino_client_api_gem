@@ -180,7 +180,7 @@ module Cdris
             path = "#{base_uri(params)}/facts/ejection_fraction"
             request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).to_hash
           else
-            path = "#{api}/patient/#{CGI.escape(params[:root])}/#{CGI.escape(params[:extension])}/patient_documents/current/with/ejection_fractions"
+            path = "#{api}/patient/#{URI.escape(params[:root])}/#{URI.escape(params[:extension])}/patient_documents/current/with/ejection_fractions"
             request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError).to_hash
           end
         end
@@ -255,9 +255,9 @@ module Cdris
           if params[:id].present?
             url << "/#{params[:id]}"
           elsif params[:root].present? && params[:extension].present?
-            url << "/#{CGI.escape(params[:root])}/#{CGI.escape(params[:extension])}"
+            url << "/#{URI.escape(params[:root])}/#{URI.escape(params[:extension])}"
             if params[:extension_suffix].present?
-              url << "/#{CGI.escape(params[:extension_suffix])}"
+              url << "/#{URI.escape(params[:extension_suffix])}"
               url << "/#{params[:document_source_updated_at].iso8601(3)}" if params[:document_source_updated_at].present?
             end
           else
