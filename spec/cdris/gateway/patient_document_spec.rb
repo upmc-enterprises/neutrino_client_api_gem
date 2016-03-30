@@ -69,6 +69,21 @@ describe Cdris::Gateway::PatientDocument do
 
     end
 
+    context 'When the conversion is not supported' do
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/i_not_supported/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        status: ['400', 'OK'])
+
+      it 'raises a DocumentConversionNotSupported when it it receives a 400 after requesting patient document data' do
+        expect do
+          described_class.data(id: 'i_not_supported')
+        end.to raise_error(Cdris::Gateway::Exceptions::DocumentConversionNotSupported)
+      end
+
+    end
+
   end
 
   describe 'self.test_patient_document' do

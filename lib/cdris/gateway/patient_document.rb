@@ -37,7 +37,7 @@ module Cdris
           path = "#{base_uri(params)}/data"
           path += ".#{params[:format]}" if params[:format]
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
-                                .data_and_type
+                                .if_400_raise(Cdris::Gateway::Exceptions::DocumentConversionNotSupported).data_and_type
         end
 
         # Gets a patient document's text
