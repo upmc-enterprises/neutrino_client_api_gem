@@ -496,20 +496,62 @@ describe Cdris::Gateway::PatientDocument do
   end
 
   describe 'self.ejection_fractions' do
+    context 'when id is not given' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient/foo/bar/patient_documents/current/with/ejection_fractions?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: DataSamples.patient_document_ejection_fractions.to_s)
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/foo/bar/patient_documents/current/with/ejection_fractions?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_ejection_fractions.to_s)
+      it 'requests and returns the expected ejection fractions' do
+        expect(described_class.ejection_fractions(
+        {
+          root: 'foo',
+          extension: 'bar'
+        }, {
+          user: { root: 'foobar', extension: 'spameggs' }
+        })).to eq(DataSamples.patient_document_ejection_fractions.to_hash)
+      end
+    end
 
-    it 'requests and returns the expected ejection fractions' do
-      expect(described_class.ejection_fractions(
-      {
-        root: 'foo',
-        extension: 'bar'
-      }, {
-        user: { root: 'foobar', extension: 'spameggs' }
-      })).to eq(DataSamples.patient_document_ejection_fractions.to_hash)
+    context 'when patient document does not exist' do
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient/not_found/bar/patient_documents/current/with/ejection_fractions?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: 'Not found',
+          status: ['404', 'Not Found']
+      )
+
+      it 'raises a patient document not found error' do
+        expect do
+          described_class.ejection_fractions(
+          {
+            root: 'not_found',
+            extension: 'bar'
+          }, {
+            user: { root: 'foobar', extension: 'spameggs' }
+          })
+        end.to raise_error(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
+      end
+    end
+
+    context 'when the tenant is not authorized to access the patient' do
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/patient/not_authorized/bar/patient_documents/current/with/ejection_fractions?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: 'Not Authorized to access', status: ['403', 'OK']
+      )
+
+      it 'raises a PatientIdentityGatewayNotAuthorizedError' do
+        expect do
+          described_class.ejection_fractions(
+          {
+            root: 'not_authorized',
+            extension: 'bar'
+          }, {
+            user: { root: 'foobar', extension: 'spameggs' }
+          })
+        end.to raise_error(Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError)
+      end
     end
 
     context 'when an id is given' do
@@ -520,6 +562,7 @@ describe Cdris::Gateway::PatientDocument do
       before(:each) do
         allow(Cdris::Gateway::Requestor).to receive(:api).and_return('foo')
         allow(request).to receive(:if_404_raise).and_return(request)
+        allow(request).to receive(:if_403_raise).and_return(request)
         allow(request).to receive(:to_hash).and_return({})
       end
 
@@ -529,7 +572,6 @@ describe Cdris::Gateway::PatientDocument do
           anything).and_return(request)
         described_class.ejection_fractions(params)
       end
-
     end
 
   end

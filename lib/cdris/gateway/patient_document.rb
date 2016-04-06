@@ -178,10 +178,10 @@ module Cdris
         def ejection_fractions(params, options = {})
           if params[:id]
             path = "#{base_uri(params)}/facts/ejection_fraction"
-            request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).to_hash
+            request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).if_403_raise(Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError).to_hash
           else
             path = "#{api}/patient/#{URI.escape(params[:root])}/#{URI.escape(params[:extension])}/patient_documents/current/with/ejection_fractions"
-            request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError).to_hash
+            request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).if_403_raise(Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError).to_hash
           end
         end
 
