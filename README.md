@@ -10,7 +10,7 @@ where
  - `<major_version` is the major version of the gem, indicating breaking changes for the given version of CDRIS
  - `<minor_version>` is the minor version of the gem, indicating non-breaking changes
 
-The gem version can be updated in cdris_api_client.gemspec
+The gem version can be updated in lib/cdris/gateway/version.rb
 
 ## Generating
 In the project's root execute:
@@ -33,6 +33,15 @@ gem 'cdris_api_client', '<version>', :path => 'vendor/gems/cdris_api_client-<ver
 ```
 where `<version>` is the version of the cdris_api_client
 
+## Development
+To pull in development dependancies, from the project's root exectue:
+```
+bundle install
+```
+To see the availble development tasks execute:
+```
+rake -T
+```
 
 ## Usage
 

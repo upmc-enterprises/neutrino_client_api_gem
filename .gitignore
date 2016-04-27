@@ -38,4 +38,9 @@
 /cucumber_timing_data.csv
 
 # ignore compiled gem
-cdris_api_client*.gem
+*.gem
+
+# Ignore document artifacts
+/.yardoc/
+
+
