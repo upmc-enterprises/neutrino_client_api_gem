@@ -18,19 +18,27 @@ describe Cdris::Gateway::Patient do
   let(:invalid_user_params_root_and_extension) { { root: 'fdsaf', extension: 'gsaewags' } }
   let(:user_root_and_extension) { { user: { root: 'foobar', extension: 'spameggs' } } }
   let(:set_in_error_exception) { Cdris::Gateway::Exceptions::PatientIdentitySetInError }
+  let(:invalid_tenant_operation) { Cdris::Gateway::Exceptions::InvalidTenantOperation }
+  let(:mock_response) { double('Mock Response', code: 403, body: {}) }
 
   shared_examples 'the_patient_identity_set_is_in_error' do
 
-    let(:mock_response) { double('Mock Response', code: 403, body: {}) }
-
-    before(:each) do
-      allow(Cdris::Api::Client).to receive(:perform_request).and_return(mock_response)
-    end
-
     it 'raises a patient set in error exception' do
+      allow(Cdris::Api::Client).to receive(:perform_request).and_return(mock_response)
       expect {
         described_class.send(patient_method, params_root_and_extension)
       }.to raise_error(set_in_error_exception)
+    end
+
+  end
+
+  shared_examples 'the_operation_is_forbidden_to_the_tenant' do
+
+    it 'raises an invalid tenant operation exception' do
+      allow(Cdris::Api::Client).to receive(:perform_request).and_return(mock_response)
+      expect {
+        described_class.send(patient_method, params_root_and_extension)
+      }.to raise_error(invalid_tenant_operation)
     end
 
   end
@@ -301,8 +309,6 @@ describe Cdris::Gateway::Patient do
       'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
       body: DataSamples.patient_patient_document_search.to_s)
 
-    it_behaves_like 'the_patient_identity_set_is_in_error'
-
     it 'performs a request returning valid patient documents' do
       expect(described_class.patient_document_search(
         params_root_and_extension,
@@ -333,6 +339,12 @@ describe Cdris::Gateway::Patient do
 
     end
 
+    context 'When a tenant attempts to search for documents for a patient using an invalid oid' do
+
+      it_behaves_like 'the_operation_is_forbidden_to_the_tenant'
+
+    end
+
   end
 
   describe 'self.patient_document_bounds' do
@@ -349,9 +361,13 @@ describe Cdris::Gateway::Patient do
         user_root_and_extension)).to eq(DataSamples.patient_patient_document_bounds.to_hash)
     end
 
-    it_behaves_like 'the_patient_identity_set_is_in_error'
+    context 'When a tenant attempts to search for documents for a patient using an invalid oid' do
 
-  end
+      it_behaves_like 'the_operation_is_forbidden_to_the_tenant'
+
+    end
+
+ end
 
   describe 'self.subject_matter_domains' do
 
@@ -413,7 +429,11 @@ describe Cdris::Gateway::Patient do
 
     end
 
-    it_behaves_like 'the_patient_identity_set_is_in_error'
+    context 'When a tenant attempts to search for documents for a patient using an invalid oid' do
+
+      it_behaves_like 'the_operation_is_forbidden_to_the_tenant'
+
+    end
 
   end
 
@@ -429,4 +449,41 @@ describe Cdris::Gateway::Patient do
       }.to raise_error(unauthorized_error)
     end
   end
+
+  describe 'self.base_uri' do
+
+    context 'when id, root and extension are not given' do
+
+      let(:params) { {} }
+
+      it 'raises a BadRequestError' do
+        expect { described_class.base_uri(params) }.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
+      end
+
+    end
+
+    context 'when root and extension are given' do
+
+      let(:root) { 'some_root' }
+      let(:extension) { 'some_extension' }
+      let(:params) { { root: root, extension: extension } }
+
+      it 'builds a URI containing the root and extension URI components' do
+        expect(described_class.base_uri(params)).to match(%r{/#{root}/#{extension}})
+      end
+
+      context 'when the root and extension contain special characters' do
+        let(:root) { 'some_root/\;:&-_$@' }
+        let(:extension) { 'some_extension/\;:&-_$@' }
+
+        it 'builds a URI containing the root and extension URI components' do
+          expect(described_class.base_uri(params)).to include("/#{URI.escape(root)}/#{URI.escape(extension)}")
+        end
+
+      end
+
+    end
+
+  end
+
 end

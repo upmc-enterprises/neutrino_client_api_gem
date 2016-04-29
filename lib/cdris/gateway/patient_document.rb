@@ -37,7 +37,7 @@ module Cdris
           path = "#{base_uri(params)}/data"
           path += ".#{params[:format]}" if params[:format]
           request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
-                                .data_and_type
+                                .if_400_raise(Cdris::Gateway::Exceptions::DocumentConversionNotSupported).data_and_type
         end
 
         # Gets a patient document's text
@@ -178,10 +178,11 @@ module Cdris
         def ejection_fractions(params, options = {})
           if params[:id]
             path = "#{base_uri(params)}/facts/ejection_fraction"
+            request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).if_403_raise(Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError).to_hash
           else
-            path = "#{api}/patient/#{params[:root]}/#{params[:extension]}/patient_documents/current/with/ejection_fractions"
+            path = "#{api}/patient/#{URI.escape(params[:root])}/#{URI.escape(params[:extension])}/patient_documents/current/with/ejection_fractions"
+            request(path, options).if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).if_403_raise(Cdris::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError).to_hash
           end
-          request(path, options).to_hash
         end
 
         # Searches for a document
@@ -254,9 +255,9 @@ module Cdris
           if params[:id].present?
             url << "/#{params[:id]}"
           elsif params[:root].present? && params[:extension].present?
-            url << "/#{params[:root]}/#{params[:extension]}"
+            url << "/#{URI.escape(params[:root])}/#{URI.escape(params[:extension])}"
             if params[:extension_suffix].present?
-              url << "/#{params[:extension_suffix]}"
+              url << "/#{URI.escape(params[:extension_suffix])}"
               url << "/#{params[:document_source_updated_at].iso8601(3)}" if params[:document_source_updated_at].present?
             end
           else

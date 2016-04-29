@@ -133,8 +133,8 @@ module Cdris
         def patient_document_search(params, options = {})
           path = "#{base_uri(params)}/patient_documents/search"
           request(path, options)
-              .with_patient_identity_set_in_error_check
               .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
               .if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
               .to_hash
         end
@@ -148,7 +148,7 @@ module Cdris
           path = "#{base_uri(params)}/patient_document_bounds"
           path << current_if_specified_in(params)
           request(path, options)
-              .with_patient_identity_set_in_error_check
+              .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash
         end
 
@@ -198,7 +198,7 @@ module Cdris
           path << current_if_specified_in(params)
 
           request(path, options)
-            .with_patient_identity_set_in_error_check
+            .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
             .if_404_raise(Cdris::Gateway::Exceptions::PatientNotFoundError)
             .to_hash
         end
@@ -213,7 +213,7 @@ module Cdris
             fail Cdris::Gateway::Exceptions::BadRequestError, 'Must specify a root and extension'
           end
 
-          "#{api}/patient/#{params[:root]}/#{params[:extension]}"
+          "#{api}/patient/#{URI.escape(params[:root])}/#{URI.escape(params[:extension])}"
         end
 
         # Gets a URI component indicating current if `:current` in `params`, else gets an empty string

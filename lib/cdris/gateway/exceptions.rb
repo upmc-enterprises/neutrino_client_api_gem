@@ -331,6 +331,13 @@ module Cdris
           super(errors, message)
         end
       end
+
+      # Error class for when a conversion is not supported
+      class DocumentConversionNotSupported < BaseError
+        def initialize(errors = [], message = 'Conversion Not Supported')
+          super(errors, message)
+        end
+      end
     end
   end
 end
