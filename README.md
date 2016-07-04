@@ -43,6 +43,12 @@ To see the availble development tasks execute:
 rake -T
 ```
 
+## To pack into CDRIS OP UI
+To add into the CDRIS OP UI for the container build:
+```
+cp cdris_api_client-<version>.gem ../cdris_test_ui/lib
+```
+
 ## Usage
 
 ```
