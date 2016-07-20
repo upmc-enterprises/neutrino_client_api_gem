@@ -1,5 +1,5 @@
 module Cdris
   module Gateway
-    VERSION = '3.3.0dev0.02'.freeze
+    VERSION = '3.4.0dev0.01'.freeze
   end
 end

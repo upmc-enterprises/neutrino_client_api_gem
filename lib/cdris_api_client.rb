@@ -1,7 +1,6 @@
 require 'active_support/core_ext'
 require 'cdris/api/client'
 require 'cdris/gateway/application_accounts'
-require 'cdris/gateway/clu'
 require 'cdris/gateway/exceptions'
 require 'cdris/gateway/info'
 require 'cdris/gateway/map_type'

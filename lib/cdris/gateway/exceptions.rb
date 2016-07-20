@@ -122,20 +122,6 @@ module Cdris
         end
       end
 
-      # Error class for when a clu patient document is not found.
-      class CluPatientDocumentNotFoundError < BaseError
-        def initialize(errors = [], message = 'Clu Patient Document Not Found')
-          super(errors, message)
-        end
-      end
-
-      # Error class for when a clu patient document source text is not found.
-      class CluPatientDocumentSourceTextNotFoundError < BaseError
-        def initialize(errors = [], message = 'Clu Patient Document Source Text Not Found')
-          super(errors, message)
-        end
-      end
-
       # Error class for when a nlp patient document source text is not found.
       class NlpPatientDocumentSourceTextNotFoundError < BaseError
         def initialize(errors = [], message = 'Nlp Patient Document Source Text Not Found')

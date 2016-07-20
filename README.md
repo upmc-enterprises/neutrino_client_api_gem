@@ -88,7 +88,6 @@ Cdris::Api::Client.config = {
 
 Requests to CDRIS are made through `Gateway` classes:
 
- - `Cdris::Gateway::Clu`
  - `Cdris::Gateway::Info`
  - `Cdris::Gateway::MapType`
  - `Cdris::Gateway::OidText`
