@@ -347,6 +347,51 @@ describe Cdris::Gateway::Patient do
 
   end
 
+  describe 'self.patient_hl7_document_ids' do
+    let(:ids) { [1, 4, 7] }
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient/foo/bar/ids/hl7?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      body: [1, 4, 7].to_json)
+
+    it 'requests and returns the expected document ids' do
+      expect(described_class.patient_hl7_document_ids(root: 'foo', extension: 'bar')).to eq(ids)
+    end
+
+  end
+
+  describe 'self.patient_document_ids' do
+
+    context 'Without precedence' do
+      let(:ids) { [1, 2, 4, 8] }
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient/foo/bar/ids?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: [1, 2, 4, 8].to_json)
+
+      it 'requests and returns the expected document ids' do
+        expect(described_class.patient_document_ids(root: 'foo', extension: 'bar')).to eq(ids)
+      end
+
+    end
+
+    context 'With precedence' do
+      let(:ids) { [1, 2, 3, 5, 8] }
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient/foo/bar/ids/primary?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: [1, 2, 3, 5, 8].to_json)
+
+      it 'requests and returns the expected document ids' do
+        expect(described_class.patient_document_ids(root: 'foo', extension: 'bar', precedence: 'primary')).to eq(ids)
+      end
+    end
+
+  end
+
   describe 'self.patient_document_bounds' do
     let(:patient_method) { :patient_document_bounds }
 

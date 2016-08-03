@@ -10,7 +10,7 @@ describe 'ActiveSupport::TimeWithZone' do
     end
 
     context 'when in a non-UTC timezone' do
-      let(:time_with_zone) { Time.zone.now.in_time_zone('Hawaii') }
+      let(:time_with_zone) { Time.zone.now.in_time_zone(ActiveSupport::TimeZone.new('Hawaii')) }
       it_behaves_like 'a UTC ISO8601 formatted Date/Time with millisecond resolution'
     end
   end

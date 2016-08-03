@@ -576,6 +576,20 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.hl7_document_ids' do
+    let(:ids) { [1, 4, 7] }
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient_document/foobar/ids/hl7?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      body: [1, 4, 7].to_json)
+
+    it 'requests and returns the expected patient document search' do
+      expect(described_class.hl7_document_ids(root: 'foobar')).to eq(ids)
+    end
+
+  end
+
   describe 'self.search' do
 
     FakeWeb.register_uri(
@@ -755,6 +769,26 @@ describe Cdris::Gateway::PatientDocument do
             expect(described_class.base_uri(params)).to match(/\/#{document_source_updated_at.iso8601(3)}/)
           end
 
+        end
+
+      end
+
+    end
+
+    context 'when only root is given' do
+
+      let(:root) { 'some_root' }
+      let(:params) { { root: root } }
+
+      it 'builds a URI containing the root URI components' do
+        expect(described_class.base_uri(params)).to match(%r{/#{root}})
+      end
+
+      context 'when the root contain special characters' do
+        let(:root) { 'some_root/\;:&-_$@' }
+
+        it 'builds a URI containing the root and extension URI components' do
+          expect(described_class.base_uri(params)).to include("/#{URI.escape(root)}")
         end
 
       end

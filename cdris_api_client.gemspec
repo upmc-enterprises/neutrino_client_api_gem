@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
                         '*.gemspec'].to_a
   s.homepage = 'http://wiki.tdc.upmc.com/mediawiki/index.php/CDRIS'
 
-  s.add_runtime_dependency 'api-auth',        '1.0.3'
+  s.add_runtime_dependency 'api-auth',        '1.4.1'
   # Mime-types is a unbounded dependancy of rest-client, newer versions
   # requre ruby 2 which is not desired
   s.add_runtime_dependency 'mime-types',      '< 2.99'

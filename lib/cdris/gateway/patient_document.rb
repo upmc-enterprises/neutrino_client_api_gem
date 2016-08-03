@@ -245,6 +245,20 @@ module Cdris
                                                         .to_hash
         end
 
+        # Gets a list of a hl7 document ids
+        #
+        # @param [Hash] params specify which documents to get, must specify `:root`
+        # @param [Hash] options specify query values
+        # @return [Array] the hl7 documents ids
+        # @raise [Exceptions::BadRequestError] when CDRIS returns a 400 status
+        def hl7_document_ids(params, options = {})
+          path = "#{base_uri(params)}/ids/hl7"
+          request(path, options)
+              .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+              .to_hash
+        end
+
         # Gets the base URI for a patient document
         #
         # @param [Hash] params specify what patient to get, must specify either `:id` or `:root` and `extension`
@@ -260,6 +274,8 @@ module Cdris
               url << "/#{URI.escape(params[:extension_suffix])}"
               url << "/#{params[:document_source_updated_at].iso8601(3)}" if params[:document_source_updated_at].present?
             end
+          elsif params[:root].present?
+            url << "/#{URI.escape(params[:root])}"
           else
             fail Cdris::Gateway::Exceptions::BadRequestError, 'Either id or root and extension are required to create patient document path'
           end
