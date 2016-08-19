@@ -17,6 +17,15 @@ module Cdris
             if_400_raise(Cdris::Gateway::Exceptions::BadRequestError.new()).to_hash
         end
 
+        # Get the summary of data quality
+        # @param [Hash] options specify query values
+        # @return [Hash] CDRIS response
+        def summary(options = {})
+          path = "#{api}/reports/data-quality/summary"
+          request(path, options).
+            if_400_raise(Cdris::Gateway::Exceptions::BadRequestError.new()).to_hash
+        end
+
       end
     end
   end
