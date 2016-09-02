@@ -250,10 +250,31 @@ module Cdris
         # @param [Hash] params specify which documents to get, must specify `:root`
         # @param [Hash] options specify query values
         # @return [Array] the hl7 documents ids
-        # @raise [Exceptions::BadRequestError] when CDRIS returns a 400 status
+        # @raise [Exceptions::BadRequestError] when CDRIS returns a 4xx status
         def hl7_document_ids(params, options = {})
           path = "#{base_uri(params)}/ids/hl7"
           request(path, options)
+              .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+              .to_hash
+        end
+
+        # Gets a list of document ids with no patient identity expansion
+        #
+        # @param [Hash] params specify which document ids to get.
+        # @option params [String] :patient_root Optional patient root to retrieve
+        # @option params [String] :patient_extension Optional patient extension if limiting to a single MRN.
+        # @option params [String] :precedence Optional request to limit ids to primanry, secondary, originator, or unknown
+        # @option params [String] :date_from Optional query to limit ids for a starting created at date
+        # @option params [String] :date_to Optional query to limit ids for an ending created at date
+        # @param [Hash] options Other query values if needed
+        # @return [Array] the documents ids
+        # @raise [Exceptions::BadRequestError] when CDRIS returns a 4xx status
+        def patient_document_ids(params, options = {})
+          params.merge!(options)
+          path = "#{api(options)}/patient_document/ids"
+          path << "/#{params[:precedence]}" if params[:precedence]
+          request(path, params)
               .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
               .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash

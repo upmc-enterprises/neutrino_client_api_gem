@@ -7,9 +7,9 @@ require 'cdris/gateway/version'
 Gem::Specification.new do |s|
   s.name     = 'cdris_api_client'
   s.version  = Cdris::Gateway::VERSION
-  s.date     = '2015-12-01'
-  s.summary  = 'Provides gateway to the CDRIS RESTful API'
-  s.description = "Provides gateway to interacte with a CDRIS instance over HTTP"
+  s.date     = '2016-09-08'
+  s.summary  = 'Provides gateway to the Neutrino RESTful API'
+  s.description = 'Provides gateway to interact with a Neutrino instance over HTTP'
   s.authors  = 'UPMC Enterprises'
   s.email    = 'tdccdrissupport@upmc.edu'
   s.license  = 'UPMC'
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
                         'README.md',
                         'Gemfile*',
                         '*.gemspec'].to_a
-  s.homepage = 'http://wiki.tdc.upmc.com/mediawiki/index.php/CDRIS'
+  s.homepage = 'https://confluence.upmc.com/display/CDRIS/CDRIS+Project+Space'
 
   s.add_runtime_dependency 'api-auth',        '1.4.1'
   # Mime-types is a unbounded dependancy of rest-client, newer versions

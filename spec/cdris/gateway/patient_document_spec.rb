@@ -590,6 +590,50 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.patient_document_ids' do
+    let(:ids) { [1, 4, 7] }
+
+    context 'without a precedence specified' do
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/ids?patient_root=foobar&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: [1, 4, 7].to_json)
+
+      it 'requests and returns the expected patient document ids' do
+        expect(described_class.patient_document_ids(patient_root: 'foobar')).to eq(ids)
+      end
+
+    end
+
+    context 'with a precedence specified' do
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/ids/primary?patient_root=foobar&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&precedence=primary',
+        body: [1, 4, 7].to_json)
+
+      it 'requests and returns the expected patient document ids' do
+        expect(described_class.patient_document_ids(patient_root: 'foobar', precedence: 'primary')).to eq(ids)
+      end
+
+    end
+
+    context 'with a date range' do
+
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/ids/primary?date_from=2016-09-01&date_to=2016-09-30&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&precedence=primary',
+        body: [1, 4, 7].to_json)
+
+      it 'requests and returns the expected patient document ids' do
+        expect(described_class.patient_document_ids({ date_from: '2016-09-01', date_to: '2016-09-30', precedence: 'primary' })).to eq(ids)
+      end
+
+    end
+
+  end
+
   describe 'self.search' do
 
     FakeWeb.register_uri(

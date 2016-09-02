@@ -153,9 +153,9 @@ module Cdris
               .to_hash
         end
 
-        # Gets a alist of a patient's document ids
+        # Gets a list of a patient's document ids
         #
-        # @param [Hash] params specify what patient to get, must specify `:root` and `extension`
+        # @param [Hash] params specify what patient to get, must specify `:root` and `:extension`
         # @param [Hash] options specify query values
         # @return [Array] the patient's documents ids
         # @raise [Exceptions::BadRequestError] when CDRIS returns a 400 status

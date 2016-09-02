@@ -8,7 +8,7 @@ module Cdris
 
       # Gets the base URI for CDRIS with the version specified in `Cdris::Api::Client.config`
       #
-      # @param [Hash] options whichmay specify `debug: true`
+      # @param [Hash] options which may specify `debug: true`
       # @return [String] the base URI for CDRIS
       def self.api(options = {})
         "/api/v#{Cdris::Api::Client.api_version}#{options[:debug] ? '/debug/true' : ''}"
