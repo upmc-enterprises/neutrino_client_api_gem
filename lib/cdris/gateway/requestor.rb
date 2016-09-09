@@ -23,7 +23,6 @@ module Cdris
       # @return [Responses::ResponseHandler] a `ResponseHandler` instance for handling response codes
       def self.request(path, options = {}, body = nil, basic_auth = false)
         response = Cdris::Api::Client.perform_request(path, options, body, basic_auth)
-
         Responses::ResponseHandler.new.
           considering(response).
           if_500_raise(Exceptions::InternalServerError).

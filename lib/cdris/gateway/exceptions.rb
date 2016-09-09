@@ -45,6 +45,13 @@ module Cdris
         end
       end
 
+      # Error class for when 401 response code received
+      class AuthenticationError < BaseError
+        def initialize(errors =[], message = 'Authentication Fail')
+          super(errors, message)
+        end
+      end
+
       # Error class for when a problem occurs with parsing API parameters.
       class BadRequestError < BaseError
         def initialize(errors = [], message = 'Bad Request')

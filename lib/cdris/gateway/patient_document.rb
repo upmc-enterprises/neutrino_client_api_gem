@@ -231,7 +231,9 @@ module Cdris
           path = "#{api}/patient_document"
           response = request(path, options.merge!(method: :post), body, basic_auth)
           errors = JSON.parse(response.to_s)["errors"]
-          response.if_400_raise(Cdris::Gateway::Exceptions::BadRequestError.new(errors)).to_hash
+          response.if_400_raise(Cdris::Gateway::Exceptions::BadRequestError.new(errors))
+                  .if_401_raise(Cdris::Gateway::Exceptions::AuthenticationError.new(errors))
+                  .to_hash
         end
 
         # Deletes a patient document
