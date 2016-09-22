@@ -254,8 +254,9 @@ module Cdris
         # @return [Array] the hl7 documents ids
         # @raise [Exceptions::BadRequestError] when CDRIS returns a 4xx status
         def hl7_document_ids(params, options = {})
-          path = "#{base_uri(params)}/ids/hl7"
-          request(path, options)
+          params.merge!(options)
+          path = "#{api(options)}/patient_document/ids/hl7"
+          request(path, params)
               .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
               .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash

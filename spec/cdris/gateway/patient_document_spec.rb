@@ -578,14 +578,48 @@ describe Cdris::Gateway::PatientDocument do
 
   describe 'self.hl7_document_ids' do
     let(:ids) { [1, 4, 7] }
+    api_path = 'http://testhost:4242/api/v1/patient_document/ids/hl7?' +
+               'user%5Bextension%5D=spameggs&user%5Broot%5D=foobar'
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/foobar/ids/hl7?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: [1, 4, 7].to_json)
+    context 'for a document root' do
 
-    it 'requests and returns the expected patient document search' do
-      expect(described_class.hl7_document_ids(root: 'foobar')).to eq(ids)
+      FakeWeb.register_uri(
+        :get,
+        "#{api_path}&root=foobar",
+        body: [1, 4, 7].to_json)
+
+      it 'requests and returns the expected patient document search' do
+        expect(described_class.hl7_document_ids(root: 'foobar')).to eq(ids)
+      end
+
+    end
+
+    context 'for a patient root' do
+
+      FakeWeb.register_uri(
+          :get,
+          "#{api_path}&patient_root=foobar",
+          body: [1, 4, 7].to_json)
+
+      it 'requests and returns the expected patient document search' do
+        expect(described_class.hl7_document_ids(patient_root: 'foobar')).to eq(ids)
+      end
+
+    end
+
+    context 'for a patient root and date range' do
+
+      FakeWeb.register_uri(
+          :get,
+          "#{api_path}&patient_root=foobar&date_from=2016-09-01&date_to=2016-09-30",
+          body: [1, 4, 7].to_json)
+
+      it 'requests and returns the expected patient document search' do
+        expect(described_class.hl7_document_ids(patient_root: 'foobar',
+                                                date_from: '2016-09-01',
+                                                date_to: '2016-09-30')).to eq(ids)
+      end
+
     end
 
   end
