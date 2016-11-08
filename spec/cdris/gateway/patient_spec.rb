@@ -339,9 +339,35 @@ describe Cdris::Gateway::Patient do
 
     end
 
-    context 'When a tenant attempts to search for documents for a patient using an invalid oid' do
+  end
 
-      it_behaves_like 'the_operation_is_forbidden_to_the_tenant'
+  describe 'self.patient_documents_literal_search' do
+
+    let(:patient_method) { :patient_document_literal_search }
+    let(:params) { {} }
+    let(:returned_ids) { [{"id" => '111'}, {"id" =>'222'}] }
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=test',
+      body: [{id: '111'}, {id:'222'}].to_json)
+
+    it 'performs a request returning valid patient documents' do
+      expect(described_class.patient_documents_literal_search(
+        params_root_and_extension,
+        user_root_and_extension.merge({literal: 'test'}))).to eq(returned_ids)
+    end
+
+    context 'when root and extension are specified in params' do
+
+      let(:root) { 'some_root' }
+      let(:extension) { 'some_extension' }
+
+      before(:each) do
+        params[:root] = root
+        params[:extension] = extension
+        allow(Cdris::Gateway::Requestor).to receive(:request).and_return(double.as_null_object)
+      end
 
     end
 

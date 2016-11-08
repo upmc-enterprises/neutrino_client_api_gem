@@ -232,6 +232,21 @@ module Cdris
             .to_hash
         end
 
+        # @param [Hash] params specify what patient to get, must specify `:root` and `extension`,
+        #
+        # @param [Hash] options specify query values
+        #                      specify what literal to search
+        # @return [Hash] the patient's documents ids
+        # @raise [Exceptions::BadRequestError] when CDRIS returns a 400 status
+        def patient_documents_literal_search(params, options = {})
+          path = "#{base_uri(params)}/patient_documents/search"
+          request(path, options)
+              .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+              .if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
+              .to_hash
+        end
+
         # Gets the base URI for a patient
         #
         # @param [Hash] params specify what patient to get, must specify `:root` and `extension`
