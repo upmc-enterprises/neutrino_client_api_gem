@@ -196,6 +196,23 @@ module Cdris
                                 .to_hash
         end
 
+        # Searches for documents
+        #
+        # @param [String] search_term specify what to search for
+        # @param [Hash] options specify query values
+        # @return [Hash] the patient's document metadata
+        # @raise [Cdris::Gateway::Exceptions::BadRequestError] when CDRIS returns a 400 status
+        # @raise [Cdris::Gateway::Exceptions::InvalidTenantOperation] when CDRIS returns a 403 status
+        # @raise [Cdris::Gateway::Exceptions::PatientDocumentNotFoundError] when CDRIS returns a 404 status
+        def literal_search(search_term, options = {})
+          path = "#{api}/patient_document/search"
+          request(path, options.merge(literal: search_term))
+              .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+              .if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
+              .to_hash
+        end
+
         # Gets a patient document cluster
         #
         # @param [Hash] params specify what patient to get, must specify either `:id` or `:root` and `extension`

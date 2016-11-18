@@ -684,6 +684,20 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.literal_search' do
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient_document/search?literal=FizzBuzz&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      body: DataSamples.patient_document_search.to_s)
+
+    it 'requests and returns the expected patient document literal search' do
+      expect(described_class.literal_search('FizzBuzz', { user: { root: 'foobar', extension: 'spameggs' } }
+          )).to eq(DataSamples.patient_document_search.to_hash)
+    end
+
+  end
+
   describe 'self.cluster' do
 
     FakeWeb.register_uri(
