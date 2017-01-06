@@ -51,6 +51,24 @@ module Cdris
                                 .to_s
         end
 
+        # Highlight a document
+        #
+        # @param [Hash] params specify which patient document to get by id and the search term to highlight
+        # @param [Hash] options specify query values
+        # @return [Hash] the highlighted document in html
+        # @raise [Cdris::Gateway::Exceptions::BadRequestError] when CDRIS returns a 400 status
+        # @raise [Cdris::Gateway::Exceptions::InvalidTenantOperation] when CDRIS returns a 403 status
+        # @raise [Cdris::Gateway::Exceptions::PatientDocumentNotFoundError] when CDRIS returns a 404 status
+        def highlight(params, options = {})
+          path = "#{api(options)}/patient_document/highlight/#{params[:id]}"
+          path += ".#{params[:format]}" if params[:format]
+          request(path, options.merge(literal: "#{params[:literal]}")).
+            if_404_raise(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError).
+            if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation).
+            if_400_raise(Cdris::Gateway::Exceptions::BadRequestError).
+            data_and_type
+        end
+
         # Gets the information originally ingested for the desired patient document
         #
         # @param [Hash] params specify what patient document to get, must specify either `:id` or `:root` and `extension`

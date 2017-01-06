@@ -115,6 +115,58 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.highlight' do
+    let(:params) { { literal: 'exam', format: 'html' } }
+    let(:response_body) { { data: DataSamples.patient_document_text.to_s, type: "text/plain" } }
+
+    context 'when a non-existent document id is provided' do
+
+      FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient_document/highlight/20160114.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam',
+      status: ['404', 'Patient Not Found'])
+
+      it 'raises PatientDocumentNotFoundError' do
+        expect{described_class.highlight(params.merge(id: 20160114))}.to raise_error(Cdris::Gateway::Exceptions::PatientDocumentNotFoundError)
+      end
+    end
+
+    context 'when 400 returned' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/highlight/20160113.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam',
+        status: ['400', 'bad request'])
+
+      it 'railse BadRequestError' do
+        expect{described_class.highlight(params.merge(id: 20160113))}.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
+      end
+    end
+
+    context 'when 403 returned' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/highlight/20160112.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam',
+        status: ['403', 'bad request'])
+
+      it 'railse invalid tentant error' do
+        expect{described_class.highlight(params.merge(id: 20160112))}.to raise_error(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+      end
+    end
+
+    context 'when valid id provided' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/highlight/neutrino.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam',
+        body: DataSamples.patient_document_text.to_s)
+
+      it 'returns the highlight document' do
+        expect(described_class.highlight(params.merge(id: 'neutrino'))).to eq(response_body)
+      end
+
+    end
+
+  end
+
   describe '.original_metadata' do
     subject { described_class.original_metadata(id: document_id) }
 
