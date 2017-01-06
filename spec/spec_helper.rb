@@ -48,56 +48,6 @@ class DataSamples
     self
   end
 
-  def self.patient_document_facts
-    read_fixture('sample_facts.json')
-    self
-  end
-
-  def self.patient_document_icd9_problem_codes
-    read_fixture('sample_icd9_problem_codes.json')
-    self
-  end
-
-  def self.patient_document_icd10_problem_codes
-    read_fixture('sample_icd10_problem_codes.json')
-    self
-  end
-
-  def self.patient_document_icd9_problem_codes_simple
-    read_fixture('sample_icd9_problem_codes_simple.json')
-    self
-  end
-
-  def self.patient_document_snomed_problem_codes
-    read_fixture('sample_snomed_problem_codes.json')
-    self
-  end
-
-  def self.patient_document_snomed_vitals
-    read_fixture('sample_snomed_vitals.json')
-    self
-  end
-
-  def self.patient_document_snomed_problem_codes_clinical
-    read_fixture('sample_snomed_problem_codes_clinical.json')
-    self
-  end
-
-  def self.patient_document_sample_all_procedures
-    read_fixture('sample_all_procedures.json')
-    self
-  end
-
-  def self.patient_document_snomed_procedure_codes
-    read_fixture('sample_snomed_procedure_codes.json')
-    self
-  end
-
-  def self.patient_document_ejection_fractions
-    read_fixture('sample_ejection_fractions.json')
-    self
-  end
-
   def self.patient_demographics
     read_fixture('sample_patient_demographics.json')
     self
@@ -342,5 +292,3 @@ module ActionDispatch
     end
   end
 end
-
-

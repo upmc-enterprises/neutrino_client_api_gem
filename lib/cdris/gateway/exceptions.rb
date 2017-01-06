@@ -143,13 +143,6 @@ module Cdris
         end
       end
 
-      # Error class for when a search cloud entry is not found.
-      class SearchCloudEntryNotFoundError < BaseError
-        def initialize(errors = [], message = 'Search Cloud Entry Not Found')
-          super(errors, message)
-        end
-      end
-
       # Error class for when nlp annotations are being requested for a non-nlp
       #   document type.
       class DocumentTypeInvalidForNlp < BaseError
@@ -203,20 +196,6 @@ module Cdris
       # Error class for when subject matter domains are not provided.
       class SubjectMatterDomainsNotProvided < WhitelistNotProvidedError
         def initialize(errors = [], message = 'Subject matter domain(s) not provided.')
-          super(errors, message)
-        end
-      end
-
-      # Error class for when ICD-9 codes are not provided.
-      class Icd9CodesNotProvided < WhitelistNotProvidedError
-        def initialize(errors = [], message = 'ICD-9 code(s) not provided.')
-          super(errors, message)
-        end
-      end
-
-      # Error class for when SNOMED codes are not provided.
-      class SnomedCodesNotProvided < WhitelistNotProvidedError
-        def initialize(errors = [], message = 'SNOMED code(s) not provided.')
           super(errors, message)
         end
       end

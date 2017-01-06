@@ -7,7 +7,7 @@ require 'cdris/gateway/version'
 Gem::Specification.new do |s|
   s.name     = 'cdris_api_client'
   s.version  = Cdris::Gateway::VERSION
-  s.date     = '2016-09-22'
+  s.date     = '2017-04-11'
   s.summary  = 'Provides gateway to the Neutrino RESTful API'
   s.description = 'Provides gateway to interact with a Neutrino instance over HTTP'
   s.authors  = 'UPMC Enterprises'

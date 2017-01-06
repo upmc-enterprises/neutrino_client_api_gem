@@ -37,34 +37,6 @@ module Cdris
                      .with_template('/subject_matter_domain_list/{value}')
                      .and_values(values)
                      .error_on_empty(Cdris::Gateway::Exceptions::SubjectMatterDomainsNotProvided)
-
-          when :with_ejection_fractions
-            Whitelist.new.with_template('/with/ejection_fractions')
-
-          when :snomed_problem_whitelist
-            Whitelist.new
-                     .with_template('/problem_whitelist/snomed/{value}')
-                     .and_values(values)
-                     .append_component(clinical_or_all)
-                     .error_on_empty(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
-
-          when :snomed_procedure_whitelist
-            Whitelist.new
-                     .with_template('/procedure_whitelist/snomed/{value}/all')
-                     .and_values(values)
-                     .error_on_empty(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
-
-          when :snomed_vital_whitelist
-            Whitelist.new
-                     .with_template('/vital_whitelist/snomed/{value}/all')
-                     .and_values(values)
-                     .error_on_empty(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
-
-          when :icd9_problem_whitelist
-            Whitelist.new
-                     .with_template('/problem_whitelist/icd9/{value}/all')
-                     .and_values(values)
-                     .error_on_empty(Cdris::Gateway::Exceptions::Icd9CodesNotProvided)
           else
             Whitelist.new
           end
@@ -77,11 +49,6 @@ module Cdris
           [
             :type_of_service_whitelist,
             :subject_matter_domain_whitelist,
-            :with_ejection_fractions,
-            :snomed_problem_whitelist,
-            :snomed_procedure_whitelist,
-            :snomed_vital_whitelist,
-            :icd9_problem_whitelist
           ]
         end
 

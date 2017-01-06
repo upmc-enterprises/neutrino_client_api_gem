@@ -9,7 +9,7 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
     it 'raises a BadRequestError when multiple whitelists are specified' do
       expect do
         described_class.new
-                        .from_whitelists_in(type_of_service_whitelist: [], with_ejection_fractions: true)
+                        .from_whitelists_in(type_of_service_whitelist: [], subject_matter_domain_whitelist: [])
                         .build
       end.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
     end
@@ -20,18 +20,6 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
 
       it 'builds a Whitelist that become an empty string on to_s' do
         expect(subject.from_whitelists_in(params_not_specifying_whitelist).build.to_s).to eq('')
-      end
-
-    end
-
-    context 'when ejection fractions are included' do
-
-      before(:each) do
-        subject.from_whitelists_in(with_ejection_fractions: true)
-      end
-
-      it 'builds a whitelist that builds a uri including the with ejection fractions uri component' do
-        expect(subject.build.to_s).to match(%r{/with/ejection_fractions})
       end
 
     end
@@ -51,52 +39,12 @@ describe Cdris::Gateway::Uri::WhitelistFactory do
 
       end
 
-      context 'when snomed vital whitelist is specified' do
-
-        before(:each) { params[:snomed_vital_whitelist] = empty_values }
-
-        it 'raises a Cdris::Gateway::Exceptions::SnomedCodesNotProvided' do
-          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
-        end
-
-      end
-
       context 'when subject matter domain whitelist is specified' do
 
         before(:each) { params[:subject_matter_domain_whitelist] = empty_values }
 
         it 'raises a Cdris::Gateway::Exceptions::SubjectMatterDomainsNotProvided' do
           expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::SubjectMatterDomainsNotProvided)
-        end
-
-      end
-
-      context 'when snomed procedure whitelist is specified' do
-
-        before(:each) { params[:snomed_procedure_whitelist] = empty_values }
-
-        it 'raises a Cdris::Gateway::Exceptions::SnomedCodesNotProvided' do
-          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
-        end
-
-      end
-
-      context 'when icd9 problem whitelist is specified' do
-
-        before(:each) { params[:icd9_problem_whitelist] = empty_values }
-
-        it 'raises a Cdris::Gateway::Exceptions::Icd9CodesNotProvided' do
-          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::Icd9CodesNotProvided)
-        end
-
-      end
-
-      context 'when snomed problem whitelist is specified' do
-
-        before(:each) { params[:snomed_problem_whitelist] = empty_values }
-
-        it 'raises a Cdris::Gateway::Exceptions::SnomedCodesNotProvided' do
-          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Cdris::Gateway::Exceptions::SnomedCodesNotProvided)
         end
 
       end
