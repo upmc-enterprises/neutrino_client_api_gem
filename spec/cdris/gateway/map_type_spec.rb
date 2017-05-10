@@ -68,25 +68,31 @@ describe Cdris::Gateway::MapType do
     let(:sample_multipart_upload) { UploadIO.new(sample_uploaded_file, sample_uploaded_file.content_type, sample_uploaded_file.original_filename) }
 
     it 'performs a request specifying the post_multipart method' do
-      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, { method: :post_multipart }, anything)
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, { method: :post_multipart }, anything, anything, anything)
       described_class.import_map_type_file(sample_uploaded_file)
     end
 
     it 'performs a request specifying the passed body' do
       allow(UploadIO).to receive(:new).with(sample_uploaded_file, sample_uploaded_file.content_type, sample_uploaded_file.original_filename).and_return(sample_multipart_upload)
-      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, {'fileUpload' => sample_multipart_upload})
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, {'fileUpload' => sample_multipart_upload}, anything, anything)
       described_class.import_map_type_file(sample_uploaded_file)
     end
 
     it 'performs a request against the map type import URI' do
       allow(Cdris::Gateway::Requestor).to receive(:api).and_return('api_uri')
-      expect(Cdris::Gateway::Requestor).to receive(:request).with('api_uri/map_type/import/file', anything, anything)
+      expect(Cdris::Gateway::Requestor).to receive(:request).with('api_uri/map_type/import/file', anything, anything, anything, anything)
       described_class.import_map_type_file(sample_uploaded_file)
     end
 
     it 'performs a request without using basic auth' do
       allow(Cdris::Gateway::Requestor).to receive(:api).and_return('api_uri')
-      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything)
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, anything, anything, anything)
+      described_class.import_map_type_file(sample_uploaded_file)
+    end
+
+    it 'performs a request specifying the http timeout should be extended for this specific call' do
+      allow(UploadIO).to receive(:new).with(sample_uploaded_file, sample_uploaded_file.content_type, sample_uploaded_file.original_filename).and_return(sample_multipart_upload)
+      expect(Cdris::Gateway::Requestor).to receive(:request).with(anything, anything, {'fileUpload' => sample_multipart_upload}, anything, 60 * 60)
       described_class.import_map_type_file(sample_uploaded_file)
     end
 

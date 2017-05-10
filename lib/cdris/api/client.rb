@@ -152,10 +152,11 @@ module Cdris
         # @param [Hash] options query parameters
         # @param [String] body of the request
         # @param [Boolean] basic_auth specifies whether to use basic authentication
+        # @param [Integer] http_timeout Response timeout seconds, defaults to 60
         # @return [Net::HTTPResponse] the response from the request
         # @raise [Exceptions::InternalServerError] when the CDRIS API responds with 500 code
-        def perform_request(path, options = {}, body = nil, basic_auth = false)
-          build_request("#{base_uri}#{path}", options, body, basic_auth)
+        def perform_request(path, options = {}, body = nil, basic_auth = false, http_timeout = 60)
+          build_request("#{base_uri}#{path}", options, body, basic_auth, http_timeout)
         end
 
         # Builds a REST request to be sent to the CDRIS API.
@@ -166,10 +167,11 @@ module Cdris
         # @param [Hash] options Optional parameters required by request.
         # @param [String] body HTTP body to be transmitted, if any.
         # @param [Boolean] basic_auth Whether or now basic_auth should be used in lieu of HMAC, default false.
+        # @param [Integer] http_timeout Response timeout seconds.
         # @return [Http::Response] response from the CDRIS API service
         # @raise [Exception] if a request raises either an Errno::ECONNREFUSED or an OpenSSL::SSLError exception
-        def build_request(path, options = {}, body = nil, basic_auth = false)
-          Net::HTTP.start(host, port, use_ssl: protocol == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
+        def build_request(path, options = {}, body = nil, basic_auth = false, http_timeout = nil)
+          Net::HTTP.start(host, port, use_ssl: protocol == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE, read_timeout: http_timeout) do |http|
             request_klass = get_method(options)
             tenant_is_from_configuration = false
 

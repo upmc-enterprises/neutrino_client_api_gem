@@ -11,6 +11,9 @@ module Cdris
         # File formats supported for map type export
         SUPPORTED_EXPORT_FILE_TYPES = ['csv', 'xls', 'xlsx']
 
+        # Extra http timeout window for uploading many mapping types at once
+        MULTIPLE_MAPPINGS_UPLOAD_TIMEOUT = 60 * 60
+
         # Gets a map type
         #
         # @param [Hash] params specify what map type to get, either `:unmapped`, or `:local_root` and `:local_extension`
@@ -51,7 +54,7 @@ module Cdris
         def import_map_type_file(uploaded_file, options = {})
           path = "#{base_uri}/import/file"
           map_type_body = map_type_import_body(uploaded_file)
-          request(path, options.merge(method: :post_multipart), map_type_body).to_s
+          request(path, options.merge(method: :post_multipart), map_type_body, false, MULTIPLE_MAPPINGS_UPLOAD_TIMEOUT).to_s
         end
 
         # Gets the URI for a specific map type

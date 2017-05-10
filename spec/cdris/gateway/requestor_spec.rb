@@ -23,13 +23,13 @@ describe Cdris::Gateway::Requestor do
       it 'performs a request using that path and some defaults' do
         expect(Cdris::Api::Client).
           to receive(:perform_request).
-          with(path, {}, nil, false).
+          with(path, {}, nil, false, nil).
           and_return(successful_response)
         subject
       end
 
       context 'and given the other parameters' do
-        before(:each) { params.concat([double, double, double]) }
+        before(:each) { params.concat([double, double, double, double]) }
 
         it 'performs a request using the passed params, in the same order' do
           expect(Cdris::Api::Client).

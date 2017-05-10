@@ -20,9 +20,10 @@ module Cdris
       # @param [Hash] options specify query values
       # @param [String] body the body of the request
       # @param [Boolean] basic_auth whether to use basic authentication
+      # @param [Integer] http_timeout Response timeout seconds
       # @return [Responses::ResponseHandler] a `ResponseHandler` instance for handling response codes
-      def self.request(path, options = {}, body = nil, basic_auth = false)
-        response = Cdris::Api::Client.perform_request(path, options, body, basic_auth)
+      def self.request(path, options = {}, body = nil, basic_auth = false, http_timeout = nil)
+        response = Cdris::Api::Client.perform_request(path, options, body, basic_auth, http_timeout)
         Responses::ResponseHandler.new.
           considering(response).
           if_500_raise(Exceptions::InternalServerError).
