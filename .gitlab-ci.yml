@@ -1,0 +1,29 @@
+.job_template: &job_definition
+  only:
+    - master
+    - /^develop.*$/
+    - /^.*review$/
+    - tags
+    - schedules
+  tags:
+    - docker
+    - neutrino
+
+image: jruby:1.7.22
+
+before_script:
+  - gem install bundler
+  - bundler install
+
+rspec:
+  <<: *job_definition
+  stage: test
+  script:
+    - rspec
+
+#For when rubocop works again
+# rubocop:
+#   <<: *job_definition
+#   stage: test
+#   script:
+#     - rubocop

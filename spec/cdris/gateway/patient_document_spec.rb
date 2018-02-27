@@ -498,7 +498,7 @@ describe Cdris::Gateway::PatientDocument do
         before(:each) { params[:extension_suffix] = extension_suffix }
 
         it 'builds a URI containing the extension suffix URI component' do
-          expect(described_class.base_uri(params)).to match(/\/#{extension_suffix}/)
+          expect(described_class.base_uri(params)).to include("/#{extension_suffix}")
         end
 
         context 'when document source updated at is given' do
@@ -507,7 +507,7 @@ describe Cdris::Gateway::PatientDocument do
           before(:each) { params[:document_source_updated_at] = document_source_updated_at }
 
           it 'builds a URI containing the document source updated at URI component' do
-            expect(described_class.base_uri(params)).to match(/\/#{document_source_updated_at.iso8601(3)}/)
+            expect(described_class.base_uri(params)).to include("/#{document_source_updated_at.iso8601(3)}")
           end
 
         end
