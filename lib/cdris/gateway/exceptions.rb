@@ -165,6 +165,20 @@ module Cdris
         end
       end
 
+      # Error class for when a root is not found.
+      class RootNotFoundError < BaseError
+        def initialize(errors = [], message = 'Root Not Found')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when an invalid root is provided.
+      class RootInvalidError < BaseError
+        def initialize(errors = [], message = 'Invalid Root')
+          super(errors, message)
+        end
+      end
+
       # Error class for when a named query is not found
       class NamedQueryNotFoundError < BaseError
         def initialize(errors = [], message = 'Named query not found')
