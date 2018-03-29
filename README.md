@@ -34,7 +34,7 @@ gem 'cdris_api_client', '<version>', :path => 'vendor/gems/cdris_api_client-<ver
 where `<version>` is the version of the cdris_api_client
 
 ## Development
-To pull in development dependancies, from the project's root exectue:
+To pull in development dependencies, from the project's root execute:
 ```
 bundle install
 ```

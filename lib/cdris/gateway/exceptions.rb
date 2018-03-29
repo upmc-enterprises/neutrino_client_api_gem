@@ -228,9 +228,23 @@ module Cdris
         end
       end
 
-      # Error class for when CDRIS is unable to retrieve list of application accounts
+      # Error class for when Neutrino is unable to create a list of application accounts
+      class UnableToCreateApplicationAccountsError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to create application account')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when Neutrino is unable to retrieve an application account
       class UnableToRetrieveApplicationAccountsError < BaseError
         def initialize(errors = [], message = 'CDRIS was unable to retrieve application accounts')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when Neutrino is unable to unable a list of application accounts
+      class UnableToUpdateApplicationAccountsError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to update application account')
           super(errors, message)
         end
       end
