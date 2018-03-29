@@ -146,6 +146,14 @@ module Cdris
                                 .to_hash
         end
 
+        def get_by_data_status_and_time_window(params, options = {})
+          path = "#{api(options)}/patient_document/#{params[:data_status]}/document_creation_between/#{params[:date_from]}/#{params[:date_to]}"
+          request(path, options)
+              .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+              .to_hash
+        end
+
         # Creates a patient document
         #
         # @param [Hash] params specify what patient to get, must specify either `:id` or `:root` and `extension`

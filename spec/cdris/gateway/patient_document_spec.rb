@@ -167,6 +167,47 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.get_by_data_status_and_time_window' do
+    let(:params) { { data_status: 'invalid', date_from: '2018-04-03T18:48:38.077Z', date_to: '2018-05-03T18:48:38.077Z' } }
+    let(:params_400) { { data_status: 'invalid', date_from: 'invalid', date_to: '2018-05-03T18:48:38.077Z' } }
+    let(:params_403) { { data_status: 'no_status', date_from: '2018-04-03T18:48:38.077Z', date_to: '2018-05-03T18:48:38.077Z' } }
+    let(:response_body) { ['patient_document1', 'patient_document2'] }
+
+    context 'when 400 returned' do
+      FakeWeb.register_uri(
+        :get,
+        "http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/invalid/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
+        status: ['400', 'bad request'])
+
+      it 'raise BadRequestError' do
+        expect{ described_class.get_by_data_status_and_time_window(params_400) }.to raise_error(Cdris::Gateway::Exceptions::BadRequestError)
+      end
+    end
+
+    context 'when 403 returned' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/no_status/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        status: ['403', 'Tenant Operation Not Allowed'])
+
+      it 'railse invalid tentant error' do
+        expect{ described_class.get_by_data_status_and_time_window(params_403) }.to raise_error(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+      end
+    end
+
+    context 'when valid request' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: ['patient_document1', 'patient_document2'].to_json)
+
+      it 'returns document list' do
+        expect(described_class.get_by_data_status_and_time_window(params)).to eq(response_body)
+      end
+    end
+
+  end
+
   describe '.original_metadata' do
     subject { described_class.original_metadata(id: document_id) }
 
