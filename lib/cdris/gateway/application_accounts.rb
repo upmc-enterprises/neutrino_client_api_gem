@@ -33,9 +33,9 @@ module Cdris
         #
         # @return [Hash] the application account
         # @raise [Exceptions::UnableToRetrieveApplicationAccountsError] when Neutrino returns a 400 status code
-        def find_by_id(id)
+        def find_by_id(id, debug = false)
           path = "#{base_uri}/#{id}"
-          request(path)
+          request(path, { debug: debug })
             .if_400_raise(Cdris::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
             .to_hash
         end

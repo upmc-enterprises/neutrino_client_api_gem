@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cdris_api_client (4.1.0dev0.03)
+    cdris_api_client (4.1.0dev0.04)
       activesupport (~> 3.0)
       api-auth (= 1.4.1)
       mime-types (< 2.99)

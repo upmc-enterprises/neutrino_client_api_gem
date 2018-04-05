@@ -12,14 +12,14 @@ describe Cdris::Gateway::ApplicationAccounts do
   end
 
   describe 'self.create' do
-    let(:new_account) { { "access_id" => '1',
-                          "secret_key" => 'ABCDEF0',
-                          "authorization_level" => 'read_only',
-                          "all_tenant_access" => true,
-                          "tenant_tids" => [],
-                          "enabled" => true,
-                          "created_by" => 'test_user',
-                          "updated_by" => 'test_user' } }
+    let(:new_account) { { 'access_id' => '1',
+                          'secret_key' => 'ABCDEF0',
+                          'authorization_level' => 'read_only',
+                          'all_tenant_access' => true,
+                          'tenant_tids' => [],
+                          'enabled' => true,
+                          'created_by' => 'test_user',
+                          'updated_by' => 'test_user' } }
 
     it 'creates application accounts' do
       FakeWeb.register_uri(
@@ -74,23 +74,31 @@ describe Cdris::Gateway::ApplicationAccounts do
   end
 
   describe 'self.find_by_id' do
-    let(:account) { { "id" => 1,
-                      "access_id" => '1',
-                      "secret_key" => 'ABCDEF0',
-                      "authorization_level" => 'read_only',
-                      "all_tenant_access" => true,
-                      "tenant_tids" => [],
-                      "enabled" => true,
-                      "created_by" => 'test_user',
-                      "updated_by" => 'test_user' } }
+    let(:account) { { 'id' => 1,
+                      'access_id' => '1',
+                      'authorization_level' => 'read_only',
+                      'all_tenant_access' => true,
+                      'tenant_tids' => [],
+                      'enabled' => true,
+                      'created_by' => 'test_user',
+                      'updated_by' => 'test_user' } }
 
     it 'gets an application account' do
       FakeWeb.register_uri(
         :get,
-        'http://testhost:4242/api/v1/admin/application_accounts/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        'http://testhost:4242/api/v1/admin/application_accounts/1?debug=false&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
         body: account.to_json)
 
       expect(described_class.find_by_id(1)).to eq(account)
+    end
+
+    it 'gets an application account with a secret key' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/admin/application_accounts/1?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: account.to_json)
+
+      expect(described_class.find_by_id(1, true)).to eq(account)
     end
 
     context 'when the server returns a 400 error' do
@@ -98,7 +106,7 @@ describe Cdris::Gateway::ApplicationAccounts do
       before(:each) do
         FakeWeb.register_uri(
           :get,
-          'http://testhost:4242/api/v1/admin/application_accounts/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          'http://testhost:4242/api/v1/admin/application_accounts/1?debug=false&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
           body: 'UnableToRetrieveApplicationAccountsError', status: ['400', 'Unable To Retrieve Application Accounts'])
       end
 
@@ -110,15 +118,15 @@ describe Cdris::Gateway::ApplicationAccounts do
   end
 
   describe 'self.update_by_id' do
-    let(:update_account) { { "id" => 1,
-                            "access_id" => '1',
-                            "secret_key" => 'ABCDEF0',
-                            "authorization_level" => 'read_only',
-                            "all_tenant_access" => true,
-                            "tenant_tids" => ['cdris'],
-                            "enabled" => true,
-                            "created_by" => 'test_user',
-                            "updated_by" => 'test_user' } }
+    let(:update_account) { { 'id' => 1,
+                             'access_id' => '1',
+                             'secret_key' => 'ABCDEF0',
+                             'authorization_level' => 'read_only',
+                             'all_tenant_access' => true,
+                             'tenant_tids' => ['cdris'],
+                             'enabled' => true,
+                             'created_by' => 'test_user',
+                             'updated_by' => 'test_user' } }
 
     it 'gets an application account' do
       FakeWeb.register_uri(
