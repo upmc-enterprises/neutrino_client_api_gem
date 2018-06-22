@@ -140,6 +140,13 @@ module Cdris
         end
       end
 
+      # Error class for when a derived work document is not found.
+      class DerivedWorkDocumentNotFoundError < BaseError
+        def initialize(errors = [], message = 'Derived work document not found')
+          super(errors, message)
+        end
+      end
+
       # Error class for when a nlp patient document is not found.
       class NlpPatientDocumentNotFoundError < BaseError
         def initialize(errors = [], message = 'Nlp Patient Document Not Found')
