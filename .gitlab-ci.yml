@@ -9,7 +9,7 @@
     - docker
     - neutrino
 
-image: jruby:1.7.22
+image: jruby:1.7.24
 
 before_script:
   - gem install bundler
