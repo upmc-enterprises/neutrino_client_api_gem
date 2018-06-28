@@ -5,6 +5,7 @@ module Cdris
 
       class BaseError < StandardError
         attr_accessor :errors
+
         def initialize(errors = [], message = '')
           super(message)
           self.errors = errors.class == Array ? errors : [errors]
@@ -13,6 +14,7 @@ module Cdris
 
       class FailedRequestError < BaseError
         attr_accessor :field
+
         def initialize(field = '', errors = [], message = "")
           super(errors, message)
           self.field = field
@@ -22,6 +24,7 @@ module Cdris
       # Error class for when a time isn't formatted correctly.
       class TimeFormatError < BaseError
         attr_accessor :field
+
         def initialize(field = '', errors = [], message = "Invalid date time. Use format '2012-01-03T05:00:00Z'")
           super(errors, message)
           self.field = field
@@ -32,6 +35,7 @@ module Cdris
       #   before the start time.
       class TimeWindowError < BaseError
         attr_accessor :field
+
         def initialize(field = '', errors = [], message = 'Invalid time window. Ensure that the ending time is later than the starting time.')
           super(errors, message)
           self.field = field
@@ -47,7 +51,7 @@ module Cdris
 
       # Error class for when 401 response code received
       class AuthenticationError < BaseError
-        def initialize(errors =[], message = 'Authentication Fail')
+        def initialize(errors = [], message = 'Authentication Fail')
           super(errors, message)
         end
       end
@@ -175,6 +179,20 @@ module Cdris
       # Error class for when an invalid root is provided.
       class RootInvalidError < BaseError
         def initialize(errors = [], message = 'Invalid Root')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when an Azure group is not found.
+      class AzureAdGroupNotFoundError < BaseError
+        def initialize(errors = [], message = 'AzureAD Group Not Found')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when an invalid Azure group is provided.
+      class AzureAdGroupInvalidError < BaseError
+        def initialize(errors = [], message = 'Invalid AzureAD Group')
           super(errors, message)
         end
       end
