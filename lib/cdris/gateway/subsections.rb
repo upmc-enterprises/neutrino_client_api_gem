@@ -9,9 +9,9 @@ module Cdris
 
         # Show all subsections
         # @return [Array] All subsections
-        def show_subsections
+        def show_subsections(options = {})
           path = base_uri
-          request(path).to_json
+          request(path, options).to_json
         end
 
         # Gets the base URI for a subsection

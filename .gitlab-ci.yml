@@ -2,7 +2,7 @@
   only:
     - master
     - /^develop.*$/
-    - /^.*review$/
+    - /^.*review(_[0-9]+)?$/
     - tags
     - schedules
   tags:
