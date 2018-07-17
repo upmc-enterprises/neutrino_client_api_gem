@@ -30,6 +30,23 @@ describe Cdris::Gateway::AzureAdGroup do
 
   end
 
+  describe 'self.show_azure_ad_groups' do
+
+    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
+
+    before(:each) do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/azure_ad_group?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: response_message.to_json , status: ['200', 'OK'])
+    end
+
+    it 'returns the expected result' do
+      expect(described_class.show_azure_ad_groups({})).to eq(response_message.to_json)
+    end
+
+  end
+
   describe 'self.get' do
 
     let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }

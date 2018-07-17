@@ -7,6 +7,12 @@ module Cdris
       private_class_method :new
       class << self
 
+        # Show all azure groups
+        def show_azure_ad_groups(options = {})
+          path = base_uri
+          request(path, options).to_json
+        end
+
         # Creates a new azure group
         def create(azure_ad_group_body, options = {})
           path = base_uri
