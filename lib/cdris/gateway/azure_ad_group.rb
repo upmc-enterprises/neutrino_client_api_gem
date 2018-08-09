@@ -46,7 +46,7 @@ module Cdris
         #
         # @return [String] the base URI for an azure group
         def base_uri
-          "#{api}/azure_ad_group"
+          "#{api}/admin/azure_ad_group"
         end
       end
     end
