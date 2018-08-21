@@ -363,6 +363,20 @@ module Cdris
           super(errors, message)
         end
       end
+
+      # Error class for when a provider is not found.
+      class ProviderNotFoundError < BaseError
+        def initialize(errors = [], message = 'Provider Not Found')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when an invalid provider is provided.
+      class ProviderInvalidError < BaseError
+        def initialize(errors = [], message = 'Invalid Provider')
+          super(errors, message)
+        end
+      end
     end
   end
 end
