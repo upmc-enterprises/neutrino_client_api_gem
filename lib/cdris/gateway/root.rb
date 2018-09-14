@@ -13,8 +13,10 @@ module Cdris
         # @return [Hash] the CDRIS response body
         def create(root_body, options = {})
           path = base_uri
-          request(path, options.merge(method: :post), root_body).if_400_raise(Cdris::Gateway::Exceptions::RootInvalidError)
-                                                                .to_hash
+          request(path, options.merge(method: :post), root_body)
+            .with_general_exception_check('400', /Create or update a root with a non-existent provider/, Cdris::Gateway::Exceptions::PostRootWithNonExistProviderError)
+            .if_400_raise(Cdris::Gateway::Exceptions::RootInvalidError)
+            .to_hash
         end
 
         # Show all roots
@@ -47,8 +49,9 @@ module Cdris
         def update_by_id(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
           request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::RootNotFoundError)
-                                .if_400_raise(Cdris::Gateway::Exceptions::RootInvalidError)
-                                .to_hash
+            .with_general_exception_check('400', /Create or update a root with a non-existent provider/, Cdris::Gateway::Exceptions::PostRootWithNonExistProviderError)
+            .if_400_raise(Cdris::Gateway::Exceptions::RootInvalidError)
+            .to_hash
         end
 
         # Delete a root
@@ -59,6 +62,7 @@ module Cdris
         def delete_by_id(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
           request(path, options.merge(method: :delete)).if_404_raise(Cdris::Gateway::Exceptions::RootNotFoundError)
+            .if_409_raise(Cdris::Gateway::Exceptions::DeleteRootWithProviderError)
         end
 
         # Gets the base URI for a root

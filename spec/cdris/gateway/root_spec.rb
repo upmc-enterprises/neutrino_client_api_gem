@@ -28,6 +28,35 @@ describe Cdris::Gateway::Root do
       expect(described_class.create(body)).to eq(response_message)
     end
 
+    context 'when the invalid root' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :post,
+          'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: 'Root Invalid', status: ['400', 'Root Invalid'])
+      end
+
+      it 'raises a root invalid error' do
+        expect { described_class.create(body) }.to raise_error(Cdris::Gateway::Exceptions::RootInvalidError)
+      end
+    end
+
+    context 'when associated provider does not exist' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :post,
+          'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: '{ "error": "Create or update a root with a non-existent provider" }', status: ['400'])
+      end
+
+      it 'raises a PostRootWithNonExistProviderError' do
+        expect { described_class.create(body) }.to raise_error(Cdris::Gateway::Exceptions::PostRootWithNonExistProviderError)
+      end
+    end
+
+
   end
 
   describe 'self.show_roots' do
@@ -120,6 +149,20 @@ describe Cdris::Gateway::Root do
       end
     end
 
+    context 'when associated provider does not exist' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :post,
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: '{ "error": "Create or update a root with a non-existent provider" }', status: ['400'])
+      end
+
+      it 'raises a root invalid error' do
+        expect { described_class.update_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::PostRootWithNonExistProviderError)
+      end
+    end
+
     context 'when the server returns a 404 error' do
 
       before(:each) do
@@ -159,6 +202,20 @@ describe Cdris::Gateway::Root do
 
       it 'raises a root not found error' do
         expect { described_class.delete_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::RootNotFoundError)
+      end
+    end
+
+    context 'when performs a request returning 409 - requested deletion of a root assigned to a provider' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :delete,
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: '{ "error": "Deletion of a root assigned to a provider is not allowed" }', status: ['409', 'Error'])
+      end
+
+      it 'raises DeleteRootWithProviderError' do
+        expect { described_class.delete_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::DeleteRootWithProviderError)
       end
     end
   end

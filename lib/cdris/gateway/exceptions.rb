@@ -391,6 +391,20 @@ module Cdris
           super(errors, message)
         end
       end
+
+      # Error class for when deleting a root which has associated provider
+      class DeleteRootWithProviderError < BaseError
+        def initialize(errors = [], message = 'Deletion of a root assigned to a provider is not allowed')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when creating/updating a root with non-existent provider
+      class PostRootWithNonExistProviderError < BaseError
+        def initialize(errors = [], message = 'Create or update a root with a non-existent provider')
+          super(errors, message)
+        end
+      end
     end
   end
 end

@@ -63,7 +63,7 @@ describe Cdris::Gateway::Requestor do
           before(:each) do
             allow(Cdris::Api::Client).
               to receive(:perform_request).
-              and_return(double('Response', code: '500'))
+              and_return(double('Response', code: '500', body: '{ "error": "Internal Server Error" }'))
           end
 
           specify { expect { subject }.to raise_error(Cdris::Gateway::Exceptions::InternalServerError) }
