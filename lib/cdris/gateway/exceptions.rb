@@ -204,6 +204,20 @@ module Cdris
         end
       end
 
+      # Error class for when a Tenant is not found.
+      class TenantNotFoundError < BaseError
+        def initialize(errors = [], message = 'Tenant Not Found')
+          super(errors, message)
+        end
+      end
+
+      # Error class for when an invalid Tenant is provided.
+      class TenantInvalidError < BaseError
+        def initialize(errors = [], message = 'Invalid Tenant')
+          super(errors, message)
+        end
+      end
+
       # Error class for when a named query is not found
       class NamedQueryNotFoundError < BaseError
         def initialize(errors = [], message = 'Named query not found')
