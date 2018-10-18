@@ -23,10 +23,10 @@ module Cdris
         end
 
         #Gets a tenant
-        def find_by_id(params, options = {})
-          path = "#{base_uri}/#{params[:id]}"
-          request(path, options).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def find_by_id(id, debug = false)
+          path = "#{base_uri}/#{id}"
+          request(path, { debug: debug })
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToRetrieveTenantsError)
             .to_hash
         end
 
@@ -38,66 +38,82 @@ module Cdris
         end
 
         # Enable an existing tenant's tenant enabled
-        def enable_tenant_by_id(params, options = {})
-          path = "#{base_uri}/tenant_enable/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def enable_tenant_by_id(id, body)
+          path = "#{base_uri}/tenant_enable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToEnableTenantEnabledError.new([], error))
             .to_hash
         end
 
         # Disable an existing tenant's tenant enabled
-        def disable_tenant_by_id(params, options = {})
-          path = "#{base_uri}/tenant_disable/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def disable_tenant_by_id(id, body)
+          path = "#{base_uri}/tenant_disable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToDisableTenantEnabledError.new([], error))
             .to_hash
         end
 
         # Enable an existing tenant's indexing enabled
-        def enable_indexing_by_id(params, options = {})
-          path = "#{base_uri}/indexing_enable/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def enable_indexing_by_id(id, body)
+          path = "#{base_uri}/indexing_enable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToEnableIndexingEnabledError.new([], error))
             .to_hash
         end
 
         # Disable an existing tenant's indexing enabled
-        def disable_indexing_by_id(params, options = {})
-          path = "#{base_uri}/indexing_disable/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def disable_indexing_by_id(id, body)
+          path = "#{base_uri}/indexing_disable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToDisableIndexingEnabledError.new([], error))
             .to_hash
         end
 
         # Enable an existing tenant's gi enabled
-        def enable_gi_by_id(params, options = {})
-          path = "#{base_uri}/gi_enable/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def enable_gi_by_id(id, body)
+          path = "#{base_uri}/gi_enable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToEnableGiEnabledError.new([], error))
             .to_hash
         end
 
         # Disable an existing tenant's gi enabled
-        def disable_gi_by_id(params, options = {})
-          path = "#{base_uri}/gi_disable/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def disable_gi_by_id(id, body)
+          path = "#{base_uri}/gi_disable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToDisableGiEnabledError.new([], error))
             .to_hash
         end
 
         # Enable an existing tenant's hf reveal enabled
-        def enable_hf_reveal_by_id(params, options = {})
-          path = "#{base_uri}/hf_reveal_enable/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def enable_hf_reveal_by_id(id, body)
+          path = "#{base_uri}/hf_reveal_enable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToEnableHfRevealEnabledError.new([], error))
             .to_hash
         end
 
         # Disable an existing tenant's hf reveal enabled
-        def disable_hf_reveal_by_id(params, options = {})
-          path = "#{base_uri}/hf_reveal_disable/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Cdris::Gateway::Exceptions::TenantNotFoundError)
-            .if_400_raise(Cdris::Gateway::Exceptions::TenantInvalidError)
+        def disable_hf_reveal_by_id(id, body)
+          path = "#{base_uri}/hf_reveal_disable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToDisableHfRevealEnabledError.new([], error))
             .to_hash
         end
 

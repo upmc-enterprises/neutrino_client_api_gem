@@ -26,17 +26,30 @@ describe Cdris::Gateway::Tenants do
 
   describe 'self.find_by_id' do
 
-    let(:response_message) { { 'id' => '1', 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true', 'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true' } }
+    let(:response_message) { { 'id' => 1, 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true', 'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true' } }
 
     before(:each) do
       FakeWeb.register_uri(
         :get,
-        'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/admin/tenants/1?debug=false&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: response_message.to_json)
     end
 
     it 'returns the expected result' do
-      expect(described_class.find_by_id(id: 1)).to eq(response_message)
+      expect(described_class.find_by_id(1)).to eq(response_message)
+    end
+
+    context 'when it gets a tenant with a secret key' do
+      before(:each) do
+        FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/admin/tenants/1?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: response_message.to_json)
+      end
+
+      it 'returns the expected tenant with secret key' do
+        expect(described_class.find_by_id(1, true)).to eq(response_message)
+      end
     end
 
     context 'when the server returns a 400 error' do
@@ -44,26 +57,12 @@ describe Cdris::Gateway::Tenants do
       before(:each) do
         FakeWeb.register_uri(
           :get,
-          'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          'http://testhost:4242/api/v1/admin/tenants/1?debug=false&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: 'UnableToRetrieveTenantsError', status: ['400', 'Unable To Retrieve Tenants'])
       end
 
-      it 'raises an access level invalid error' do
-        expect { described_class.find_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
-      end
-    end
-
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :get,
-          'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.find_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
+      it 'raises an error' do
+        expect { described_class.find_by_id(1) }.to raise_error(Cdris::Gateway::Exceptions::UnableToRetrieveTenantsError)
       end
     end
   end
@@ -100,7 +99,7 @@ describe Cdris::Gateway::Tenants do
     end
 
     it 'returns the expected result' do
-      expect(described_class.enable_tenant_by_id(id: 1)).to eq(response_message)
+      expect(described_class.enable_tenant_by_id(1, response_message)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -109,25 +108,11 @@ describe Cdris::Gateway::Tenants do
         FakeWeb.register_uri(
           :post,
           'http://testhost:4242/api/v1/admin/tenants/tenant_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          body: '{ "error" : "UnableToEnableTenantEnabledError" }', status: ['400', 'Unable To Enable Tenant Enabled'])
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.enable_tenant_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
-      end
-    end
-
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :post,
-          'http://testhost:4242/api/v1/admin/tenants/tenant_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.enable_tenant_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
+        expect { described_class.enable_tenant_by_id(1, response_message) }.to raise_error(Cdris::Gateway::Exceptions::UnableToEnableTenantEnabledError)
       end
     end
   end
@@ -144,7 +129,7 @@ describe Cdris::Gateway::Tenants do
     end
 
     it 'returns the expected result' do
-      expect(described_class.disable_tenant_by_id(id: 1)).to eq(response_message)
+      expect(described_class.disable_tenant_by_id(1, response_message)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -153,25 +138,11 @@ describe Cdris::Gateway::Tenants do
         FakeWeb.register_uri(
           :post,
           'http://testhost:4242/api/v1/admin/tenants/tenant_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          body: '{ "error" : "UnableToDisableTenantEnabledError" }', status: ['400', 'Unable To Disable Tenant Enabled'])
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.disable_tenant_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
-      end
-    end
-
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :post,
-          'http://testhost:4242/api/v1/admin/tenants/tenant_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.disable_tenant_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
+        expect { described_class.disable_tenant_by_id(1, response_message) }.to raise_error(Cdris::Gateway::Exceptions::UnableToDisableTenantEnabledError)
       end
     end
   end
@@ -188,7 +159,7 @@ describe Cdris::Gateway::Tenants do
     end
 
     it 'returns the expected result' do
-      expect(described_class.enable_indexing_by_id(id: 1)).to eq(response_message)
+      expect(described_class.enable_indexing_by_id(1, response_message)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -197,25 +168,11 @@ describe Cdris::Gateway::Tenants do
         FakeWeb.register_uri(
           :post,
           'http://testhost:4242/api/v1/admin/tenants/indexing_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          body: '{ "error" : "UnableToEnableIndexingEnabledError" }', status: ['400', 'Unable To Enable Indexing Enabled'])
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.enable_indexing_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
-      end
-    end
-
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :post,
-          'http://testhost:4242/api/v1/admin/tenants/indexing_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.enable_indexing_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
+        expect { described_class.enable_indexing_by_id(1, response_message) }.to raise_error(Cdris::Gateway::Exceptions::UnableToEnableIndexingEnabledError)
       end
     end
   end
@@ -232,7 +189,7 @@ describe Cdris::Gateway::Tenants do
     end
 
     it 'returns the expected result' do
-      expect(described_class.disable_indexing_by_id(id: 1)).to eq(response_message)
+      expect(described_class.disable_indexing_by_id(1, response_message)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -241,27 +198,14 @@ describe Cdris::Gateway::Tenants do
         FakeWeb.register_uri(
           :post,
           'http://testhost:4242/api/v1/admin/tenants/indexing_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          body: '{ "error" : "UnableToDisableIndexingEnabledError" }', status: ['400', 'Unable To Disable Indexing Enabled'])
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.disable_indexing_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
+        expect { described_class.disable_indexing_by_id(1, response_message) }.to raise_error(Cdris::Gateway::Exceptions::UnableToDisableIndexingEnabledError)
       end
     end
 
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :post,
-          'http://testhost:4242/api/v1/admin/tenants/indexing_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.disable_indexing_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
-      end
-    end
   end
 
   describe 'self.enable_gi_by_id' do
@@ -276,7 +220,7 @@ describe Cdris::Gateway::Tenants do
     end
 
     it 'returns the expected result' do
-      expect(described_class.enable_gi_by_id(id: 1)).to eq(response_message)
+      expect(described_class.enable_gi_by_id(1, response_message)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -285,27 +229,14 @@ describe Cdris::Gateway::Tenants do
         FakeWeb.register_uri(
           :post,
           'http://testhost:4242/api/v1/admin/tenants/gi_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          body: '{ "error" : "UnableToEnableGiEnabledError" }', status: ['400', 'Unable To Enable GI Enabled'])
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.enable_gi_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
+        expect { described_class.enable_gi_by_id(1, response_message) }.to raise_error(Cdris::Gateway::Exceptions::UnableToEnableGiEnabledError)
       end
     end
 
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :post,
-          'http://testhost:4242/api/v1/admin/tenants/gi_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.enable_gi_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
-      end
-    end
   end
 
   describe 'self.disable_gi_by_id' do
@@ -320,7 +251,7 @@ describe Cdris::Gateway::Tenants do
     end
 
     it 'returns the expected result' do
-      expect(described_class.disable_gi_by_id(id: 1)).to eq(response_message)
+      expect(described_class.disable_gi_by_id(1, response_message)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -329,27 +260,14 @@ describe Cdris::Gateway::Tenants do
         FakeWeb.register_uri(
           :post,
           'http://testhost:4242/api/v1/admin/tenants/gi_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          body: '{ "error" : "UnableToDisableGiEnabledError" }', status: ['400', 'Unable To Disable GI Enabled'])
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.disable_gi_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
+        expect { described_class.disable_gi_by_id(1, response_message) }.to raise_error(Cdris::Gateway::Exceptions::UnableToDisableGiEnabledError)
       end
     end
 
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :post,
-          'http://testhost:4242/api/v1/admin/tenants/gi_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.disable_gi_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
-      end
-    end
   end
 
   describe 'self.enable_hf_reveal_by_id' do
@@ -364,7 +282,7 @@ describe Cdris::Gateway::Tenants do
     end
 
     it 'returns the expected result' do
-      expect(described_class.enable_hf_reveal_by_id(id: 1)).to eq(response_message)
+      expect(described_class.enable_hf_reveal_by_id(1, response_message)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -373,27 +291,14 @@ describe Cdris::Gateway::Tenants do
         FakeWeb.register_uri(
           :post,
           'http://testhost:4242/api/v1/admin/tenants/hf_reveal_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          body: '{ "error" : "UnableToEnableHfRevealEnabledError" }', status: ['400', 'Unable To Enable HF Reveal Enabled'])
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.enable_hf_reveal_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
+        expect { described_class.enable_hf_reveal_by_id(1, response_message) }.to raise_error(Cdris::Gateway::Exceptions::UnableToEnableHfRevealEnabledError)
       end
     end
 
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :post,
-          'http://testhost:4242/api/v1/admin/tenants/hf_reveal_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.enable_hf_reveal_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
-      end
-    end
   end
 
   describe 'self.disable_hf_reveal_by_id' do
@@ -408,7 +313,7 @@ describe Cdris::Gateway::Tenants do
     end
 
     it 'returns the expected result' do
-      expect(described_class.disable_hf_reveal_by_id(id: 1)).to eq(response_message)
+      expect(described_class.disable_hf_reveal_by_id(1, response_message)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -417,27 +322,14 @@ describe Cdris::Gateway::Tenants do
         FakeWeb.register_uri(
           :post,
           'http://testhost:4242/api/v1/admin/tenants/hf_reveal_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Invalid', status: ['400', 'Tenant Invalid'])
+          body: '{ "error" : "UnableToDisableHfRevealEnabledError" }', status: ['400', 'Unable To Disable HF Reveal Enabled'])
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.disable_hf_reveal_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantInvalidError)
+        expect { described_class.disable_hf_reveal_by_id(1, response_message) }.to raise_error(Cdris::Gateway::Exceptions::UnableToDisableHfRevealEnabledError)
       end
     end
 
-    context 'when the server returns a 404 error' do
-
-      before(:each) do
-        FakeWeb.register_uri(
-          :post,
-          'http://testhost:4242/api/v1/admin/tenants/hf_reveal_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Tenant Not Found', status: ['404', 'Tenant Not Found'])
-      end
-
-      it 'raises a tenant not found error' do
-        expect { described_class.disable_hf_reveal_by_id(id: 1) }.to raise_error(Cdris::Gateway::Exceptions::TenantNotFoundError)
-      end
-    end
   end
 
 end

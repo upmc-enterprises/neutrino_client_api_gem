@@ -288,6 +288,54 @@ module Cdris
         end
       end
 
+      class UnableToDisableTenantEnabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to disable tenant enabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToDisableIndexingEnabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to disable indexing enabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToDisableGiEnabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to disable gi enabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToDisableHfRevealEnabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to disable hf reveal enabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToEnableTenantEnabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to enable tenant enabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToEnableIndexingEnabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to enable indexing enabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToEnableGiEnabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to enable gi enabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToEnableHfRevealEnabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to enable hf reveal enabled')
+          super(errors, message)
+        end
+      end
+
       # Error class for when CDRIS is unable to retrieve the list of tenants
       class UnableToRetrieveTenantsError < BaseError
         def initialize(errors = [], message = 'CDRIS was unable to retrieve tenants')
