@@ -480,6 +480,22 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.ingestion_errors' do
+
+    FakeWeb.register_uri(
+      :get,
+      'http://testhost:4242/api/v1/patient_document/ingestion_errors?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+      body: DataSamples.ingestion_errors.to_s)
+
+    it 'requests and returns the expected patient cluster' do
+      expect(described_class.ingestion_errors(
+        {}, {
+          user: { root: 'foobar', extension: 'spameggs' }
+        })).to eq(DataSamples.ingestion_errors.to_hash)
+    end
+
+  end
+
   describe 'self.base_uri' do
 
     context 'when id, root and extension are not given' do

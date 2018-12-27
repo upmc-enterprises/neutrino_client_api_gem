@@ -181,6 +181,23 @@ module Cdris
                                                         .to_hash
         end
 
+
+
+        # Gets a list of ingestion errors
+        #
+        # @param [Hash] params specify which root to get `:root` (optional)
+        # @param [Hash] options specify query values
+        # @return [Array] the ingestion erros
+        # @raise [Exceptions::BadRequestError] when CDRIS returns a 4xx status
+        def ingestion_errors(params, options = {})
+          path = "#{api(options)}/patient_document/ingestion_errors"
+          path << "/#{params[:root]}" if params[:root]
+          request(path, options)
+              .if_400_raise(Cdris::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Cdris::Gateway::Exceptions::InvalidTenantOperation)
+              .to_hash
+        end
+
         # Gets a list of a hl7 document ids
         #
         # @param [Hash] params specify which documents to get, must specify `:root`
