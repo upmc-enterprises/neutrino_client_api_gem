@@ -26,6 +26,14 @@ module Cdris
                                 .to_hash
         end
 
+        # Gets summary by type
+        #
+        # @return [Hash] the summary by type
+        def get_summary_by_type(options = {})
+          path = "#{base_uri}/summary_by_type"
+          request(path, options).to_hash
+        end
+
         # Gets the total number of documents remaining which require mapping
         #   updates. Warning: this call may be rather slow (~10+ seconds).
         #

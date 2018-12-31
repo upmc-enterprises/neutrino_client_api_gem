@@ -26,6 +26,25 @@ describe Cdris::Gateway::MapType do
 
   end
 
+  describe 'self.get_summary_by_type' do
+
+    let(:expected_summary) { { 'type_of_service'  => { 'total' => 200, 'total_mapped' => 15 },
+                               'kind_of_document' => { 'total' => 150, 'total_mapped' => 10 },
+                               'subject_matter_domain' => { 'total' => 500, 'total_mapped' => 30 },
+                               'facility' => { 'total' => 100, 'total_mapped' => 8 } } }
+
+    it 'gets a map_type' do
+      FakeWeb.register_uri(
+        :get,
+        'http://testhost:4242/api/v1/map_type/summary_by_type?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: expected_summary.to_json)
+
+      expect(described_class.get_summary_by_type).to eq(expected_summary)
+    end
+
+  end
+
+
   describe 'self.get_total_document_count_to_update' do
 
     let(:sample_document_to_update_count) { '42' }
