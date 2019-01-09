@@ -332,4 +332,69 @@ describe Cdris::Gateway::Tenants do
 
   end
 
+  describe 'self.enable_patient_identity_by_id' do
+
+    let(:response_message) { { 'id' => '1', 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true',
+                               'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true', 'patient_identity_disabled' => 'true' } }
+    let(:expected_error) { Cdris::Gateway::Exceptions::UnableToEnablePatientIdentityDisabledError }
+    before(:each) do
+      FakeWeb.register_uri(
+        :post,
+        'http://testhost:4242/api/v1/admin/tenants/patient_identity_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: response_message.to_json, status: ['200', 'OK'])
+    end
+
+    it 'returns the expected result' do
+      expect(described_class.enable_patient_identity_by_id(1, response_message)).to eq(response_message)
+    end
+
+    context 'when the server returns a 400 error' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :post,
+          'http://testhost:4242/api/v1/admin/tenants/patient_identity_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: '{ "error" : "UnableToEnablePatientIdentityDisabledError" }', status: ['400', 'Unable To Enable Patient Identity Disabled'])
+      end
+
+      it 'raises a tenant invalid error' do
+        expect { described_class.enable_patient_identity_by_id(1, response_message) }.to raise_error(expected_error)
+      end
+    end
+
+  end
+
+  describe 'self.disable_patient_identity_by_id' do
+
+    let(:response_message) { { 'id' => '1', 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true',
+                               'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true', 'patient_identity_disabled' => 'false' } }
+    let(:expected_error) { Cdris::Gateway::Exceptions::UnableToDisablePatientIdentityDisabledError }
+
+    before(:each) do
+      FakeWeb.register_uri(
+        :post,
+        'http://testhost:4242/api/v1/admin/tenants/patient_identity_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: response_message.to_json, status: ['200', 'OK'])
+    end
+
+    it 'returns the expected result' do
+      expect(described_class.disable_patient_identity_by_id(1, response_message)).to eq(response_message)
+    end
+
+    context 'when the server returns a 400 error' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :post,
+          'http://testhost:4242/api/v1/admin/tenants/patient_identity_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: '{ "error" : "UnableToDisablePatientIdentityDisabledError" }', status: ['400', 'Unable To Disable Patient Identity Disabled'])
+      end
+
+      it 'raises a tenant invalid error' do
+        expect { described_class.disable_patient_identity_by_id(1, response_message) }.to raise_error(expected_error)
+      end
+    end
+
+  end
+
 end

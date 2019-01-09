@@ -312,6 +312,12 @@ module Cdris
         end
       end
 
+      class UnableToDisablePatientIdentityDisabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to disable patient identity disabled')
+          super(errors, message)
+        end
+      end
+
       class UnableToEnableTenantEnabledError < BaseError
         def initialize(errors = [], message = 'CDRIS was unable to enable tenant enabled')
           super(errors, message)
@@ -332,6 +338,12 @@ module Cdris
 
       class UnableToEnableHfRevealEnabledError < BaseError
         def initialize(errors = [], message = 'CDRIS was unable to enable hf reveal enabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToEnablePatientIdentityDisabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to enable patient identity disabled')
           super(errors, message)
         end
       end

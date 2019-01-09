@@ -117,6 +117,26 @@ module Cdris
             .to_hash
         end
 
+        # Enable an existing tenant's patient identity disabled
+        def enable_patient_identity_by_id(id, body)
+          path = "#{base_uri}/patient_identity_enable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToEnablePatientIdentityDisabledError.new([], error))
+            .to_hash
+        end
+
+        # Disable an existing tenant's patient identity disabled
+        def disable_patient_identity_by_id(id, body)
+          path = "#{base_uri}/patient_identity_disable/#{id}"
+          response = request(path, { method: :post }, body)
+          error = JSON.parse(response.to_s)['error']
+          response
+            .if_400_raise(Cdris::Gateway::Exceptions::UnableToDisablePatientIdentityDisabledError.new([], error))
+            .to_hash
+        end
+
 
         # Gets the base URI for a tenant
         #

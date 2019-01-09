@@ -12,7 +12,7 @@
 image: jruby:1.7.24
 
 before_script:
-  - gem install bundler
+  - gem install bundler:1.12.1
   - bundler install
 
 rspec:
