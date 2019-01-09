@@ -397,4 +397,72 @@ describe Cdris::Gateway::Tenants do
 
   end
 
+  describe 'self.enable_patient_validation_by_id' do
+
+    let(:response_message) { { 'id' => '1', 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true',
+                               'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true',
+                               'patient_identity_disabled' => 'true', 'patient_validation_disabled' => 'true' } }
+    let(:expected_error) { Cdris::Gateway::Exceptions::UnableToEnablePatientValidationDisabledError }
+
+    before(:each) do
+      FakeWeb.register_uri(
+        :post,
+        'http://testhost:4242/api/v1/admin/tenants/patient_validation_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: response_message.to_json, status: ['200', 'OK'])
+    end
+
+    it 'returns the expected result' do
+      expect(described_class.enable_patient_validation_by_id(1, response_message)).to eq(response_message)
+    end
+
+    context 'when the server returns a 400 error' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :post,
+          'http://testhost:4242/api/v1/admin/tenants/patient_validation_enable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: '{ "error" : "UnableToEnablePatientValidationDisabledError" }', status: ['400', 'Unable To Enable Patient Validation Disabled'])
+      end
+
+      it 'raises a tenant invalid error' do
+        expect { described_class.enable_patient_validation_by_id(1, response_message) }.to raise_error(expected_error)
+      end
+    end
+
+  end
+
+  describe 'self.disable_patient_validation_by_id' do
+
+    let(:response_message) { { 'id' => '1', 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true',
+                               'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true',
+                               'patient_identity_disabled' => 'false', 'patient_validation_disabled' => 'false' } }
+    let(:expected_error) { Cdris::Gateway::Exceptions::UnableToDisablePatientValidationDisabledError }
+
+    before(:each) do
+      FakeWeb.register_uri(
+        :post,
+        'http://testhost:4242/api/v1/admin/tenants/patient_validation_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+        body: response_message.to_json, status: ['200', 'OK'])
+    end
+
+    it 'returns the expected result' do
+      expect(described_class.disable_patient_validation_by_id(1, response_message)).to eq(response_message)
+    end
+
+    context 'when the server returns a 400 error' do
+
+      before(:each) do
+        FakeWeb.register_uri(
+          :post,
+          'http://testhost:4242/api/v1/admin/tenants/patient_validation_disable/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: '{ "error" : "UnableToDisablePatientValidationDisabledError" }', status: ['400', 'Unable To Disable Patient Validation Disabled'])
+      end
+
+      it 'raises a tenant invalid error' do
+        expect { described_class.disable_patient_validation_by_id(1, response_message) }.to raise_error(expected_error)
+      end
+    end
+
+  end
+
 end

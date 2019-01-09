@@ -318,6 +318,12 @@ module Cdris
         end
       end
 
+      class UnableToDisablePatientValidationDisabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to disable patient validation disabled')
+          super(errors, message)
+        end
+      end
+
       class UnableToEnableTenantEnabledError < BaseError
         def initialize(errors = [], message = 'CDRIS was unable to enable tenant enabled')
           super(errors, message)
@@ -344,6 +350,12 @@ module Cdris
 
       class UnableToEnablePatientIdentityDisabledError < BaseError
         def initialize(errors = [], message = 'CDRIS was unable to enable patient identity disabled')
+          super(errors, message)
+        end
+      end
+
+      class UnableToEnablePatientValidationDisabledError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to enable patient validation disabled')
           super(errors, message)
         end
       end
