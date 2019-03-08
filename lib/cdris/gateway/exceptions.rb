@@ -288,74 +288,8 @@ module Cdris
         end
       end
 
-      class UnableToDisableTenantEnabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to disable tenant enabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToDisableIndexingEnabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to disable indexing enabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToDisableGiEnabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to disable gi enabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToDisableHfRevealEnabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to disable hf reveal enabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToDisablePatientIdentityDisabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to disable patient identity disabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToDisablePatientValidationDisabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to disable patient validation disabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToEnableTenantEnabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to enable tenant enabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToEnableIndexingEnabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to enable indexing enabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToEnableGiEnabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to enable gi enabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToEnableHfRevealEnabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to enable hf reveal enabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToEnablePatientIdentityDisabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to enable patient identity disabled')
-          super(errors, message)
-        end
-      end
-
-      class UnableToEnablePatientValidationDisabledError < BaseError
-        def initialize(errors = [], message = 'CDRIS was unable to enable patient validation disabled')
+      class UnableToUpdateTenantError < BaseError
+        def initialize(errors = [], message = 'CDRIS was unable to update tenant')
           super(errors, message)
         end
       end
