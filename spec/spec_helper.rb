@@ -118,6 +118,11 @@ class DataSamples
     self
   end
 
+  def self.ingestion_error
+    read_fixture('sample_ingestion_error.json')
+    self
+  end
+
   def self.info_deployments
     read_fixture('sample_info_deployments.json')
     self
