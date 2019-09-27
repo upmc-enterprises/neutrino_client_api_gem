@@ -6,8 +6,8 @@
     - tags
     - schedules
   tags:
-    - docker
-    - neutrino
+    - dso-runner
+    - prd
 
 image: jruby:1.7.24
 
