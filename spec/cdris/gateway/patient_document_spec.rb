@@ -512,7 +512,47 @@ describe Cdris::Gateway::PatientDocument do
 
   end
 
+  describe 'self.get_provider_payer_delta_for_patient' do
 
+    let(:delta_response) { [
+        {
+            'provider_patient_document_id' => '1',
+            'payer_patient_document_id' => '111',
+            'patient_document_root' => 'doc.r',
+            'patient_document_extension' => 'doc.x',
+            'extension_suffix' => '1',
+            'data_precedence' => 'primary',
+            'document_source_updated_at' => '2015-01-02T11:00:00.102Z'
+        },
+        {
+            'provider_patient_document_id' => '1',
+            'payer_patient_document_id' => nil,
+            'patient_document_root' => 'doc.r',
+            'patient_document_extension' => 'doc.x',
+            'extension_suffix' => '1',
+            'data_precedence' => 'primary',
+            'document_source_updated_at' => '2015-01-02T11:00:00.102Z',
+            'not_synchronized_reason' => 'out of eligibility'
+        }
+    ] }
+
+    let(:patient_root) { 'some_patient_root' }
+    let(:patient_extension) { 'some_patient_extension' }
+    let(:params) { { patient_root: patient_root, patient_extension: patient_extension } }
+
+    before(:each) do
+      FakeWeb.register_uri(
+          :get,
+          'http://testhost:4242/api/v1/governor/provider_payer_delta/some_patient_root/some_patient_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
+          body: delta_response.to_json)
+    end
+
+    it 'returns the expected result' do
+      expect(described_class.get_provider_payer_delta_for_patient(params)).to eq(delta_response)
+    end
+
+  end
+  
   describe 'self.base_uri' do
 
     context 'when id, root and extension are not given' do

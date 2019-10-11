@@ -212,6 +212,15 @@ module Cdris
             .to_hash
         end
 
+        # Gets the delta string from Governor
+        # @param [Hash] params must specify `:patient_root` and `:patient_extension`
+        # @param [Hash] options specify query values
+        # @return [Hash] the patient delta
+        def get_provider_payer_delta_for_patient(params, options = {})
+          path = "#{api}/governor/provider_payer_delta/#{URI.escape(params[:patient_root])}/#{URI.escape(params[:patient_extension])}"
+          request(path, options).to_hash
+        end
+
         # Gets a list of a hl7 document ids
         #
         # @param [Hash] params specify which documents to get, must specify `:root`
