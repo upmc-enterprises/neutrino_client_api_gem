@@ -1,37 +1,37 @@
-# CDRIS API Client gem
+# NEUTRINO API Client gem
 
 ## Versioning
 The gem follows the following versioning scheme
 ```
-<CDRIS_version>dev<major_version>.<minor_version>
+<NEUTRINO_version>dev<major_version>.<minor_version>
 ```
 where
- - `<CDRIS_version>` is the compatible version of CDRIS of which the gem acts as a gateway
- - `<major_version` is the major version of the gem, indicating breaking changes for the given version of CDRIS
+ - `<NEUTRINO_version>` is the compatible version of NEUTRINO of which the gem acts as a gateway
+ - `<major_version` is the major version of the gem, indicating breaking changes for the given version of NEUTRINO
  - `<minor_version>` is the minor version of the gem, indicating non-breaking changes
 
-The gem version can be updated in lib/cdris/gateway/version.rb
+The gem version can be updated in lib/neutrino/gateway/version.rb
 
 ## Generating
 In the project's root execute:
 ```
-gem build cdris_api_client.gemspec
+gem build neutrino_api_client.gemspec
 ```
 
 ## Packaging in a Rails project
 After generating the gem, unpack it into the Rails' project's `vendor` folder:
 ```
-gem unpack cdris_api_client-<version>.gem --target <rails_project>/vendor/gems/
+gem unpack neutrino_api_client-<version>.gem --target <rails_project>/vendor/gems/
 ```
 where
- - `<version>` is the version of the cdris_api_client
+ - `<version>` is the version of the neutrino_api_client
  - `<rails_project>` is the root directory of the rails project
 
 Add a line like the following to the project's Gemfile:
 ```
-gem 'cdris_api_client', '<version>', :path => 'vendor/gems/cdris_api_client-<version>'
+gem 'neutrino_api_client', '<version>', :path => 'vendor/gems/neutrino_api_client-<version>'
 ```
-where `<version>` is the version of the cdris_api_client
+where `<version>` is the version of the neutrino_api_client
 
 ## Development
 To pull in development dependencies, from the project's root execute:
@@ -43,22 +43,22 @@ To see the availble development tasks execute:
 rake -T
 ```
 
-## To pack into CDRIS OP UI
-To add into the CDRIS OP UI for the container build:
+## To pack into NEUTRINO OP UI
+To add into the NEUTRINO OP UI for the container build:
 ```
-cp cdris_api_client-<version>.gem ../cdris_test_ui/lib
+cp neutrino_api_client-<version>.gem ../neutrino_test_ui/lib
 ```
 
 ## Usage
 
 ```
-require 'cdris_api_client'
+require 'neutrino_api_client'
 ```
 
 ### Configuration
 
 ```
-Cdris::Api::Client.config = <some config hash>
+Neutrino::Api::Client.config = <some config hash>
 ```
 
 Where `<some config hash>` is a ruby hash that specifies the required configurations
@@ -66,7 +66,7 @@ Where `<some config hash>` is a ruby hash that specifies the required configurat
 #### Example Configuration
 
 ```
-Cdris::Api::Client.config = {
+Neutrino::Api::Client.config = {
   :protocol => 'http',
   :host => 'localhost',
   :port => '3000',
@@ -86,23 +86,23 @@ Cdris::Api::Client.config = {
 
 ### Gateway
 
-Requests to CDRIS are made through `Gateway` classes:
+Requests to NEUTRINO are made through `Gateway` classes:
 
- - `Cdris::Gateway::Info`
- - `Cdris::Gateway::MapType`
- - `Cdris::Gateway::OidText`
- - `Cdris::Gateway::NamedQuery`
- - `Cdris::Gateway::PatientDocument`
- - `Cdris::Gateway::Patient`
+ - `Neutrino::Gateway::Info`
+ - `Neutrino::Gateway::MapType`
+ - `Neutrino::Gateway::OidText`
+ - `Neutrino::Gateway::NamedQuery`
+ - `Neutrino::Gateway::PatientDocument`
+ - `Neutrino::Gateway::Patient`
 
 Requests typically return a ruby `Hash` (parsed from JSON), but they may return other data as well (e.g. `String`)
 
 ### Example Usage
 
 ```
-require 'cdris_api_client'
+require 'neutrino_api_client'
 
-Cdris::Api::Client.config = {
+Neutrino::Api::Client.config = {
   :protocol => 'http',
   :host => 'localhost',
   :port => '3000',
@@ -110,5 +110,5 @@ Cdris::Api::Client.config = {
   :user_extension => 'my_extension'
 }
 
-Cdris::Gateway::PatientDocument.get({ :id => "530fb1cce4b038c5cae1f417" })
+Neutrino::Gateway::PatientDocument.get({ :id => "530fb1cce4b038c5cae1f417" })
 ```

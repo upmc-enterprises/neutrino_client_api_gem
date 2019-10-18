@@ -1,7 +1,7 @@
 require 'bundler/setup'
 require 'active_support'
 require 'active_support/all'
-require './lib/cdris/helpers/monkey_patch'
+require './lib/neutrino/helpers/monkey_patch'
 require 'json'
 
 Bundler.setup
@@ -9,8 +9,8 @@ Bundler.setup
 require 'simplecov'
 SimpleCov.start do
   # exclude libraries used for testing only
-  add_filter './lib/cdris/gateway/exceptions.rb'
-  add_filter './lib/cdris/helpers/api_auth_modifications.rb'
+  add_filter './lib/neutrino/gateway/exceptions.rb'
+  add_filter './lib/neutrino/helpers/api_auth_modifications.rb'
 end
 SimpleCov.coverage_dir 'coverage/rspec'
 
@@ -108,8 +108,8 @@ class DataSamples
     self
   end
 
-  def self.cdris_create_patient_document_error
-    read_fixture('sample_cdris_create_patient_document_error.json')
+  def self.neutrino_create_patient_document_error
+    read_fixture('sample_neutrino_create_patient_document_error.json')
     self
   end
 
