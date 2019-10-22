@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'fakeweb',       '1.3'
   s.add_development_dependency 'guard-rspec',   '4.5'
-  s.add_development_dependency 'i18n',            '~> 0.6', '>= 0.6.4'
+  s.add_development_dependency 'i18n',            '>= 0.6.4', '~> 1.7'
   s.add_development_dependency 'multi_json',    '1.8.4'
   s.add_development_dependency 'rspec',         '3.1'
   s.add_development_dependency 'simplecov',     '0.8.2'
