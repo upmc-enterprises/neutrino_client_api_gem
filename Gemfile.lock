@@ -93,7 +93,7 @@ GEM
     timers (4.0.1)
       hitimes
     tzinfo (0.3.29)
-    yard (0.8.7)
+    yard (0.9.20)
 
 PLATFORMS
   java
@@ -108,7 +108,7 @@ DEPENDENCIES
   rspec (= 3.1)
   simplecov (= 0.8.2)
   tzinfo (= 0.3.29)
-  yard (= 0.8.7)
+  yard (= 0.9.20)
 
 BUNDLED WITH
    1.16.2
