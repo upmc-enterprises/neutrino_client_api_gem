@@ -6,7 +6,7 @@ PATH
       api-auth (= 1.4.1)
       mime-types (< 2.99)
       multipart-post (= 2.0.0)
-      rest-client (= 1.6.7)
+      rest-client (= 2.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -20,6 +20,8 @@ GEM
     coderay (1.1.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
     fakeweb (1.3.0)
     ffi (1.9.6)
     ffi (1.9.6-java)
@@ -40,6 +42,9 @@ GEM
       rspec (>= 2.99.0, < 4.0)
     hitimes (1.2.2)
     hitimes (1.2.2-java)
+    http-accept (1.7.0)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
     i18n (0.6.4)
     listen (2.8.5)
       celluloid (>= 0.15.2)
@@ -51,6 +56,7 @@ GEM
     multi_json (1.8.4)
     multipart-post (2.0.0)
     nenv (0.2.0)
+    netrc (0.11.0)
     notiffany (0.0.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -66,8 +72,11 @@ GEM
     rb-fsevent (0.9.4)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rspec (3.1.0)
       rspec-core (~> 3.1.0)
       rspec-expectations (~> 3.1.0)
@@ -93,6 +102,10 @@ GEM
     timers (4.0.1)
       hitimes
     tzinfo (0.3.29)
+    unf (0.1.4)
+      unf_ext
+    unf (0.1.4-java)
+    unf_ext (0.0.7.6)
     yard (0.8.7)
 
 PLATFORMS

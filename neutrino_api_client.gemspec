@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   # Mime-types is a unbounded dependancy of rest-client, newer versions
   # requre ruby 2 which is not desired
   s.add_runtime_dependency 'mime-types',      '< 2.99'
-  s.add_runtime_dependency 'rest-client',     '1.6.7'
+  s.add_runtime_dependency 'rest-client',     '2.1.0'
   s.add_runtime_dependency 'multipart-post',  '2.0.0'
   s.add_runtime_dependency 'activesupport',   '~> 3.0'
 
