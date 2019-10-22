@@ -1,0 +1,2 @@
+rvm use jruby-1.7.24@neutrino_api_client --create
+export JRUBY_OPTS='--1.9 -Xcext.enabled=true --debug'

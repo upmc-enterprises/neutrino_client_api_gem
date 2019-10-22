@@ -1,0 +1,10 @@
+[
+  {
+    "access_id": "1",
+    "authorization_level": "read_only"
+  },
+  {
+    "access_id": "2",
+    "authorization_level": "write_only"
+  }
+]
