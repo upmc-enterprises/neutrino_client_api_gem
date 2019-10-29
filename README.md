@@ -43,12 +43,6 @@ To see the availble development tasks execute:
 rake -T
 ```
 
-## To pack into NEUTRINO OP UI
-To add into the NEUTRINO OP UI for the container build:
-```
-cp neutrino_api_client-<version>.gem ../neutrino_test_ui/lib
-```
-
 ## Usage
 
 ```
