@@ -1,5 +1,6 @@
 require './lib/neutrino/gateway/uri/date_range'
 require './lib/neutrino/gateway/exceptions'
+require 'time'
 
 describe Neutrino::Gateway::Uri::DateRange do
 

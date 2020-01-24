@@ -2,7 +2,6 @@ require './spec/spec_helper'
 require './lib/neutrino/gateway/requestor'
 require './lib/neutrino/gateway/exceptions'
 require './lib/neutrino/gateway/azure_ad_group'
-require 'fakeweb'
 
 describe Neutrino::Gateway::AzureAdGroup do
 
@@ -17,10 +16,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/admin/azure_ad_group?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/admin/azure_ad_group?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json, status: ['200', 'OK'])
     end
 
     it 'performs a post request' do
@@ -35,10 +34,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/admin/azure_ad_group?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/admin/azure_ad_group?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -52,10 +51,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json, status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -65,10 +64,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'AzureAD Group Invalid', status: ['400', 'AzureAD Group Invalid'])
+          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'AzureAD Group Invalid', status: ['400', 'AzureAD Group Invalid'])
       end
 
       it 'raises an access level invalid error' do
@@ -79,10 +78,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
+          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
       end
 
       it 'raises an azure group not found error' do
@@ -96,10 +95,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json, status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -109,10 +108,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'AzureAD Group Invalid', status: ['400', 'AzureAD Group Invalid'])
+          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'AzureAD Group Invalid', status: ['400', 'AzureAD Group Invalid'])
       end
 
       it 'raises an azure group invalid error' do
@@ -123,10 +122,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
+          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
       end
 
       it 'raises an azure group not found error' do
@@ -138,10 +137,10 @@ describe Neutrino::Gateway::AzureAdGroup do
   describe 'self.delete_by_id' do
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :delete,
-        'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: {}.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: {}.to_json, status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -151,10 +150,10 @@ describe Neutrino::Gateway::AzureAdGroup do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :delete,
-          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
+          'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
       end
 
       it 'raises an azure group not found error' do

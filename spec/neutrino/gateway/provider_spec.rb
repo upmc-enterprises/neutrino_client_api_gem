@@ -2,7 +2,6 @@ require './spec/spec_helper'
 require './lib/neutrino/gateway/requestor'
 require './lib/neutrino/gateway/exceptions'
 require './lib/neutrino/gateway/provider'
-require 'fakeweb'
 
 describe Neutrino::Gateway::Provider do
 
@@ -17,10 +16,10 @@ describe Neutrino::Gateway::Provider do
     let(:response_message) { { 'id' => '1', 'name' => 'test_provider' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: [200, 'OK'])
     end
 
     it 'performs a post request' do
@@ -31,10 +30,10 @@ describe Neutrino::Gateway::Provider do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Invalid Provider', status: ['400', 'Invalid Provider'])
+          'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Invalid Provider', status: [400, 'Invalid Provider'])
       end
 
       it 'raises a provider invalid error' do
@@ -49,10 +48,10 @@ describe Neutrino::Gateway::Provider do
     let(:response_message) { [{ 'id' => '1', 'name' => 'test_provider' }] }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: [200, 'OK'])
     end
 
     it 'returns the expected result' do
@@ -66,10 +65,10 @@ describe Neutrino::Gateway::Provider do
     let(:response_message) { { 'id' => '1', 'name' => 'test_provider' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: [200, 'OK'])
     end
 
     it 'returns the expected result' do
@@ -79,10 +78,10 @@ describe Neutrino::Gateway::Provider do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/provider/d?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Invalid Provider', status: ['400', 'Invalid Provider'])
+          'http://testhost:4242/api/v1/provider/d?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Invalid Provider', status: [400, 'Invalid Provider'])
       end
 
       it 'raises a provider invalid error' do
@@ -93,10 +92,10 @@ describe Neutrino::Gateway::Provider do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Provider Not Found', status: ['404', 'Provider Not Found'])
+          'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Provider Not Found', status: [404, 'Provider Not Found'])
       end
 
       it 'raises a provider not found error' do
@@ -110,10 +109,10 @@ describe Neutrino::Gateway::Provider do
     let(:response_message) { { 'id' => '1', 'name' => 'test_provider' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: [200, 'OK'])
     end
 
     it 'returns the expected result' do
@@ -123,10 +122,10 @@ describe Neutrino::Gateway::Provider do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Invalid Provider', status: ['400', 'Invalid Provider'])
+          'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Invalid Provider', status: [400, 'Invalid Provider'])
       end
 
       it 'raises a provider invalid error' do
@@ -137,10 +136,10 @@ describe Neutrino::Gateway::Provider do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Provider Not Found', status: ['404', 'Provider Not Found'])
+          'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Provider Not Found', status: [404, 'Provider Not Found'])
       end
 
       it 'raises a provider not found error' do
@@ -152,10 +151,10 @@ describe Neutrino::Gateway::Provider do
   describe 'self.delete_by_id' do
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :delete,
-        'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: {}.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: {}.to_json, status: [200, 'OK'])
     end
 
     it 'returns the expected result' do
@@ -165,10 +164,10 @@ describe Neutrino::Gateway::Provider do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :delete,
-          'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Provider Not Found', status: ['404', 'Provider Not Found'])
+          'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Provider Not Found', status: [404, 'Provider Not Found'])
       end
 
       it 'raises a Provider not found error' do

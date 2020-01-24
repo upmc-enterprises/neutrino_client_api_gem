@@ -9,10 +9,10 @@
     - docker
     - neutrino
 
-image: jruby:1.7.24
+image: jruby:9.2.6
 
 before_script:
-  - gem install bundler:1.12.1
+  - gem install bundler
   - bundler install
 
 rspec:

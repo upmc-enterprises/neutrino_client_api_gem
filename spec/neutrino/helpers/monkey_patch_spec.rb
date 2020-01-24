@@ -2,10 +2,13 @@ require 'spec_helper'
 require_relative 'utc_iso8601_shared_examples'
 
 describe 'ActiveSupport::TimeWithZone' do
+
   describe '#as_json' do
-  subject { time_with_zone.as_json }
+    subject { time_with_zone.as_json }
+
     context 'when already in UTC time' do
       let(:time_with_zone) { Time.zone.now }
+
       it_behaves_like 'a UTC ISO8601 formatted Date/Time with millisecond resolution'
     end
 
@@ -14,6 +17,7 @@ describe 'ActiveSupport::TimeWithZone' do
       it_behaves_like 'a UTC ISO8601 formatted Date/Time with millisecond resolution'
     end
   end
+
 end
 
 describe 'Time' do
@@ -29,11 +33,13 @@ describe 'Time' do
 
     context 'when already in UTC time' do
       let(:time) { Time.now.utc }
+
       it_behaves_like 'a UTC ISO8601 formatted Date/Time with millisecond resolution'
     end
 
     context 'when in a non-UTC timezone' do
       let(:time) { Time.now }
+
       it_behaves_like 'a UTC ISO8601 formatted Date/Time with millisecond resolution'
     end
   end

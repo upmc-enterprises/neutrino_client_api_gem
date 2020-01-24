@@ -2,7 +2,6 @@ require './spec/spec_helper'
 require './lib/neutrino/gateway/data_quality_report'
 require './lib/neutrino/gateway/requestor'
 require './lib/neutrino/gateway/exceptions'
-require 'fakeweb'
 
 describe Neutrino::Gateway::DataQualityReport do
 
@@ -16,10 +15,10 @@ describe Neutrino::Gateway::DataQualityReport do
     let(:response_message) { { 'content' => 'some data', 'message'=>'The system is updating the report' }  }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/reports/data-quality/summary?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/reports/data-quality/summary?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -29,10 +28,10 @@ describe Neutrino::Gateway::DataQualityReport do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/reports/data-quality/summary?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Bad Request', status: ['400', 'Bad Request'])
+          'http://testhost:4242/api/v1/reports/data-quality/summary?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Bad Request', status: ['400', 'Bad Request'])
       end
 
       it 'raises a bad request error' do

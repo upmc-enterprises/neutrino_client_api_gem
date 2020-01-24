@@ -3,6 +3,7 @@ require 'active_support'
 require 'active_support/all'
 require './lib/neutrino/helpers/monkey_patch'
 require 'json'
+require 'webmock/rspec'
 
 Bundler.setup
 

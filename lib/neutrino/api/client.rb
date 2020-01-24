@@ -205,7 +205,6 @@ module Neutrino
                                       hmac_id,
                                       generate_hmac_key(tenant_is_from_configuration))
             end
-
             http.request(request)
           end
         rescue Errno::ECONNREFUSED, OpenSSL::SSL::SSLError

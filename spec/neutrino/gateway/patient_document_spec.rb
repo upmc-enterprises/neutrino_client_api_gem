@@ -2,7 +2,6 @@ require './spec/spec_helper'
 require './lib/neutrino/gateway/patient_document'
 require './lib/neutrino/gateway/requestor'
 require './lib/neutrino/gateway/exceptions'
-require 'fakeweb'
 
 describe Neutrino::Gateway::PatientDocument do
 
@@ -12,12 +11,11 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.get' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_test_patient_document.to_s)
-
     it 'requests and returns the expected patient document' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_document_test_patient_document.to_s)
       expect(described_class.get(id: '42')).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
@@ -31,20 +29,18 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'When a document exists' do
 
-      FakeWeb.register_uri(:get, "#{doc_url}/data#{query_string}", body: DataSamples.patient_document_data.to_s)
-
       it 'returns the expected patient document data' do
+        WebMock.stub_request(:get, "#{doc_url}/data#{query_string}")
+          .to_return(body: DataSamples.patient_document_data.to_s)
         expect(described_class.data(id: doc_id)).to eq(
           { data: DataSamples.patient_document_data.to_s, type: 'text/plain' })
       end
 
       formats.each do |format, type|
         context "and #{format} is the requested format" do
-
-          FakeWeb.register_uri(:get, "#{doc_url}/data.#{format}#{query_string}",
-            body: "#{format} data", content_type: type)
-
           it 'returns the expected patient document data' do
+            WebMock.stub_request(:get, "#{doc_url}/data.#{format}#{query_string}")
+              .to_return(body: "#{format} data", headers: { 'Content-type' => type })
             expect(described_class.data(id: doc_id, format: format)).to eq(
               { data: "#{format} data", type: type })
           end
@@ -56,12 +52,11 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'When a document does not exist' do
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/i_dont_exist/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        status: ['404', 'OK'])
-
       it 'raises a PatientDocumentNotFoundError when it it receives a 404 after requesting patient document data' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/i_dont_exist/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(status: ['404', 'OK'])
         expect do
           described_class.data(id: 'i_dont_exist')
         end.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
@@ -71,15 +66,14 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'When the conversion is not supported' do
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/i_not_supported/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        status: ['400', 'OK'])
-
-      it 'raises a DocumentConversionNotSupported when it it receives a 400 after requesting patient document data' do
-        expect do
+      it 'raises a DocumentConversionNotSupported when it receives a 400 after requesting patient document data' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/i_not_supported/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(status: ['400', 'OK'])
+        expect {
           described_class.data(id: 'i_not_supported')
-        end.to raise_error(Neutrino::Gateway::Exceptions::DocumentConversionNotSupported)
+        }.to raise_error(Neutrino::Gateway::Exceptions::DocumentConversionNotSupported)
       end
 
     end
@@ -88,12 +82,11 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.test_patient_document' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/test_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_test_patient_document.to_s)
-
     it 'requests and returns the expected patient test_patient_document' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/test_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_document_test_patient_document.to_s)
       expect(described_class.test_patient_document).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
@@ -101,14 +94,12 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.text' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/1234/text?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_text.to_s)
-
     it 'requests and returns the expected patient document text' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/1234/text?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_document_text.to_s)
       expect(described_class.text(
-
         id: '1234'
       )).to eq(DataSamples.patient_document_text.to_s)
     end
@@ -121,45 +112,41 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'when a non-existent document id is provided' do
 
-      FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/highlight/20160114.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam',
-      status: ['404', 'Patient Not Found'])
-
       it 'raises PatientDocumentNotFoundError' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/highlight/20160114.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          .to_return(status: ['404', 'Patient Not Found'])
         expect{described_class.highlight(params.merge(id: 20160114))}.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
       end
     end
 
     context 'when 400 returned' do
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/highlight/20160113.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam',
-        status: ['400', 'bad request'])
-
       it 'railse BadRequestError' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/highlight/20160113.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          .to_return(status: ['400', 'bad request'])
         expect{described_class.highlight(params.merge(id: 20160113))}.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
 
     context 'when 403 returned' do
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/highlight/20160112.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam',
-        status: ['403', 'bad request'])
-
       it 'railse invalid tentant error' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/highlight/20160112.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          .to_return(status: ['403', 'bad request'])
         expect{described_class.highlight(params.merge(id: 20160112))}.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
     context 'when valid id provided' do
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/highlight/neutrino.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam',
-        body: DataSamples.patient_document_text.to_s)
-
       it 'returns the highlight document' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/highlight/neutrino.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          .to_return(body: DataSamples.patient_document_text.to_s)
         expect(described_class.highlight(params.merge(id: 'neutrino'))).to eq(response_body)
       end
 
@@ -174,34 +161,31 @@ describe Neutrino::Gateway::PatientDocument do
     let(:response_body) { ['patient_document1', 'patient_document2'] }
 
     context 'when 400 returned' do
-      FakeWeb.register_uri(
-        :get,
-        "http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/invalid/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-        status: ['400', 'bad request'])
-
       it 'raise BadRequestError' do
+        WebMock.stub_request(
+          :get,
+          "http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/invalid/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+          .to_return(status: ['400', 'bad request'])
         expect{ described_class.get_by_data_status_and_time_window(params_400) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
 
     context 'when 403 returned' do
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/no_status/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        status: ['403', 'Tenant Operation Not Allowed'])
-
       it 'railse invalid tentant error' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/no_status/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(status: ['403', 'Tenant Operation Not Allowed'])
         expect{ described_class.get_by_data_status_and_time_window(params_403) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
     context 'when valid request' do
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: ['patient_document1', 'patient_document2'].to_json)
-
       it 'returns document list' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: ['patient_document1', 'patient_document2'].to_json)
         expect(described_class.get_by_data_status_and_time_window(params)).to eq(response_body)
       end
     end
@@ -214,23 +198,23 @@ describe Neutrino::Gateway::PatientDocument do
     context 'when a non-existent document id is provided' do
       let(:document_id) { 'i_dont_exist' }
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/i_dont_exist/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        status: ['404', 'OK'])
-
-      specify { expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError) }
+      it 'returns 404 PatientDocumentNotFoundError' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/i_dont_exist/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(status: ['404', 'OK'])
+        expect{ subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+      end
     end
 
     context 'when an existent document id is provided' do
       let(:document_id) { 42 }
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/42/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: DataSamples.original_metadata.to_s)
-
       it 'requests and returns the expected patient document original metadata' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/42/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: DataSamples.original_metadata.to_s)
         expect(subject).to eq(DataSamples.original_metadata.to_hash)
       end
     end
@@ -240,26 +224,27 @@ describe Neutrino::Gateway::PatientDocument do
     subject { described_class.patient_demographics(params) }
 
     context 'when a patient document exists' do
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/42/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: DataSamples.patient_demographics.to_s)
 
       context 'and a non-existent id is queried for' do
         let(:params) { { id: '35' } }
 
-        FakeWeb.register_uri(
-          :get,
-          'http://testhost:4242/api/v1/patient_document/35/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          status: 404)
-
-        specify { expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError) }
+        it 'returns 404 PatientDocumentNotFoundError' do
+          WebMock.stub_request(
+            :get,
+            'http://testhost:4242/api/v1/patient_document/35/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .to_return(status: 404)
+          expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+        end
       end
 
       context 'and its id is queried for' do
         let(:params) { { id: '42' } }
 
         it 'gets the patient documents from NEUTRINO and returns them as a hash' do
+          WebMock.stub_request(
+            :get,
+            'http://testhost:4242/api/v1/patient_document/42/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .to_return(body: DataSamples.patient_demographics.to_s)
           expect(subject).to eq(DataSamples.patient_demographics.to_hash)
         end
       end
@@ -273,12 +258,11 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'for a document root' do
 
-      FakeWeb.register_uri(
-        :get,
-        "#{api_path}&root=foobar",
-        body: [1, 4, 7].to_json)
-
       it 'requests and returns the expected patient document search' do
+        WebMock.stub_request(
+          :get,
+          "#{api_path}&root=foobar")
+          .to_return(body: [1, 4, 7].to_json)
         expect(described_class.hl7_document_ids(root: 'foobar')).to eq(ids)
       end
 
@@ -286,12 +270,11 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'for a patient root' do
 
-      FakeWeb.register_uri(
-          :get,
-          "#{api_path}&patient_root=foobar",
-          body: [1, 4, 7].to_json)
-
       it 'requests and returns the expected patient document search' do
+        WebMock.stub_request(
+          :get,
+          "#{api_path}&patient_root=foobar")
+          .to_return(body: [1, 4, 7].to_json)
         expect(described_class.hl7_document_ids(patient_root: 'foobar')).to eq(ids)
       end
 
@@ -299,12 +282,11 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'for a patient root and date range' do
 
-      FakeWeb.register_uri(
-          :get,
-          "#{api_path}&patient_root=foobar&date_from=2016-09-01&date_to=2016-09-30",
-          body: [1, 4, 7].to_json)
-
       it 'requests and returns the expected patient document search' do
+        WebMock.stub_request(
+          :get,
+          "#{api_path}&patient_root=foobar&date_from=2016-09-01&date_to=2016-09-30")
+          .to_return(body: [1, 4, 7].to_json)
         expect(described_class.hl7_document_ids(patient_root: 'foobar',
                                                 date_from: '2016-09-01',
                                                 date_to: '2016-09-30')).to eq(ids)
@@ -319,12 +301,11 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'without a precedence specified' do
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/ids?patient_root=foobar&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: [1, 4, 7].to_json)
-
       it 'requests and returns the expected patient document ids' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/ids?patient_root=foobar&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: [1, 4, 7].to_json)
         expect(described_class.patient_document_ids(patient_root: 'foobar')).to eq(ids)
       end
 
@@ -332,12 +313,11 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'with a precedence specified' do
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/ids/primary?patient_root=foobar&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&precedence=primary',
-        body: [1, 4, 7].to_json)
-
       it 'requests and returns the expected patient document ids' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/ids/primary?patient_root=foobar&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&precedence=primary')
+          .to_return(body: [1, 4, 7].to_json)
         expect(described_class.patient_document_ids(patient_root: 'foobar', precedence: 'primary')).to eq(ids)
       end
 
@@ -345,12 +325,11 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'with a date range' do
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient_document/ids/primary?date_from=2016-09-01&date_to=2016-09-30&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&precedence=primary',
-        body: [1, 4, 7].to_json)
-
       it 'requests and returns the expected patient document ids' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient_document/ids/primary?date_from=2016-09-01&date_to=2016-09-30&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&precedence=primary')
+          .to_return(body: [1, 4, 7].to_json)
         expect(described_class.patient_document_ids({ date_from: '2016-09-01', date_to: '2016-09-30', precedence: 'primary' })).to eq(ids)
       end
 
@@ -360,14 +339,12 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.search' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_search.to_s)
-
     it 'requests and returns the expected patient document search' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_document_search.to_s)
       expect(described_class.search(
-
           user: { root: 'foobar', extension: 'spameggs' }
         )).to eq(DataSamples.patient_document_search.to_hash)
     end
@@ -376,12 +353,11 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.literal_search' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/search?literal=FizzBuzz&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_search.to_s)
-
     it 'requests and returns the expected patient document literal search' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/search?literal=FizzBuzz&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_document_search.to_s)
       expect(described_class.literal_search('FizzBuzz', { user: { root: 'foobar', extension: 'spameggs' } }
           )).to eq(DataSamples.patient_document_search.to_hash)
     end
@@ -390,12 +366,11 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.cluster' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/42/cluster?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_cluster.to_s)
-
     it 'requests and returns the expected patient cluster' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/42/cluster?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_document_cluster.to_s)
       expect(described_class.cluster(
         {
           id: 42
@@ -408,12 +383,11 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.set' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/42/set?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_document_set.to_s)
-
     it 'requests and returns the expected patient set' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/42/set?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_document_set.to_s)
       expect(described_class.set(
         {
           id: 42
@@ -427,10 +401,10 @@ describe Neutrino::Gateway::PatientDocument do
   describe 'self.create' do
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
     end
 
     it 'performs a post request' do
@@ -450,12 +424,12 @@ describe Neutrino::Gateway::PatientDocument do
 
     context 'when basic auth is requested' do
 
-      FakeWeb.register_uri(
-        :post,
-        'http://john:doe@testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
-
       it 'performs a request with basic auth' do
+        WebMock.stub_request(
+          :post,
+          'http://john:doe@testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
+
         expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, anything, true).and_call_original
         expect(described_class.create('foobar', {}, true)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
       end
@@ -465,10 +439,10 @@ describe Neutrino::Gateway::PatientDocument do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: DataSamples.patient_document_test_patient_document.to_s, status: ['400', 'Bad Request'])
+          'http://testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: DataSamples.patient_document_test_patient_document.to_s, status: ['400', 'Bad Request'])
       end
 
       it 'raises a bad request error' do
@@ -482,12 +456,11 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.ingestion_errors' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/ingestion_errors?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.ingestion_errors.to_s)
-
     it 'requests and returns the list of ingestion errors' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/ingestion_errors?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.ingestion_errors.to_s)
       expect(described_class.ingestion_errors(
         {}, {
           user: { root: 'foobar', extension: 'spameggs' }
@@ -498,12 +471,11 @@ describe Neutrino::Gateway::PatientDocument do
 
   describe 'self.ingestion_error_by_id' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient_document/ingestion_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.ingestion_error.to_s)
-
     it 'requests and returns the ingestion error by id' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient_document/ingestion_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.ingestion_error.to_s)
       expect(described_class.ingestion_error_by_id(
         {}, {
         user: { root: 'foobar', extension: 'spameggs' }
@@ -541,10 +513,10 @@ describe Neutrino::Gateway::PatientDocument do
     let(:params) { { patient_root: patient_root, patient_extension: patient_extension } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/governor/provider_payer_delta/some_patient_root/some_patient_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: delta_response.to_json)
+          'http://testhost:4242/api/v1/governor/provider_payer_delta/some_patient_root/some_patient_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: delta_response.to_json)
     end
 
     it 'returns the expected result' do
@@ -552,7 +524,7 @@ describe Neutrino::Gateway::PatientDocument do
     end
 
   end
-  
+
   describe 'self.base_uri' do
 
     context 'when id, root and extension are not given' do
