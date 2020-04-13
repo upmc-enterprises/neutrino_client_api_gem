@@ -1,6 +1,5 @@
 require './spec/spec_helper'
 require './lib/neutrino/api/client'
-require 'fakeweb'
 require 'net/http'
 require 'uri'
 
@@ -128,11 +127,6 @@ describe Neutrino::Api::Client do
   end
 
   describe 'self.perform_request' do
-
-    it 'raises an error when a bogus uri is given' do
-      expect { described_class.perform_request('/bogus') }.to raise_error
-    end
-
     let(:mock_http) { Object.new }
     let(:not_found_response) { Object.new }
     let(:server_error_response) { Object.new }
@@ -142,7 +136,6 @@ describe Neutrino::Api::Client do
       allow(mock_http).to receive(:body)
       allow(Net::HTTP).to receive(:start).and_yield(mock_http)
       allow(not_found_response).to receive(:code).and_return('404')
-
       allow(server_error_response).to receive(:code).and_return('500')
       allow(server_error_response).to receive(:body).and_return('')
     end
@@ -155,6 +148,11 @@ describe Neutrino::Api::Client do
     it 'raises "Connection refused" when the http request throws an OpenSSL::SSL::SSLError' do
       allow(mock_http).to receive(:request).and_raise(OpenSSL::SSL::SSLError)
       expect { described_class.perform_request('/bogus') }.to raise_error('Connection refused')
+    end
+
+    it 'returns response with 404 code when a bogus uri is given' do
+      allow(mock_http).to receive(:request).and_return(not_found_response)
+      expect(described_class.perform_request('/bogus').code).to eq('404')
     end
 
   end

@@ -4,7 +4,6 @@ require './lib/neutrino/api/client'
 require './lib/neutrino/gateway/requestor'
 require './lib/neutrino/gateway/uri/whitelist_factory'
 require './lib/neutrino/gateway/exceptions'
-require 'fakeweb'
 
 describe Neutrino::Gateway::Patient do
 
@@ -45,23 +44,21 @@ describe Neutrino::Gateway::Patient do
 
   describe 'self.demographics' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/1234/demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_demographics.to_s)
-
     it 'performs a request returning valid demographics' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_demographics.to_s)
       expect(described_class.demographics(
         params_root_and_extension,
         user_root_and_extension)).to eq(DataSamples.patient_demographics.to_hash)
     end
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/4321/demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      status: ['404', 'OK'])
-
     it 'raises a PatientNotFoundError when it it receives a 404 after requesting patient demographics' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/4321/demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(status: ['404', 'OK'])
       expect do
         described_class.demographics(root: 'srcsys', extension: '4321')
       end.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError)
@@ -75,12 +72,11 @@ describe Neutrino::Gateway::Patient do
 
     it_behaves_like 'the_patient_identity_set_is_in_error'
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/1234/identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_identities.to_s)
-
     it 'performs a request returning valid identities' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_identities.to_s)
       expect(described_class.identities(
         params_root_and_extension,
         user_root_and_extension)).to eq(DataSamples.patient_identities.to_hash)
@@ -90,12 +86,11 @@ describe Neutrino::Gateway::Patient do
 
   describe 'self.identities_in_error' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/identities_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_identities_in_error.to_s)
-
     it 'performs a request returning identities in error' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/identities_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_identities_in_error.to_s)
       expect(described_class.identities_in_error).to eq(DataSamples.patient_identities_in_error.to_hash)
     end
 
@@ -109,11 +104,6 @@ describe Neutrino::Gateway::Patient do
     it_behaves_like 'the_patient_identity_set_is_in_error'
 
     context 'when a patient exists with root: root42 and extension: ext42' do
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient/root42/ext42/active_identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: DataSamples.patient_identities.to_s)
-
       [
         { root: 'non-exist', extension: 'non-exist' },
         { root: 'root42', extension: 'non-exist' },
@@ -122,10 +112,12 @@ describe Neutrino::Gateway::Patient do
         context "when querying for #{root_and_ext.inspect}" do
           let(:params) { root_and_ext }
 
-          FakeWeb.register_uri(
-            :get,
-            "http://testhost:4242/api/v1/patient/#{root_and_ext[:root]}/#{root_and_ext[:extension]}/active_identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-            status: 404)
+          before(:each) do
+            WebMock.stub_request(
+              :get,
+              "http://testhost:4242/api/v1/patient/#{root_and_ext[:root]}/#{root_and_ext[:extension]}/active_identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+              .to_return(status: 404)
+          end
 
           specify { expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError) }
         end
@@ -135,6 +127,10 @@ describe Neutrino::Gateway::Patient do
         let(:params) { { root: 'root42', extension: 'ext42' } }
 
         it 'is the identities returned from NEUTRINO as a hash' do
+          WebMock.stub_request(
+            :get,
+            'http://testhost:4242/api/v1/patient/root42/ext42/active_identities?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .to_return(body: DataSamples.patient_identities.to_s)
           expect(subject).to eq(DataSamples.patient_identities.to_hash)
         end
       end
@@ -146,8 +142,8 @@ describe Neutrino::Gateway::Patient do
     context 'when identity is not in error' do
 
       before(:each) do
-        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-                             body: '{ "data_status": true }', parameters: { format: 'json' })
+        WebMock.stub_request(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+                             .to_return(body: '{ "data_status": true }')
       end
 
       it 'performs a request returning true' do
@@ -159,8 +155,8 @@ describe Neutrino::Gateway::Patient do
     context 'when identity is in error' do
 
       before(:each) do
-        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-                             body: '{ "data_status": false }', parameters: { format: 'json' })
+        WebMock.stub_request(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+                             .to_return(body: '{ "data_status": false }')
       end
 
       it 'performs a request returning false' do
@@ -172,8 +168,8 @@ describe Neutrino::Gateway::Patient do
     context 'when patient does not exist' do
 
       before(:each) do
-        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-                             body: 'Patient not found.', status: ['404', 'OK'], parameters: { format: 'json' })
+        WebMock.stub_request(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/set_in_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+                             .to_return(body: 'Patient not found.', status: ['404', 'OK'])
       end
 
       it 'raises a PatientNotFoundError when it receives a 404 error' do
@@ -191,8 +187,8 @@ describe Neutrino::Gateway::Patient do
     context 'when self healing is successful' do
 
       before(:each) do
-        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-                             body: '{ "message": "Self-healing successful" }', parameters: { format: 'json' })
+        WebMock.stub_request(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+                             .to_return(body: '{ "message": "Self-healing successful" }')
       end
 
       it 'performs a request returning a success message' do
@@ -204,8 +200,8 @@ describe Neutrino::Gateway::Patient do
     context 'when a tenant is not authorized to invoke self healing' do
 
       before(:each) do
-        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-                             body: 'Operation not permitted for tenant.', status: ['403', 'OK'], parameters: { format: 'json' })
+        WebMock.stub_request(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+                             .to_return(body: 'Operation not permitted for tenant.', status: ['403', 'OK'])
       end
 
       it 'raises a InvalidTenantOperation error when it receives a 403 error' do
@@ -218,8 +214,8 @@ describe Neutrino::Gateway::Patient do
     context 'when patient does not exist in the initiate empi service' do
 
       before(:each) do
-        FakeWeb.register_uri(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar",
-                             body: 'Patient not found.', status: ['404', 'OK'], parameters: { format: 'json' })
+        WebMock.stub_request(:post, "http://testhost:4242/api/v1/patient/#{root}/#{extension}/self_healing?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+                             .to_return(body: 'Patient not found.', status: ['404', 'OK'])
       end
 
       it 'raises a PatientNotFoundError when it receives a 404 error' do
@@ -232,23 +228,21 @@ describe Neutrino::Gateway::Patient do
 
   describe 'self.valid?' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/1234/validate?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: '{"valid": true}')
-
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/fdsaf/gsaewags/validate?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: '{"valid": false}')
-
     it 'performs a request returning true given a valid user' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/validate?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: '{"valid": true}')
       expect(described_class.valid?(
         params_root_and_extension,
         user_root_and_extension)).to eq(true)
     end
 
     it 'performs a request returning false given an invalid user' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/fdsaf/gsaewags/validate?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: '{"valid": false}')
       expect(described_class.valid?(
         invalid_user_params_root_and_extension,
         user_root_and_extension)).to eq(false)
@@ -257,17 +251,17 @@ describe Neutrino::Gateway::Patient do
   end
 
   describe 'self.delete' do
+    before(:each) do
+      WebMock.stub_request(
+          :delete,
+          'http://testhost:4242/api/v1/patient/srcsys/1234/delete?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: '{"data_status": "success"}', status: 200)
 
-    FakeWeb.register_uri(
-        :delete,
-        'http://testhost:4242/api/v1/patient/srcsys/1234/delete?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: '{"data_status": "success"}',
-        status: 200)
-
-    FakeWeb.register_uri(
-        :delete,
-        'http://testhost:4242/api/v1/patient/fdsaf/gsaewags/delete?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        status: 500)
+      WebMock.stub_request(
+          :delete,
+          'http://testhost:4242/api/v1/patient/fdsaf/gsaewags/delete?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(status: 500)
+    end
 
     it 'performs a request returning 200 - the identity in error was deleted' do
       expect(described_class.delete(params_root_and_extension, user_root_and_extension)).to eq('success')
@@ -304,12 +298,11 @@ describe Neutrino::Gateway::Patient do
     let(:patient_method) { :patient_document_search }
     let(:params) { {} }
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_patient_document_search.to_s)
-
     it 'performs a request returning valid patient documents' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_patient_document_search.to_s)
       expect(described_class.patient_document_search(
         params_root_and_extension,
         user_root_and_extension)).to eq(DataSamples.patient_patient_document_search.to_hash)
@@ -347,12 +340,11 @@ describe Neutrino::Gateway::Patient do
     let(:params) { {} }
     let(:returned_ids) { [{"id" => '111'}, {"id" =>'222'}] }
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=test',
-      body: [{id: '111'}, {id:'222'}].to_json)
-
     it 'performs a request returning valid patient documents' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=test')
+        .to_return(body: [{id: '111'}, {id:'222'}].to_json)
       expect(described_class.patient_documents_literal_search(
         params_root_and_extension,
         user_root_and_extension.merge({literal: 'test'}))).to eq(returned_ids)
@@ -376,12 +368,11 @@ describe Neutrino::Gateway::Patient do
   describe 'self.patient_hl7_document_ids' do
     let(:ids) { [1, 4, 7] }
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/foo/bar/ids/hl7?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: [1, 4, 7].to_json)
-
     it 'requests and returns the expected document ids' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/foo/bar/ids/hl7?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: [1, 4, 7].to_json)
       expect(described_class.patient_hl7_document_ids(root: 'foo', extension: 'bar')).to eq(ids)
     end
 
@@ -392,12 +383,11 @@ describe Neutrino::Gateway::Patient do
     context 'Without precedence' do
       let(:ids) { [1, 2, 4, 8] }
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient/foo/bar/ids?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: [1, 2, 4, 8].to_json)
-
       it 'requests and returns the expected document ids' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient/foo/bar/ids?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: [1, 2, 4, 8].to_json)
         expect(described_class.patient_document_ids(root: 'foo', extension: 'bar')).to eq(ids)
       end
 
@@ -406,12 +396,11 @@ describe Neutrino::Gateway::Patient do
     context 'With precedence' do
       let(:ids) { [1, 2, 3, 5, 8] }
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient/foo/bar/ids/primary?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: [1, 2, 3, 5, 8].to_json)
-
       it 'requests and returns the expected document ids' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient/foo/bar/ids/primary?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: [1, 2, 3, 5, 8].to_json)
         expect(described_class.patient_document_ids(root: 'foo', extension: 'bar', precedence: 'primary')).to eq(ids)
       end
     end
@@ -421,12 +410,11 @@ describe Neutrino::Gateway::Patient do
   describe 'self.patient_document_bounds' do
     let(:patient_method) { :patient_document_bounds }
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/1234/patient_document_bounds?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_patient_document_bounds.to_s)
-
     it 'performs a request returning valid document bounds' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/patient_document_bounds?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_patient_document_bounds.to_s)
       expect(described_class.patient_document_bounds(
         params_root_and_extension,
         user_root_and_extension)).to eq(DataSamples.patient_patient_document_bounds.to_hash)
@@ -442,12 +430,11 @@ describe Neutrino::Gateway::Patient do
 
   describe 'self.subject_matter_domains' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/subject_matter_domain_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_subject_matter_domains.to_s)
-
     it 'performs a request returning valid subject matter domains' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/subject_matter_domain_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_subject_matter_domains.to_s)
       expect(described_class.subject_matter_domains(
         params_root_and_extension,
         user_root_and_extension)).to eq(DataSamples.patient_subject_matter_domains.to_hash)
@@ -457,12 +444,11 @@ describe Neutrino::Gateway::Patient do
 
   describe 'self.types_of_service' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/type_of_service_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: DataSamples.patient_types_of_service.to_s)
-
     it 'performs a request returning valid types of service' do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/patient/srcsys/1234/patient_documents/type_of_service_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.patient_types_of_service.to_s)
       expect(described_class.types_of_service(
         params_root_and_extension,
         user_root_and_extension)).to eq(DataSamples.patient_types_of_service.to_hash)
@@ -489,14 +475,13 @@ describe Neutrino::Gateway::Patient do
       let(:root) { 'somesys' }
       let(:extension) { '12345' }
 
-      FakeWeb.register_uri(
-        :get,
-        'http://testhost:4242/api/v1/patient/somesys/12345/patient_documents?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        status: '404')
-
-        it 'raises a PatientNotFoundError' do
-          expect { described_class.patient_documents({ root: root, extension: extension }) }.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError)
-        end
+      it 'raises a PatientNotFoundError' do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/patient/somesys/12345/patient_documents?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(status: 404)
+        expect { described_class.patient_documents({ root: root, extension: extension }) }.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError)
+      end
 
     end
 

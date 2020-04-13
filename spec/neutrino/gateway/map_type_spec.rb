@@ -1,7 +1,6 @@
 require './spec/spec_helper'
 require './lib/neutrino/gateway/map_type'
 require './lib/neutrino/gateway/requestor'
-require 'fakeweb'
 
 describe Neutrino::Gateway::MapType do
 
@@ -16,10 +15,10 @@ describe Neutrino::Gateway::MapType do
     let(:param_unmapped) { { unmapped: true } }
 
     it 'gets a map_type' do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/map_type/unmapped?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: DataSamples.map_type_get.to_s)
+        'http://testhost:4242/api/v1/map_type/unmapped?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.map_type_get.to_s)
 
       expect(described_class.get(param_unmapped)).to eq(DataSamples.map_type_get.to_hash)
     end
@@ -34,10 +33,10 @@ describe Neutrino::Gateway::MapType do
                                'facility' => { 'total' => 100, 'total_mapped' => 8 } } }
 
     it 'gets a map_type' do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/map_type/summary_by_type?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: expected_summary.to_json)
+        'http://testhost:4242/api/v1/map_type/summary_by_type?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: expected_summary.to_json)
 
       expect(described_class.get_summary_by_type).to eq(expected_summary)
     end
@@ -50,10 +49,10 @@ describe Neutrino::Gateway::MapType do
     let(:sample_document_to_update_count) { '42' }
 
     it 'gets a count of remaining documents' do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/map_type/total_count_to_update?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: sample_document_to_update_count)
+          'http://testhost:4242/api/v1/map_type/total_count_to_update?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: sample_document_to_update_count)
 
       expect(described_class.get_total_document_count_to_update).to eq(sample_document_to_update_count)
     end

@@ -1,7 +1,6 @@
 require './spec/spec_helper'
 require './lib/neutrino/gateway/tenants'
 require './lib/neutrino/gateway/requestor'
-require 'fakeweb'
 
 describe Neutrino::Gateway::Tenants do
 
@@ -14,10 +13,10 @@ describe Neutrino::Gateway::Tenants do
   describe 'self.get' do
 
     it 'gets tenants' do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/admin/tenants?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: DataSamples.tenants.to_s)
+        'http://testhost:4242/api/v1/admin/tenants?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: DataSamples.tenants.to_s)
 
       expect(described_class.get).to eq(DataSamples.tenants.to_hash)
     end
@@ -29,10 +28,10 @@ describe Neutrino::Gateway::Tenants do
     let(:response_message) { { 'id' => 1, 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true', 'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/admin/tenants/1?debug=false&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json)
+        'http://testhost:4242/api/v1/admin/tenants/1?debug=false&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json)
     end
 
     it 'returns the expected result' do
@@ -41,10 +40,10 @@ describe Neutrino::Gateway::Tenants do
 
     context 'when it gets a tenant with a secret key' do
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/admin/tenants/1?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: response_message.to_json)
+          'http://testhost:4242/api/v1/admin/tenants/1?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: response_message.to_json)
       end
 
       it 'returns the expected tenant with secret key' do
@@ -55,10 +54,10 @@ describe Neutrino::Gateway::Tenants do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/admin/tenants/1?debug=false&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'UnableToRetrieveTenantsError', status: ['400', 'Unable To Retrieve Tenants'])
+          'http://testhost:4242/api/v1/admin/tenants/1?debug=false&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'UnableToRetrieveTenantsError', status: ['400', 'Unable To Retrieve Tenants'])
       end
 
       it 'raises an error' do
@@ -74,10 +73,10 @@ describe Neutrino::Gateway::Tenants do
     let(:response_message) { { 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true', 'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/admin/tenants?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/admin/tenants?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json, status: ['200', 'OK'])
     end
 
     it 'performs a post request' do
@@ -92,10 +91,10 @@ describe Neutrino::Gateway::Tenants do
     let(:response_message) { { 'id' => '1', 'tid' => 'test_tenant_tid', 'name' => 'test_tenant', 'tenant_enabled' => 'true', 'indexing_enabled' => 'true', 'gi_enabled' => 'true', 'hf_reveal_enabled' => 'true' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json, status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -105,10 +104,10 @@ describe Neutrino::Gateway::Tenants do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: '{ "error" : "UnableToUpdateTenantError" }', status: ['400', 'Unable To Update Tenant'])
+          'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: '{ "error" : "UnableToUpdateTenantError" }', status: ['400', 'Unable To Update Tenant'])
       end
 
       it 'raises a tenant invalid error' do
@@ -119,10 +118,10 @@ describe Neutrino::Gateway::Tenants do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: '{ "error" : "UnableToRetrieveTenantsError" }', status: ['404', 'Unable To Retrieve Tenants'])
+          'http://testhost:4242/api/v1/admin/tenants/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: '{ "error" : "UnableToRetrieveTenantsError" }', status: ['404', 'Unable To Retrieve Tenants'])
       end
 
       it 'raises a tenant invalid error' do

@@ -1,7 +1,6 @@
 require './spec/spec_helper'
 require './lib/neutrino/gateway/nlp'
 require './lib/neutrino/gateway/requestor'
-require 'fakeweb'
 
 describe Neutrino::Gateway::Nlp do
 
@@ -12,19 +11,19 @@ describe Neutrino::Gateway::Nlp do
   describe 'self.service_running?' do
 
     it 'returns true for a service that is running' do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/nlp/hf_reveal/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        status: ['200', 'OK'])
+        'http://testhost:4242/nlp/hf_reveal/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(status: ['200', 'OK'])
 
       expect(described_class.service_running?).to eq(true)
     end
 
     it 'returns false when the api return a 502' do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/nlp/hf_reveal/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        status: ['502', 'OK'])
+        'http://testhost:4242/nlp/hf_reveal/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(status: ['502', 'OK'])
 
       expect(described_class.service_running?).to eq(false)
     end
@@ -33,12 +32,11 @@ describe Neutrino::Gateway::Nlp do
 
   describe 'self.document' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/nlp_patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: '{}')
-
     it 'gets a document' do
+      WebMock.stub_request(
+      :get,
+      'http://testhost:4242/api/v1/nlp_patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+      .to_return(body: '{}')
       expect(described_class.document(id: '42')).to eq(JSON.parse('{}'))
     end
 
@@ -52,12 +50,11 @@ describe Neutrino::Gateway::Nlp do
 
   describe 'self.data' do
 
-    FakeWeb.register_uri(
-      :get,
-      'http://testhost:4242/api/v1/nlp_patient_document/42/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-      body: 'Some Data')
-
     it 'gets data' do
+      WebMock.stub_request(
+      :get,
+      'http://testhost:4242/api/v1/nlp_patient_document/42/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+      .to_return(body: 'Some Data')
       expect(described_class.data(id: '42')).to eq({ data: 'Some Data', type: 'text/plain' })
     end
 

@@ -1,8 +1,6 @@
 require './spec/spec_helper'
 require './lib/neutrino/gateway/service'
 require './lib/neutrino/gateway/requestor'
-require 'fakeweb'
-
 
 describe Neutrino::Gateway::Service do
 
@@ -18,10 +16,10 @@ describe Neutrino::Gateway::Service do
 
     context 'when valid params are given' do
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: gi_json_data.to_json)
+          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: gi_json_data.to_json)
       end
 
       it 'gets data' do
@@ -32,10 +30,10 @@ describe Neutrino::Gateway::Service do
     context 'when no params are given' do
       let(:params) { {} }
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: {'data' => 'Some Data'}.to_json)
+          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: {'data' => 'Some Data'}.to_json)
       end
 
       it 'raises a BadRequestError' do
@@ -45,10 +43,10 @@ describe Neutrino::Gateway::Service do
 
     context 'when a document is not found' do
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          status: ['404', 'OK'])
+          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(status: [404, 'OK'])
       end
 
       it 'raises a DerivedWorkDocumentNotFoundError' do
@@ -67,10 +65,10 @@ describe Neutrino::Gateway::Service do
 
     context 'when valid params are given' do
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: {'metadata' => 'Some Data'}.to_json)
+          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: {'metadata' => 'Some Data'}.to_json)
       end
 
       it 'gets data' do
@@ -81,10 +79,10 @@ describe Neutrino::Gateway::Service do
     context 'when no params are given' do
       let(:params) { {} }
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
             :get,
-            'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-            body: {'data' => 'Some Data'}.to_json)
+            'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .to_return(body: {'data' => 'Some Data'}.to_json)
       end
 
       it 'raises a BadRequestError' do
@@ -94,10 +92,10 @@ describe Neutrino::Gateway::Service do
 
     context 'when no document is found' do
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          status: ['404', 'OK'])
+          'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(status: [404, 'OK'])
       end
 
       it 'raises a DerivedWorkDocumentNotFoundError' do

@@ -2,7 +2,6 @@ require './spec/spec_helper'
 require './lib/neutrino/gateway/requestor'
 require './lib/neutrino/gateway/exceptions'
 require './lib/neutrino/gateway/root'
-require 'fakeweb'
 
 describe Neutrino::Gateway::Root do
 
@@ -17,10 +16,10 @@ describe Neutrino::Gateway::Root do
     let(:response_message) { { 'id' => '1', 'root_type' => 'invalid', 'root' => 'test', 'long_desc' => 'long', 'short_desc' => 'short ' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: ['200', 'OK'])
     end
 
     it 'performs a post request' do
@@ -31,10 +30,10 @@ describe Neutrino::Gateway::Root do
     context 'when the invalid root' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Root Invalid', status: ['400', 'Root Invalid'])
+          'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Root Invalid', status: ['400', 'Root Invalid'])
       end
 
       it 'raises a root invalid error' do
@@ -45,10 +44,10 @@ describe Neutrino::Gateway::Root do
     context 'when associated provider does not exist' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: '{ "error": "Create or update a root with a non-existent provider" }', status: ['400'])
+          'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: '{ "error": "Create or update a root with a non-existent provider" }', status: ['400'])
       end
 
       it 'raises a PostRootWithNonExistProviderError' do
@@ -64,10 +63,10 @@ describe Neutrino::Gateway::Root do
     let(:response_message) { [{ 'id' => '1', 'root_type' => 'invalid', 'root' => 'test', 'long_desc' => 'long', 'short_desc' => 'short' }] }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/root?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -81,10 +80,10 @@ describe Neutrino::Gateway::Root do
     let(:response_message) { { 'id' => '1', 'root_type' => 'invalid', 'root' => 'test', 'long_desc' => 'long', 'short_desc' => 'short' } }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -94,10 +93,10 @@ describe Neutrino::Gateway::Root do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Root Invalid', status: ['400', 'Root Invalid'])
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Root Invalid', status: ['400', 'Root Invalid'])
       end
 
       it 'raises a root invalid error' do
@@ -108,10 +107,10 @@ describe Neutrino::Gateway::Root do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Root Not Found', status: ['404', 'Root Not Found'])
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Root Not Found', status: ['404', 'Root Not Found'])
       end
 
       it 'raises a root not found error' do
@@ -125,10 +124,10 @@ describe Neutrino::Gateway::Root do
     let(:response_message) { { 'id' => '1', 'root_type' => 'invalid', 'root' => 'test', 'long_desc' => 'long', 'short_desc' => 'short '} }
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :post,
-        'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: response_message.to_json , status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: response_message.to_json , status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -138,10 +137,10 @@ describe Neutrino::Gateway::Root do
     context 'when the server returns a 400 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Root Invalid', status: ['400', 'Root Invalid'])
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Root Invalid', status: ['400', 'Root Invalid'])
       end
 
       it 'raises a root invalid error' do
@@ -152,10 +151,10 @@ describe Neutrino::Gateway::Root do
     context 'when associated provider does not exist' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: '{ "error": "Create or update a root with a non-existent provider" }', status: ['400'])
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: '{ "error": "Create or update a root with a non-existent provider" }', status: ['400'])
       end
 
       it 'raises a root invalid error' do
@@ -166,10 +165,10 @@ describe Neutrino::Gateway::Root do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :post,
-          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Root Not Found', status: ['404', 'Root Not Found'])
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Root Not Found', status: ['404', 'Root Not Found'])
       end
 
       it 'raises a root not found error' do
@@ -181,10 +180,10 @@ describe Neutrino::Gateway::Root do
   describe 'self.delete_by_id' do
 
     before(:each) do
-      FakeWeb.register_uri(
+      WebMock.stub_request(
         :delete,
-        'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-        body: {}.to_json, status: ['200', 'OK'])
+        'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .to_return(body: {}.to_json, status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
@@ -194,10 +193,10 @@ describe Neutrino::Gateway::Root do
     context 'when the server returns a 404 error' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :delete,
-          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: 'Root Not Found', status: ['404', 'Root Not Found'])
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: 'Root Not Found', status: ['404', 'Root Not Found'])
       end
 
       it 'raises a root not found error' do
@@ -208,10 +207,10 @@ describe Neutrino::Gateway::Root do
     context 'when performs a request returning 409 - requested deletion of a root assigned to a provider' do
 
       before(:each) do
-        FakeWeb.register_uri(
+        WebMock.stub_request(
           :delete,
-          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar',
-          body: '{ "error": "Deletion of a root assigned to a provider is not allowed" }', status: ['409', 'Error'])
+          'http://testhost:4242/api/v1/root/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: '{ "error": "Deletion of a root assigned to a provider is not allowed" }', status: ['409', 'Error'])
       end
 
       it 'raises DeleteRootWithProviderError' do
