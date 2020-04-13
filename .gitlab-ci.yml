@@ -6,13 +6,13 @@
     - tags
     - schedules
   tags:
-    - docker
-    - neutrino
+    - dso-runner
+    - prd
 
-image: jruby:9.2.6
+image: jruby:1.7.24
 
 before_script:
-  - gem install bundler
+  - gem install bundler:1.12.1
   - bundler install
 
 rspec:
