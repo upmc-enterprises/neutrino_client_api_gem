@@ -1,62 +1,53 @@
-# https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
-
-ClassAndModuleChildren:
-  Enabled: false
-
-ClassLength:
-  Enabled: false
-
-CyclomaticComplexity:
-  Enabled: false
-
-Documentation:
-  Enabled: false
-
-EmptyLinesAroundBody:
-  Enabled: false
-
-Encoding:
-  Enabled: false
-
-FinalNewline:
-  Enabled: false
-
-FormatString:
-  Enabled: false
-
-LineLength:
-  Enabled: false
-
-MethodLength:
-  Enabled: false
-
-NumericLiterals:
-  Enabled: false
-
-RaiseArgs:
-  EnforcedStyle: compact
-
-RedundantBegin:
-  Enabled: false
-
-RescueModifier:
-  Enabled: false
-
-SingleLineMethods:
-  Enabled: false
-
-SpaceAroundOperators:
-  Enabled: false
-
-WordArray:
-  Enabled: false
+# Run rubocop on your git diff with the following command:
+# $ git diff --name-only develop_X.X.0 | xargs rubocop
 
 AllCops:
-  Include:
-    - Guardfile
-    - Rakefile
-    - config.ru
-    - Gemfile
-    - Capfile
+  TargetRubyVersion: 2.3.7
+
+# Test specific exceptions
+Lint/AmbiguousRegexpLiteral:
   Exclude:
-   - db/schema.rb
+    - 'features/step_definitions/*'
+
+    # Rules that are not enforced across the codebase nor during code review
+Metrics:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Style/RaiseArgs:
+  Enabled: false
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+# We use 'fail' instead of 'raise' across the codebase - this suppresses the warning
+Style/SignalException:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+
+Lint/UriEscapeUnescape:
+  Enabled: false
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
