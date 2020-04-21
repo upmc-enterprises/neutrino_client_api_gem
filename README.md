@@ -107,7 +107,11 @@ Neutrino::Api::Client.config = {
   :host => 'localhost',
   :port => '3000',
   :user_root => 'my_username',
-  :user_extension => 'my_extension'
+  :user_extension => 'my_extension',
+  :tenant_id => <tenant_id>,
+  :tenant_key => <tenant_key>,
+  :hmac_id => <app_id>,
+  :hmac_key => <app_key>
 }
 
 Neutrino::Gateway::PatientDocument.get({ :id => "530fb1cce4b038c5cae1f417" })
