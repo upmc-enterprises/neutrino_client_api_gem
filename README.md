@@ -112,3 +112,10 @@ Neutrino::Api::Client.config = {
 
 Neutrino::Gateway::PatientDocument.get({ :id => "530fb1cce4b038c5cae1f417" })
 ```
+
+## To generate release
+ - Install github-release-notes https://github.com/github-tools/github-release-notes
+ - To generate a release from a spcific tag:
+```
+  gren release --tags=<tag_name> --token ewsdewe26ffd4c1130337025b7a3f5bdewqse
+```
