@@ -189,7 +189,43 @@ describe Neutrino::Gateway::PatientDocument do
         expect(described_class.get_by_data_status_and_time_window(params)).to eq(response_body)
       end
     end
+  end
 
+  describe 'self.get_documents_by_visit_root_extension' do
+    let(:params) { { root: 'pt_root', extension: 'pt_extension', visit_root: 'v_root', visit_extension: 'v_extension' } }
+    let(:params_400) { { root: 'pt_root', extension: 'pt_extension', visit_root: 'v_root', visit_extension: 'v_extension' } }
+    let(:params_403) { { root: 'pt_root', extension: 'pt_extension', visit_root: 'v_root', visit_extension: 'v_extension' } }
+    let(:response_body) { ['patient_document1', 'patient_document2'] }
+
+    context 'when 400 returned' do
+      it 'raise BadRequestError' do
+        WebMock.stub_request(
+            :get,
+            'http://testhost:4242/api/v1/patient/pt_root/pt_extension/patient_documents/v_root/v_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .to_return(status: ['400', 'bad request'])
+        expect{ described_class.get_documents_by_visit_root_extension(params_400) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+      end
+    end
+
+    context 'when 403 returned' do
+      it 'railse invalid tentant error' do
+        WebMock.stub_request(
+            :get,
+            'http://testhost:4242/api/v1/patient/pt_root/pt_extension/patient_documents/v_root/v_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .to_return(status: ['403', 'Tenant Operation Not Allowed'])
+        expect{ described_class.get_documents_by_visit_root_extension(params_403) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+      end
+    end
+
+    context 'when valid request' do
+      it 'returns document list' do
+        WebMock.stub_request(
+            :get,
+            'http://testhost:4242/api/v1/patient/pt_root/pt_extension/patient_documents/v_root/v_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .to_return(body: ['patient_document1', 'patient_document2'].to_json)
+        expect(described_class.get_documents_by_visit_root_extension(params)).to eq(response_body)
+      end
+    end
   end
 
   describe '.original_metadata' do
