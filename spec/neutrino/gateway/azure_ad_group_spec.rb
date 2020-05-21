@@ -19,12 +19,13 @@ describe Neutrino::Gateway::AzureAdGroup do
       WebMock.stub_request(
         :post,
         'http://testhost:4242/api/v1/admin/azure_ad_group?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json, status: ['200', 'OK'])
     end
 
     it 'performs a post request' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(path, { method: :post }, body).and_call_original
-      expect(described_class.create(body)).to eq(response_message)
+      expect(Neutrino::Gateway::Requestor).to receive(:request).with(path, { method: :post, remote_ip: REMOTE_IP }, body).and_call_original
+      expect(described_class.create(body, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
   end
@@ -37,11 +38,12 @@ describe Neutrino::Gateway::AzureAdGroup do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/admin/azure_ad_group?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json , status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.show_azure_ad_groups({})).to eq(response_message.to_json)
+      expect(described_class.show_azure_ad_groups(OPTIONS_WITH_REMOTE_IP)).to eq(response_message.to_json)
     end
 
   end
@@ -54,11 +56,12 @@ describe Neutrino::Gateway::AzureAdGroup do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json, status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.get(id: 1)).to eq(response_message)
+      expect(described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -67,11 +70,12 @@ describe Neutrino::Gateway::AzureAdGroup do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'AzureAD Group Invalid', status: ['400', 'AzureAD Group Invalid'])
       end
 
       it 'raises an access level invalid error' do
-        expect { described_class.get(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
+        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
       end
     end
 
@@ -81,11 +85,12 @@ describe Neutrino::Gateway::AzureAdGroup do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
       end
 
       it 'raises an azure group not found error' do
-        expect { described_class.get(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
+        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
       end
     end
   end
@@ -98,11 +103,12 @@ describe Neutrino::Gateway::AzureAdGroup do
       WebMock.stub_request(
         :post,
         'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json, status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.update_by_id(id: 1)).to eq(response_message)
+      expect(described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -111,11 +117,12 @@ describe Neutrino::Gateway::AzureAdGroup do
         WebMock.stub_request(
           :post,
           'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'AzureAD Group Invalid', status: ['400', 'AzureAD Group Invalid'])
       end
 
       it 'raises an azure group invalid error' do
-        expect { described_class.update_by_id(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
       end
     end
 
@@ -125,11 +132,12 @@ describe Neutrino::Gateway::AzureAdGroup do
         WebMock.stub_request(
           :post,
           'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
       end
 
       it 'raises an azure group not found error' do
-        expect { described_class.update_by_id(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
       end
     end
   end
@@ -140,11 +148,12 @@ describe Neutrino::Gateway::AzureAdGroup do
       WebMock.stub_request(
         :delete,
         'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: {}.to_json, status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.delete_by_id(id: 1).to_hash).to eq({})
+      expect(described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP).to_hash).to eq({})
     end
 
     context 'when the server returns a 404 error' do
@@ -153,11 +162,12 @@ describe Neutrino::Gateway::AzureAdGroup do
         WebMock.stub_request(
           :delete,
           'http://testhost:4242/api/v1/admin/azure_ad_group/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'AzureAD Group Not Found', status: ['404', 'AzureAD Group Not Found'])
       end
 
       it 'raises an azure group not found error' do
-        expect { described_class.delete_by_id(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
+        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
       end
     end
   end

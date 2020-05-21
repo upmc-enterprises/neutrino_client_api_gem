@@ -15,8 +15,9 @@ describe Neutrino::Gateway::Info do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/cdris/deployments?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.info_deployments.to_s)
-      expect(described_class.deployments).to eq(DataSamples.info_deployments.to_hash)
+      expect(described_class.deployments(OPTIONS_WITH_REMOTE_IP)).to eq(DataSamples.info_deployments.to_hash)
     end
 
   end
@@ -27,8 +28,9 @@ describe Neutrino::Gateway::Info do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/cdris/deployment/current?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.info_current_deployment.to_s)
-      expect(described_class.current_deployment).to eq(DataSamples.info_current_deployment.to_hash)
+      expect(described_class.current_deployment(OPTIONS_WITH_REMOTE_IP)).to eq(DataSamples.info_current_deployment.to_hash)
     end
 
     let(:expected_current_deployments_uri) { '/neutrino/deployment/current' }
@@ -42,8 +44,9 @@ describe Neutrino::Gateway::Info do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/cdris/configuration/a_category?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.info_configuration.to_s)
-        expect(described_class.configuration('a_category')).to eq(DataSamples.info_configuration.to_hash)
+        expect(described_class.configuration('a_category', OPTIONS_WITH_REMOTE_IP)).to eq(DataSamples.info_configuration.to_hash)
       end
 
       it 'returns all configurations when a category is not given' do
@@ -64,16 +67,18 @@ describe Neutrino::Gateway::Info do
         WebMock.stub_request(
             :get,
             'http://testhost:4242/cdris/configuration/a_category?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&tid=some_tenant')
+            .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(body: DataSamples.info_configuration.to_s)
-        expect(described_class.configuration('a_category', tenant)).to eq(DataSamples.info_configuration.to_hash)
+        expect(described_class.configuration('a_category', tenant.merge(OPTIONS_WITH_REMOTE_IP))).to eq(DataSamples.info_configuration.to_hash)
       end
 
       it 'returns all configurations when a category is not given' do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/cdris/configuration?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&tid=some_tenant')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.info_configurations.to_s)
-        expect(described_class.configuration(nil, tenant)).to eq(DataSamples.info_configurations.to_hash)
+        expect(described_class.configuration(nil, tenant.merge(OPTIONS_WITH_REMOTE_IP))).to eq(DataSamples.info_configurations.to_hash)
       end
 
     end
