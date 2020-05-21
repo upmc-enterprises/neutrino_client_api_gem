@@ -14,18 +14,20 @@ describe Neutrino::Gateway::Nlp do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/nlp/hf_reveal/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(status: ['200', 'OK'])
 
-      expect(described_class.service_running?).to eq(true)
+      expect(described_class.service_running?(OPTIONS_WITH_REMOTE_IP)).to eq(true)
     end
 
     it 'returns false when the api return a 502' do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/nlp/hf_reveal/service_test?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(status: ['502', 'OK'])
 
-      expect(described_class.service_running?).to eq(false)
+      expect(described_class.service_running?(OPTIONS_WITH_REMOTE_IP)).to eq(false)
     end
 
   end
@@ -36,14 +38,15 @@ describe Neutrino::Gateway::Nlp do
       WebMock.stub_request(
       :get,
       'http://testhost:4242/api/v1/nlp_patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+      .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
       .to_return(body: '{}')
-      expect(described_class.document(id: '42')).to eq(JSON.parse('{}'))
+      expect(described_class.document({ id: '42' }, OPTIONS_WITH_REMOTE_IP)).to eq(JSON.parse('{}'))
     end
 
     let(:empty_params) { {} }
 
     it 'raises a BadRequestError when no params are given' do
-      expect { described_class.document(empty_params) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+      expect { described_class.document(empty_params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
     end
 
   end
@@ -54,14 +57,15 @@ describe Neutrino::Gateway::Nlp do
       WebMock.stub_request(
       :get,
       'http://testhost:4242/api/v1/nlp_patient_document/42/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+      .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
       .to_return(body: 'Some Data')
-      expect(described_class.data(id: '42')).to eq({ data: 'Some Data', type: 'text/plain' })
+      expect(described_class.data({ id: '42' }, OPTIONS_WITH_REMOTE_IP)).to eq({ data: 'Some Data', type: 'text/plain' })
     end
 
     let(:empty_params) { {} }
 
     it 'raises a BadRequestError when no params are given' do
-      expect { described_class.data(empty_params) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+      expect { described_class.data(empty_params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
     end
 
   end
@@ -69,17 +73,17 @@ describe Neutrino::Gateway::Nlp do
   describe 'self.base_uri' do
 
     let(:params) { {} }
-    let(:options) { {} }
+    let(:options) { OPTIONS_WITH_REMOTE_IP }
+    let(:options_with_debubg) { options.merge(debug: true) }
 
     context 'when the options specify debugging a valid param combination is specified' do
 
       before(:each) do
-        options[:debug] = true
         params[:id] = '254321651'
       end
 
       it 'returns a URI containing the debug component' do
-        expect(described_class.base_uri(params, options)).to match(%r{/debug/true})
+        expect(described_class.base_uri(params, options_with_debubg)).to match(%r{/debug/true})
       end
 
     end

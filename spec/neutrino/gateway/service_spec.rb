@@ -19,11 +19,12 @@ describe Neutrino::Gateway::Service do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: gi_json_data.to_json)
       end
 
       it 'gets data' do
-        expect((described_class.data(params, options))).to eq({ :data => gi_json_data.to_json, :type => 'text/plain' })
+        expect((described_class.data(params, options.merge(OPTIONS_WITH_REMOTE_IP)))).to eq({ :data => gi_json_data.to_json, :type => 'text/plain' })
       end
     end
 
@@ -33,11 +34,12 @@ describe Neutrino::Gateway::Service do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: {'data' => 'Some Data'}.to_json)
       end
 
       it 'raises a BadRequestError' do
-        expect { described_class.data(params) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.data(params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -46,12 +48,13 @@ describe Neutrino::Gateway::Service do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi/data?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: [404, 'OK'])
       end
 
       it 'raises a DerivedWorkDocumentNotFoundError' do
         expect do
-          described_class.data(params, options)
+          described_class.data(params, options.merge(OPTIONS_WITH_REMOTE_IP))
         end.to raise_error(Neutrino::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
       end
     end
@@ -68,11 +71,12 @@ describe Neutrino::Gateway::Service do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: {'metadata' => 'Some Data'}.to_json)
       end
 
       it 'gets data' do
-        expect((described_class.metadata(params, options))).to eq({ 'metadata' => 'Some Data' })
+        expect((described_class.metadata(params, options.merge(OPTIONS_WITH_REMOTE_IP)))).to eq({ 'metadata' => 'Some Data' })
       end
     end
 
@@ -82,11 +86,12 @@ describe Neutrino::Gateway::Service do
         WebMock.stub_request(
             :get,
             'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(body: {'data' => 'Some Data'}.to_json)
       end
 
       it 'raises a BadRequestError' do
-        expect { described_class.metadata(params) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.metadata(params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -95,12 +100,13 @@ describe Neutrino::Gateway::Service do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/debug/true/patient_document/01123581321/service/nlp/gi?debug=true&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: [404, 'OK'])
       end
 
       it 'raises a DerivedWorkDocumentNotFoundError' do
         expect do
-          described_class.metadata(params, options)
+          described_class.metadata(params, options.merge(OPTIONS_WITH_REMOTE_IP))
         end.to raise_error(Neutrino::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
       end
     end

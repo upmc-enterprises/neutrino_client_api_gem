@@ -11,9 +11,9 @@ module Neutrino
         #
         # @return [Boolean] true if service is running, false otherwise
         # @raise [Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status code
-        def service_running?
+        def service_running?(options = {})
           path = '/nlp/hf_reveal/service_test'
-          request(path).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
                        .code_is_not? 502
         end
 

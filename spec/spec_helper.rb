@@ -22,7 +22,9 @@ RSpec.configure do |config|
   config.tty = true
 end
 
-Time.zone = 'UTC'
+Time.zone = 'UTC'.freeze
+REMOTE_IP = '172.0.1.2'.freeze
+OPTIONS_WITH_REMOTE_IP = { remote_ip: REMOTE_IP }.freeze
 
 class DataSamples
   @current = ''

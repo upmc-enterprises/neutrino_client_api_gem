@@ -11,8 +11,8 @@ module Neutrino
         #
         # @return [Hash] an application account
         # @raise [Exceptions::UnableToCreateApplicationAccountsError] when Neutrino returns a 400 status code
-        def create(body)
-          response = request(base_uri, { method: :post }, body)
+        def create(body, options = {})
+          response = request(base_uri, options.merge(method: :post), body)
           error = JSON.parse(response.to_s)['error']
           response
             .if_400_raise(Neutrino::Gateway::Exceptions::UnableToCreateApplicationAccountsError.new([], error))
@@ -23,8 +23,8 @@ module Neutrino
         #
         # @return [Hash] the application accounts
         # @raise [Exceptions::UnableToRetrieveApplicationAccountsError] when Neutrino returns a 400 status code
-        def index
-          request(base_uri)
+        def index(options = {})
+          request(base_uri, options)
             .if_400_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
             .to_hash
         end
@@ -33,9 +33,9 @@ module Neutrino
         #
         # @return [Hash] the application account
         # @raise [Exceptions::UnableToRetrieveApplicationAccountsError] when Neutrino returns a 400 status code
-        def find_by_id(id, debug = false)
+        def find_by_id(id, options = {}, debug = false)
           path = "#{base_uri}/#{id}"
-          request(path, { debug: debug })
+          request(path, options.merge(debug: debug))
             .if_400_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
             .to_hash
         end
@@ -44,9 +44,9 @@ module Neutrino
         #
         # @return [Hash] the application account
         # @raise [Exceptions::UnableToUpdateApplicationAccountsError] when Neutrino returns a 400 status code
-        def update_by_id(id, body)
+        def update_by_id(id, body, options = {})
           path = "#{base_uri}/#{id}"
-          response = request(path, { method: :post }, body)
+          response = request(path, options.merge(method: :post), body)
           error = JSON.parse(response.to_s)['error']
           response
             .if_400_raise(Neutrino::Gateway::Exceptions::UnableToUpdateApplicationAccountsError.new([], error))

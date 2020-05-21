@@ -19,12 +19,13 @@ describe Neutrino::Gateway::Provider do
       WebMock.stub_request(
         :post,
         'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json , status: [200, 'OK'])
     end
 
     it 'performs a post request' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(path, { method: :post }, body).and_call_original
-      expect(described_class.create(body)).to eq(response_message)
+      expect(Neutrino::Gateway::Requestor).to receive(:request).with(path, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), body).and_call_original
+      expect(described_class.create(body, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -33,11 +34,12 @@ describe Neutrino::Gateway::Provider do
         WebMock.stub_request(
           :post,
           'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'Invalid Provider', status: [400, 'Invalid Provider'])
       end
 
       it 'raises a provider invalid error' do
-        expect { described_class.create(body) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
+        expect { described_class.create(body, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
       end
     end
 
@@ -51,11 +53,12 @@ describe Neutrino::Gateway::Provider do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/provider?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json , status: [200, 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.show_providers({})).to eq(response_message.to_json)
+      expect(described_class.show_providers({}, OPTIONS_WITH_REMOTE_IP)).to eq(response_message.to_json)
     end
 
   end
@@ -68,11 +71,12 @@ describe Neutrino::Gateway::Provider do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json , status: [200, 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.get(id: 1)).to eq(response_message)
+      expect(described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -81,11 +85,12 @@ describe Neutrino::Gateway::Provider do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/provider/d?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'Invalid Provider', status: [400, 'Invalid Provider'])
       end
 
       it 'raises a provider invalid error' do
-        expect { described_class.get(id: 'd') }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
+        expect { described_class.get({ id: 'd' }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
       end
     end
 
@@ -95,11 +100,12 @@ describe Neutrino::Gateway::Provider do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'Provider Not Found', status: [404, 'Provider Not Found'])
       end
 
       it 'raises a provider not found error' do
-        expect { described_class.get(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
+        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
       end
     end
   end
@@ -112,11 +118,12 @@ describe Neutrino::Gateway::Provider do
       WebMock.stub_request(
         :post,
         'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json , status: [200, 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.update_by_id(id: 1)).to eq(response_message)
+      expect(described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
@@ -125,11 +132,12 @@ describe Neutrino::Gateway::Provider do
         WebMock.stub_request(
           :post,
           'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'Invalid Provider', status: [400, 'Invalid Provider'])
       end
 
       it 'raises a provider invalid error' do
-        expect { described_class.update_by_id(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
       end
     end
 
@@ -139,11 +147,12 @@ describe Neutrino::Gateway::Provider do
         WebMock.stub_request(
           :post,
           'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'Provider Not Found', status: [404, 'Provider Not Found'])
       end
 
       it 'raises a provider not found error' do
-        expect { described_class.update_by_id(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
       end
     end
   end
@@ -154,11 +163,12 @@ describe Neutrino::Gateway::Provider do
       WebMock.stub_request(
         :delete,
         'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: {}.to_json, status: [200, 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.delete_by_id(id: 1).to_hash).to eq({})
+      expect(described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP).to_hash).to eq({})
     end
 
     context 'when the server returns a 404 error' do
@@ -167,11 +177,12 @@ describe Neutrino::Gateway::Provider do
         WebMock.stub_request(
           :delete,
           'http://testhost:4242/api/v1/provider/1?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'Provider Not Found', status: [404, 'Provider Not Found'])
       end
 
       it 'raises a Provider not found error' do
-        expect { described_class.delete_by_id(id: 1) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
+        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
       end
     end
   end
