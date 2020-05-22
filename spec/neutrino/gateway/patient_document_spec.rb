@@ -599,6 +599,40 @@ describe Neutrino::Gateway::PatientDocument do
 
   end
 
+  describe 'self.get_provider_patient_eligibility' do
+
+    let(:eligibility_response) { [
+        {
+            'patient_root' => 'EPIC.MRN.OID',
+            'patient_extension' => '111',
+            'admit_date' => '2019-12-20',
+            'discharge_date' => '2020-12-30'
+        },
+        {
+            'patient_root' => 'EPIC.MRN.OID',
+            'patient_extension' => '111',
+            'start_date' => '2019-12-20',
+            'end_date' => '2020-12-30'
+        }
+    ] }
+
+    let(:patient_root) { 'some_patient_root' }
+    let(:patient_extension) { 'some_patient_extension' }
+    let(:params) { { patient_root: patient_root, patient_extension: patient_extension } }
+
+    before(:each) do
+      WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/governor/patient_eligibility/some_patient_root/some_patient_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .to_return(body: eligibility_response.to_json)
+    end
+
+    it 'returns the expected result' do
+      expect(described_class.get_provider_patient_eligibility(params)).to eq(eligibility_response)
+    end
+
+  end
+
   describe 'self.base_uri' do
 
     context 'when id, root and extension are not given' do
