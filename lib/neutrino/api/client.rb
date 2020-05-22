@@ -16,6 +16,17 @@ module Neutrino
 
       class << self
 
+        attr_writer :correlation_id
+
+        # Returns stored correlation_id or calls the correlation_id lambda
+        # if passed one
+        def correlation_id
+          @correlation_id.call
+        rescue NoMethodError
+          @correlation_id
+        end
+
+
         # Stores and persists configuration information for the client to use in making
         #   calls to NEUTRINO
         #
@@ -193,6 +204,8 @@ module Neutrino
               request = request_klass.new(uri.request_uri)
             end
 
+            request['x-correlation-id'] = correlation_id if correlation_id
+
             if request_klass == Net::HTTP::Post
               request.content_type = 'application/json'
               request.body = body.to_json
@@ -201,9 +214,11 @@ module Neutrino
             request.basic_auth(auth_user, auth_pass) if basic_auth
 
             unless basic_auth || app_hmac_not_configured?
-              request = ApiAuth.sign!(request,
-                                      hmac_id,
-                                      generate_hmac_key(tenant_is_from_configuration))
+              request = ApiAuth.sign!(
+                  request,
+                  hmac_id,
+                  generate_hmac_key(tenant_is_from_configuration)
+              )
             end
             http.request(request)
           end

@@ -9,6 +9,22 @@ describe Neutrino::Api::Client do
     Neutrino::Api::Client.config = TestConfig.to_hash
   end
 
+  describe 'self.correlation_id' do
+    context 'when a correlation lambda is used' do
+      it 'calls the lambda' do
+        described_class.correlation_id = -> { 2 + 2 }
+        expect(described_class.correlation_id).to eq(4)
+      end
+    end
+
+    context 'when a string correlation id is used' do
+      it 'returns the string' do
+        described_class.correlation_id = 'correlation id'
+        expect(described_class.correlation_id).to eq('correlation id')
+      end
+    end
+  end
+
   describe 'self.config' do
 
     it 'returns a config dictionary when one has been set' do

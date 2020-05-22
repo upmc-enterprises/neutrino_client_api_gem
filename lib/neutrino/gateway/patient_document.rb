@@ -154,6 +154,22 @@ module Neutrino
               .to_hash
         end
 
+        # Gets patient documents by visit
+        #
+        # @param [Hash] params specify what patient to get, must specify `:root` and `:extension`, \
+        #   and which visit to get, must specify `:visit_root` and `:visit_extension`,\
+        #   and whether to inlcude 'current' filter (optional)
+        # @param [Hash] options specify query values
+        # @return [Hash] the patient documents
+        def get_documents_by_visit_root_extension(params, options = {})
+          path = "#{api(options)}/patient/#{params[:root]}/#{params[:extension]}/patient_documents/#{params[:visit_root]}/#{params[:visit_extension]}"
+          path << "/#{params[:current]}" if params[:current]
+          request(path, options)
+            .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
+            .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+            .to_hash
+        end
+
         # Creates a patient document
         #
         # @param [Hash] params specify what patient to get, must specify either `:id` or `:root` and `extension`
