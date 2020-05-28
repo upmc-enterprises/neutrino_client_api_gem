@@ -28,22 +28,3 @@ class Hash
   end
   alias_method :gateway_to_query, :gateway_to_param
 end
-
-# Force Json gem to load before we apply the monkey patch
-{}.to_json
-
-# Add millisecond to time
-module ActiveSupport
-  class TimeWithZone
-    def as_json(options = nil)
-      utc.iso8601(3)
-    end
-  end
-end
-
-# Add millisecond to time
-class Time
-  def as_json(options = nil)
-    utc.iso8601(3)
-  end
-end
