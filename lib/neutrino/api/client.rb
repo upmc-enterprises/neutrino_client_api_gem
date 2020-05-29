@@ -184,9 +184,11 @@ module Neutrino
         def build_request(path, options = {}, body = nil, basic_auth = false, http_timeout = nil)
           Net::HTTP.start(host, port, use_ssl: protocol == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE, read_timeout: http_timeout) do |http|
             request_klass = get_method(options)
+            remote_ip = options[:remote_ip] if options[:remote_ip]
             tenant_is_from_configuration = false
 
             options = options.reject { |x| x == :method } if options[:method]
+            options = options.reject { |x| x == :remote_ip } if options[:remote_ip]
 
             if tenant_configured? && options[:tid].nil?
               options[:tid] = tenant_id
@@ -205,6 +207,7 @@ module Neutrino
             end
 
             request['x-correlation-id'] = correlation_id if correlation_id
+            request['x-forwarded-for'] = remote_ip if remote_ip
 
             if request_klass == Net::HTTP::Post
               request.content_type = 'application/json'

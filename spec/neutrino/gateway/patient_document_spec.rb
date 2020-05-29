@@ -15,8 +15,9 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/42?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.patient_document_test_patient_document.to_s)
-      expect(described_class.get(id: '42')).to eq(DataSamples.patient_document_test_patient_document.to_hash)
+      expect(described_class.get({ id: '42' }, OPTIONS_WITH_REMOTE_IP)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
   end
@@ -31,8 +32,9 @@ describe Neutrino::Gateway::PatientDocument do
 
       it 'returns the expected patient document data' do
         WebMock.stub_request(:get, "#{doc_url}/data#{query_string}")
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.patient_document_data.to_s)
-        expect(described_class.data(id: doc_id)).to eq(
+        expect(described_class.data({ id: doc_id }, OPTIONS_WITH_REMOTE_IP)).to eq(
           { data: DataSamples.patient_document_data.to_s, type: 'text/plain' })
       end
 
@@ -40,8 +42,9 @@ describe Neutrino::Gateway::PatientDocument do
         context "and #{format} is the requested format" do
           it 'returns the expected patient document data' do
             WebMock.stub_request(:get, "#{doc_url}/data.#{format}#{query_string}")
+              .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
               .to_return(body: "#{format} data", headers: { 'Content-type' => type })
-            expect(described_class.data(id: doc_id, format: format)).to eq(
+            expect(described_class.data({ id: doc_id, format: format }, OPTIONS_WITH_REMOTE_IP)).to eq(
               { data: "#{format} data", type: type })
           end
         end
@@ -56,9 +59,10 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/i_dont_exist/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['404', 'OK'])
         expect do
-          described_class.data(id: 'i_dont_exist')
+          described_class.data({ id: 'i_dont_exist' }, OPTIONS_WITH_REMOTE_IP)
         end.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
       end
 
@@ -70,9 +74,10 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/i_not_supported/data?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['400', 'OK'])
         expect {
-          described_class.data(id: 'i_not_supported')
+          described_class.data({ id: 'i_not_supported' }, OPTIONS_WITH_REMOTE_IP)
         }.to raise_error(Neutrino::Gateway::Exceptions::DocumentConversionNotSupported)
       end
 
@@ -86,8 +91,9 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/test_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.patient_document_test_patient_document.to_s)
-      expect(described_class.test_patient_document).to eq(DataSamples.patient_document_test_patient_document.to_hash)
+      expect(described_class.test_patient_document(OPTIONS_WITH_REMOTE_IP)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
   end
@@ -98,9 +104,10 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/1234/text?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.patient_document_text.to_s)
       expect(described_class.text(
-        id: '1234'
+        { id: '1234' }, OPTIONS_WITH_REMOTE_IP
       )).to eq(DataSamples.patient_document_text.to_s)
     end
 
@@ -116,8 +123,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/highlight/20160114.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['404', 'Patient Not Found'])
-        expect{described_class.highlight(params.merge(id: 20160114))}.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+        expect{ described_class.highlight(params.merge(id: 20160114), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
       end
     end
 
@@ -126,8 +134,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/highlight/20160113.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['400', 'bad request'])
-        expect{described_class.highlight(params.merge(id: 20160113))}.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect{ described_class.highlight(params.merge(id: 20160113), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -136,8 +145,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/highlight/20160112.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['403', 'bad request'])
-        expect{described_class.highlight(params.merge(id: 20160112))}.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+        expect{ described_class.highlight(params.merge(id: 20160112), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
@@ -146,8 +156,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/highlight/neutrino.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.patient_document_text.to_s)
-        expect(described_class.highlight(params.merge(id: 'neutrino'))).to eq(response_body)
+        expect(described_class.highlight(params.merge(id: 'neutrino'), OPTIONS_WITH_REMOTE_IP)).to eq(response_body)
       end
 
     end
@@ -165,8 +176,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           "http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/invalid/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['400', 'bad request'])
-        expect{ described_class.get_by_data_status_and_time_window(params_400) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect{ described_class.get_by_data_status_and_time_window(params_400, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -175,8 +187,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/no_status/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['403', 'Tenant Operation Not Allowed'])
-        expect{ described_class.get_by_data_status_and_time_window(params_403) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+        expect{ described_class.get_by_data_status_and_time_window(params_403, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
@@ -185,8 +198,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: ['patient_document1', 'patient_document2'].to_json)
-        expect(described_class.get_by_data_status_and_time_window(params)).to eq(response_body)
+        expect(described_class.get_by_data_status_and_time_window(params, OPTIONS_WITH_REMOTE_IP)).to eq(response_body)
       end
     end
   end
@@ -202,8 +216,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
             :get,
             'http://testhost:4242/api/v1/patient/pt_root/pt_extension/patient_documents/v_root/v_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(status: ['400', 'bad request'])
-        expect{ described_class.get_documents_by_visit_root_extension(params_400) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect{ described_class.get_documents_by_visit_root_extension(params_400, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -212,8 +227,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
             :get,
             'http://testhost:4242/api/v1/patient/pt_root/pt_extension/patient_documents/v_root/v_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(status: ['403', 'Tenant Operation Not Allowed'])
-        expect{ described_class.get_documents_by_visit_root_extension(params_403) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+        expect{ described_class.get_documents_by_visit_root_extension(params_403, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
@@ -222,14 +238,15 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
             :get,
             'http://testhost:4242/api/v1/patient/pt_root/pt_extension/patient_documents/v_root/v_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(body: ['patient_document1', 'patient_document2'].to_json)
-        expect(described_class.get_documents_by_visit_root_extension(params)).to eq(response_body)
+        expect(described_class.get_documents_by_visit_root_extension(params, OPTIONS_WITH_REMOTE_IP)).to eq(response_body)
       end
     end
   end
 
   describe '.original_metadata' do
-    subject { described_class.original_metadata(id: document_id) }
+    subject { described_class.original_metadata({ id: document_id }, OPTIONS_WITH_REMOTE_IP) }
 
     context 'when a non-existent document id is provided' do
       let(:document_id) { 'i_dont_exist' }
@@ -238,6 +255,7 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/i_dont_exist/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['404', 'OK'])
         expect{ subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
       end
@@ -250,6 +268,7 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/42/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.original_metadata.to_s)
         expect(subject).to eq(DataSamples.original_metadata.to_hash)
       end
@@ -257,7 +276,7 @@ describe Neutrino::Gateway::PatientDocument do
   end
 
   describe '.patient_demographics' do
-    subject { described_class.patient_demographics(params) }
+    subject { described_class.patient_demographics(params, OPTIONS_WITH_REMOTE_IP) }
 
     context 'when a patient document exists' do
 
@@ -268,6 +287,7 @@ describe Neutrino::Gateway::PatientDocument do
           WebMock.stub_request(
             :get,
             'http://testhost:4242/api/v1/patient_document/35/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(status: 404)
           expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
         end
@@ -280,6 +300,7 @@ describe Neutrino::Gateway::PatientDocument do
           WebMock.stub_request(
             :get,
             'http://testhost:4242/api/v1/patient_document/42/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+            .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(body: DataSamples.patient_demographics.to_s)
           expect(subject).to eq(DataSamples.patient_demographics.to_hash)
         end
@@ -298,8 +319,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           "#{api_path}&root=foobar")
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: [1, 4, 7].to_json)
-        expect(described_class.hl7_document_ids(root: 'foobar')).to eq(ids)
+        expect(described_class.hl7_document_ids({ root: 'foobar' }, OPTIONS_WITH_REMOTE_IP)).to eq(ids)
       end
 
     end
@@ -310,8 +332,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           "#{api_path}&patient_root=foobar")
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: [1, 4, 7].to_json)
-        expect(described_class.hl7_document_ids(patient_root: 'foobar')).to eq(ids)
+        expect(described_class.hl7_document_ids({ patient_root: 'foobar' }, OPTIONS_WITH_REMOTE_IP)).to eq(ids)
       end
 
     end
@@ -322,10 +345,11 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           "#{api_path}&patient_root=foobar&date_from=2016-09-01&date_to=2016-09-30")
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: [1, 4, 7].to_json)
-        expect(described_class.hl7_document_ids(patient_root: 'foobar',
+        expect(described_class.hl7_document_ids({ patient_root: 'foobar',
                                                 date_from: '2016-09-01',
-                                                date_to: '2016-09-30')).to eq(ids)
+                                                date_to: '2016-09-30' }, OPTIONS_WITH_REMOTE_IP)).to eq(ids)
       end
 
     end
@@ -341,8 +365,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/ids?patient_root=foobar&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: [1, 4, 7].to_json)
-        expect(described_class.patient_document_ids(patient_root: 'foobar')).to eq(ids)
+        expect(described_class.patient_document_ids({ patient_root: 'foobar' }, OPTIONS_WITH_REMOTE_IP)).to eq(ids)
       end
 
     end
@@ -353,8 +378,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/ids/primary?patient_root=foobar&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&precedence=primary')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: [1, 4, 7].to_json)
-        expect(described_class.patient_document_ids(patient_root: 'foobar', precedence: 'primary')).to eq(ids)
+        expect(described_class.patient_document_ids({ patient_root: 'foobar', precedence: 'primary' }, OPTIONS_WITH_REMOTE_IP)).to eq(ids)
       end
 
     end
@@ -365,8 +391,9 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/patient_document/ids/primary?date_from=2016-09-01&date_to=2016-09-30&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&precedence=primary')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: [1, 4, 7].to_json)
-        expect(described_class.patient_document_ids({ date_from: '2016-09-01', date_to: '2016-09-30', precedence: 'primary' })).to eq(ids)
+        expect(described_class.patient_document_ids({ date_from: '2016-09-01', date_to: '2016-09-30', precedence: 'primary' }, OPTIONS_WITH_REMOTE_IP)).to eq(ids)
       end
 
     end
@@ -379,9 +406,10 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/search?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.patient_document_search.to_s)
       expect(described_class.search(
-          user: { root: 'foobar', extension: 'spameggs' }
+          { user: { root: 'foobar', extension: 'spameggs' } }.merge(OPTIONS_WITH_REMOTE_IP)
         )).to eq(DataSamples.patient_document_search.to_hash)
     end
 
@@ -393,8 +421,9 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/search?literal=FizzBuzz&user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.patient_document_search.to_s)
-      expect(described_class.literal_search('FizzBuzz', { user: { root: 'foobar', extension: 'spameggs' } }
+      expect(described_class.literal_search('FizzBuzz', { user: { root: 'foobar', extension: 'spameggs' } }.merge(OPTIONS_WITH_REMOTE_IP)
           )).to eq(DataSamples.patient_document_search.to_hash)
     end
 
@@ -406,13 +435,14 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/42/cluster?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.patient_document_cluster.to_s)
       expect(described_class.cluster(
         {
           id: 42
         }, {
           user: { root: 'foobar', extension: 'spameggs' }
-        })).to eq(DataSamples.patient_document_cluster.to_hash)
+        }.merge(OPTIONS_WITH_REMOTE_IP))).to eq(DataSamples.patient_document_cluster.to_hash)
     end
 
   end
@@ -423,39 +453,42 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/42/set?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.patient_document_set.to_s)
       expect(described_class.set(
         {
           id: 42
         }, {
           user: { root: 'foobar', extension: 'spameggs' }
-        })).to eq(DataSamples.patient_document_set.to_hash)
+        }.merge(OPTIONS_WITH_REMOTE_IP))).to eq(DataSamples.patient_document_set.to_hash)
     end
 
   end
 
   describe 'self.create' do
+    let(:options) { {}.merge(OPTIONS_WITH_REMOTE_IP) }
 
     before(:each) do
       WebMock.stub_request(
         :post,
         'http://testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
     end
 
     it 'performs a post request' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, { method: :post }, anything, anything).and_call_original
-      expect(described_class.create).to eq(DataSamples.patient_document_test_patient_document.to_hash)
+      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), anything, anything).and_call_original
+      expect(described_class.create(nil, options)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
     it 'performs a request with the passed body' do
       expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar', anything).and_call_original
-      expect(described_class.create('foobar')).to eq(DataSamples.patient_document_test_patient_document.to_hash)
+      expect(described_class.create('foobar', options)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
     it 'performs a request without basic auth' do
       expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, anything, false).and_call_original
-      expect(described_class.create('foobar')).to eq(DataSamples.patient_document_test_patient_document.to_hash)
+      expect(described_class.create('foobar', options)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
     context 'when basic auth is requested' do
@@ -464,10 +497,11 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :post,
           'http://john:doe@testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
 
         expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, anything, true).and_call_original
-        expect(described_class.create('foobar', {}, true)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
+        expect(described_class.create('foobar', options, true)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
       end
 
     end
@@ -478,12 +512,13 @@ describe Neutrino::Gateway::PatientDocument do
         WebMock.stub_request(
           :post,
           'http://testhost:4242/api/v1/patient_document?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.patient_document_test_patient_document.to_s, status: ['400', 'Bad Request'])
       end
 
       it 'raises a bad request error' do
         expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, anything, anything).and_call_original
-        expect { described_class.create }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.create(nil, options) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
 
     end
@@ -496,11 +531,12 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/ingestion_errors?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.ingestion_errors.to_s)
       expect(described_class.ingestion_errors(
         {}, {
           user: { root: 'foobar', extension: 'spameggs' }
-        })).to eq(DataSamples.ingestion_errors.to_hash)
+        }.merge(OPTIONS_WITH_REMOTE_IP))).to eq(DataSamples.ingestion_errors.to_hash)
     end
 
   end
@@ -511,11 +547,12 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/patient_document/ingestion_error?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.ingestion_error.to_s)
       expect(described_class.ingestion_error_by_id(
         {}, {
         user: { root: 'foobar', extension: 'spameggs' }
-      })).to eq(DataSamples.ingestion_error.to_hash)
+      }.merge(OPTIONS_WITH_REMOTE_IP))).to eq(DataSamples.ingestion_error.to_hash)
     end
 
   end
@@ -552,11 +589,12 @@ describe Neutrino::Gateway::PatientDocument do
       WebMock.stub_request(
           :get,
           'http://testhost:4242/api/v1/governor/provider_payer_delta/some_patient_root/some_patient_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: delta_response.to_json)
     end
 
     it 'returns the expected result' do
-      expect(described_class.get_provider_payer_delta_for_patient(params)).to eq(delta_response)
+      expect(described_class.get_provider_payer_delta_for_patient(params, OPTIONS_WITH_REMOTE_IP)).to eq(delta_response)
     end
 
   end

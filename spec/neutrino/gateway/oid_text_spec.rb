@@ -25,18 +25,20 @@ describe Neutrino::Gateway::OidText do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/oid_text/MRN?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.oid_text_get.to_s)
 
-      expect(described_class.get({ 'group' => 'MRN' })).to eq(DataSamples.oid_text_get.to_hash)
+      expect(described_class.get({ 'group' => 'MRN' }, OPTIONS_WITH_REMOTE_IP)).to eq(DataSamples.oid_text_get.to_hash)
     end
 
     it 'gets a oid_text with group and oid' do
       WebMock.stub_request(
         :get,
         'http://testhost:4242/api/v1/oid_text/MRN/MRN.OID?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: DataSamples.oid_text_get.to_s)
 
-      expect(described_class.get({ 'group' => 'MRN', 'oid' => 'MRN.OID' })).to eq(DataSamples.oid_text_get.to_hash)
+      expect(described_class.get({ 'group' => 'MRN', 'oid' => 'MRN.OID' }, OPTIONS_WITH_REMOTE_IP)).to eq(DataSamples.oid_text_get.to_hash)
     end
 
   end

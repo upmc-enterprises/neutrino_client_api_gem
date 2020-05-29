@@ -43,12 +43,6 @@ To see the availble development tasks execute:
 rake -T
 ```
 
-## To pack into NEUTRINO OP UI
-To add into the NEUTRINO OP UI for the container build:
-```
-cp neutrino_api_client-<version>.gem ../neutrino_test_ui/lib
-```
-
 ## Usage
 
 ```
@@ -83,6 +77,7 @@ Neutrino::Api::Client.config = {
 **Notes**
 
  - The key`:api_version` is not required, but will default to `'1'` if not specified.
+ - To follow the HIPAA Compliance, you should always pass :remote_ip in the option when you use Neutrino::Gateway
 
 ### Gateway
 
@@ -114,7 +109,7 @@ Neutrino::Api::Client.config = {
   :hmac_key => <app_key>
 }
 
-Neutrino::Gateway::PatientDocument.get({ :id => "530fb1cce4b038c5cae1f417" })
+Neutrino::Gateway::PatientDocument.get({ id: "530fb1cce4b038c5cae1f417" }, { remote_ip: "100.1.24.1" })
 ```
 
 ## To generate release

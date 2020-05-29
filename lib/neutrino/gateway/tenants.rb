@@ -11,9 +11,9 @@ module Neutrino
         #
         # @return [Hash] the tenants
         # @raise [Exceptions::UnableToRetrieveTenantsError] when NEUTRINO returns a 400 status code
-        def get
+        def get(options = {})
           path = "#{self.api}/admin/tenants"
-          request(path).if_400_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveTenantsError).to_hash
+          request(path, options).if_400_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveTenantsError).to_hash
         end
 
         #Show tenants
@@ -23,9 +23,9 @@ module Neutrino
         end
 
         #Gets a tenant
-        def find_by_id(id, debug = false)
+        def find_by_id(id, options = {}, debug = false)
           path = "#{base_uri}/#{id}"
-          request(path, { debug: debug })
+          request(path, options.merge(debug: debug))
             .if_400_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveTenantsError)
             .to_hash
         end
@@ -38,9 +38,9 @@ module Neutrino
         end
 
         # Updates a tenant
-        def update_by_id(id, body)
+        def update_by_id(id, body, options = {})
           path = "#{base_uri}/#{id}"
-          request(path, { method: :post }, body).if_404_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveTenantsError)
+          request(path, options.merge(method: :post), body).if_404_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveTenantsError)
             .if_400_raise(Neutrino::Gateway::Exceptions::UnableToUpdateTenantError)
             .to_hash
         end

@@ -11,9 +11,9 @@ module Neutrino
         #
         # @return [Hash] the deployments
         # @raise [Exceptions::UnableToParseVersionHistoryError] when NEUTRINO returns a 400 status code
-        def deployments
+        def deployments(options = {})
           path = "#{base_uri}/deployments"
-          request(path).if_400_raise(Neutrino::Gateway::Exceptions::UnableToParseVersionHistoryError)
+          request(path, options).if_400_raise(Neutrino::Gateway::Exceptions::UnableToParseVersionHistoryError)
                        .to_hash
         end
 
@@ -21,9 +21,9 @@ module Neutrino
         #
         # @return [Hash] info about the current deployment
         # @raise [Exceptions::UnableToParseVersionInformationError] when NEUTRINO returns a 400 status code
-        def current_deployment
+        def current_deployment(options = {})
           path = "#{base_uri}/deployment/current"
-          request(path).if_400_raise(Neutrino::Gateway::Exceptions::UnableToParseVersionInformationError)
+          request(path, options).if_400_raise(Neutrino::Gateway::Exceptions::UnableToParseVersionInformationError)
                        .to_hash
         end
 
