@@ -237,6 +237,15 @@ module Neutrino
           request(path, options).to_hash
         end
 
+        # Gets eligibility information about a patient, including self pay information
+        # @param [Hash] params must specify `:patient_root` and `:patient_extension`
+        # @param [Hash] options specify query values
+        # @return array of hashes with eligibility and self pay information
+        def get_provider_patient_eligibility(params, options = {})
+          path = "#{api}/governor/patient_eligibility/#{URI.escape(params[:patient_root])}/#{URI.escape(params[:patient_extension])}"
+          request(path, options).to_hash
+        end
+
         # Gets a list of a hl7 document ids
         #
         # @param [Hash] params specify which documents to get, must specify `:root`
