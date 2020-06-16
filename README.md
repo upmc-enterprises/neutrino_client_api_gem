@@ -43,6 +43,11 @@ To see the availble development tasks execute:
 rake -T
 ```
 
+To run unit test:
+```
+bundle exec rspec
+```
+
 ## Usage
 
 ```
