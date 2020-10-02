@@ -6,16 +6,25 @@ module Neutrino
     class DataQualityReport < Neutrino::Gateway::Requestor
       private_class_method :new
       class << self
-        
+
         # Get the summary of data quality
         # @param [Hash] options specify query values
         # @return [Hash] NEUTRINO response
         def summary(options = {})
           path = "#{api}/reports/data-quality/summary"
           request(path, options).
-            if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError.new()).to_hash
+            if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError.new).to_hash
         end
 
+        # Update the twelve month volume report
+        # Create a new one if there is no existing report
+        # @param [Hash] options specify query values
+        # @return [Hash] NEUTRINO response
+        def twelve_month_volume(options = {})
+          path = "#{api}/reports/data-quality/twelve_month_volume"
+          request(path, options)
+            .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError.new).to_hash
+        end
       end
     end
   end
