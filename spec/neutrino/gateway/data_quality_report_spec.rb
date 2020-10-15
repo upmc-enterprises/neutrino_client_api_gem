@@ -39,33 +39,62 @@ describe Neutrino::Gateway::DataQualityReport do
     end
   end
 
-  describe 'self.twelve_month_volume' do
-    let(:path) { '/api/v1/reports/data-quality/twelve_month_volume' }
+  describe 'self.twelve_month_volume_by_source_created_at' do
     let(:response_message) { { 'content' => 'some data', 'message'=>'The system is updating the report' }  }
 
     before(:each) do
       WebMock.stub_request(
         :get,
-        'http://testhost:4242/api/v1/reports/data-quality/twelve_month_volume?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        'http://testhost:4242/api/v1/reports/data-quality/twelve_month_volume_by_source_created_at?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
         .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
         .to_return(body: response_message.to_json , status: ['200', 'OK'])
     end
 
     it 'returns the expected result' do
-      expect(described_class.twelve_month_volume(OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
+      expect(described_class.twelve_month_volume_by_source_created_at(OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
     context 'when the server returns a 400 error' do
       before(:each) do
         WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/reports/data-quality/twelve_month_volume?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          'http://testhost:4242/api/v1/reports/data-quality/twelve_month_volume_by_source_created_at?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: 'Bad Request', status: ['400', 'Bad Request'])
       end
 
       it 'raises a bad request error' do
-        expect { described_class.twelve_month_volume(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.twelve_month_volume_by_source_created_at(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+      end
+    end
+  end
+
+  describe 'self.twelve_month_volume_by_created_at' do
+    let(:response_message) { { 'content' => 'some data', 'message'=>'The system is updating the report' }  }
+
+    before(:each) do
+      WebMock.stub_request(
+        :get,
+        'http://testhost:4242/api/v1/reports/data-quality/twelve_month_volume_by_created_at?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+        .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
+        .to_return(body: response_message.to_json , status: ['200', 'OK'])
+    end
+
+    it 'returns the expected result' do
+      expect(described_class.twelve_month_volume_by_created_at(OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
+    end
+
+    context 'when the server returns a 400 error' do
+      before(:each) do
+        WebMock.stub_request(
+          :get,
+          'http://testhost:4242/api/v1/reports/data-quality/twelve_month_volume_by_created_at?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
+          .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
+          .to_return(body: 'Bad Request', status: ['400', 'Bad Request'])
+      end
+
+      it 'raises a bad request error' do
+        expect { described_class.twelve_month_volume_by_created_at(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
   end
