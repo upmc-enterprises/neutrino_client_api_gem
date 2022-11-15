@@ -1,5 +1,5 @@
-require 'neutrino/gateway/requestor'
-require 'neutrino/gateway/exceptions'
+require 'documents/gateway/requestor'
+require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway

@@ -1,5 +1,5 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/uri/whitelist'
+require './lib/documents/gateway/uri/whitelist'
 
 describe Neutrino::Gateway::Uri::Whitelist do
 

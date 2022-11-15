@@ -1,7 +1,7 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/patient_document'
-require './lib/neutrino/gateway/requestor'
-require './lib/neutrino/gateway/exceptions'
+require './lib/documents/gateway/patient_document'
+require './lib/documents/gateway/requestor'
+require './lib/documents/gateway/exceptions'
 
 describe Neutrino::Gateway::PatientDocument do
 
@@ -155,10 +155,10 @@ describe Neutrino::Gateway::PatientDocument do
       it 'returns the highlight document' do
         WebMock.stub_request(
           :get,
-          'http://testhost:4242/api/v1/patient_document/highlight/neutrino.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
+          'http://testhost:4242/api/v1/patient_document/highlight/documents.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.patient_document_text.to_s)
-        expect(described_class.highlight(params.merge(id: 'neutrino'), OPTIONS_WITH_REMOTE_IP)).to eq(response_body)
+        expect(described_class.highlight(params.merge(id: 'documents'), OPTIONS_WITH_REMOTE_IP)).to eq(response_body)
       end
 
     end

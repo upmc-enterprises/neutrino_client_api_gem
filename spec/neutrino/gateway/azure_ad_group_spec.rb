@@ -1,7 +1,7 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/requestor'
-require './lib/neutrino/gateway/exceptions'
-require './lib/neutrino/gateway/azure_ad_group'
+require './lib/documents/gateway/requestor'
+require './lib/documents/gateway/exceptions'
+require './lib/documents/gateway/azure_ad_group'
 
 describe Neutrino::Gateway::AzureAdGroup do
 
@@ -12,8 +12,8 @@ describe Neutrino::Gateway::AzureAdGroup do
   describe 'self.create' do
 
     let(:path) { '/api/v1/admin/azure_ad_group' }
-    let(:body) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
-    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
+    let(:body) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'documents', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
+    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'documents', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
 
     before(:each) do
       WebMock.stub_request(
@@ -32,7 +32,7 @@ describe Neutrino::Gateway::AzureAdGroup do
 
   describe 'self.show_azure_ad_groups' do
 
-    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
+    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'documents', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
 
     before(:each) do
       WebMock.stub_request(
@@ -50,7 +50,7 @@ describe Neutrino::Gateway::AzureAdGroup do
 
   describe 'self.get' do
 
-    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
+    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'documents', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
 
     before(:each) do
       WebMock.stub_request(
@@ -97,7 +97,7 @@ describe Neutrino::Gateway::AzureAdGroup do
 
   describe 'self.update_by_id' do
 
-    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'neutrino', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
+    let(:response_message) { { 'access_level' => 'AR', 'enviroment' => 'development', 'application' => 'documents', 'guid' => '8945f9a9-c886-41c5-b851-deb5f87467f2', 'id' => '1' } }
 
     before(:each) do
       WebMock.stub_request(

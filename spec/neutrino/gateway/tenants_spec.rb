@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/tenants'
-require './lib/neutrino/gateway/requestor'
+require './lib/documents/gateway/tenants'
+require './lib/documents/gateway/requestor'
 
 describe Neutrino::Gateway::Tenants do
 

@@ -1,5 +1,5 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/info'
+require './lib/documents/gateway/info'
 
 describe Neutrino::Gateway::Info do
 
@@ -33,7 +33,7 @@ describe Neutrino::Gateway::Info do
       expect(described_class.current_deployment(OPTIONS_WITH_REMOTE_IP)).to eq(DataSamples.info_current_deployment.to_hash)
     end
 
-    let(:expected_current_deployments_uri) { '/neutrino/deployment/current' }
+    let(:expected_current_deployments_uri) { '/documents/deployment/current' }
 
   end
 

@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/responses/response_handler'
-require './lib/neutrino/gateway/exceptions'
+require './lib/documents/gateway/responses/response_handler'
+require './lib/documents/gateway/exceptions'
 
 describe Neutrino::Gateway::Responses::ResponseHandler do
   let(:response_handler) { Neutrino::Gateway::Responses::ResponseHandler.new }

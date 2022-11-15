@@ -1,5 +1,5 @@
-require 'neutrino/api/client'
-require 'neutrino/gateway/requestor'
+require 'documents/api/client'
+require 'documents/gateway/requestor'
 
 module Neutrino
   module Gateway

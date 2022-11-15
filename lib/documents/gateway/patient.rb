@@ -1,7 +1,7 @@
-require 'neutrino/gateway/requestor'
-require 'neutrino/gateway/uri/date_range'
-require 'neutrino/gateway/exceptions'
-require 'neutrino/gateway/uri/whitelist_factory'
+require 'documents/gateway/requestor'
+require 'documents/gateway/uri/date_range'
+require 'documents/gateway/exceptions'
+require 'documents/gateway/uri/whitelist_factory'
 
 module Neutrino
   module Gateway

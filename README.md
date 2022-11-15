@@ -10,28 +10,28 @@ where
  - `<major_version` is the major version of the gem, indicating breaking changes for the given version of NEUTRINO
  - `<minor_version>` is the minor version of the gem, indicating non-breaking changes
 
-The gem version can be updated in lib/neutrino/gateway/version.rb
+The gem version can be updated in lib/documents/gateway/version.rb
 
 ## Generating
 In the project's root execute:
 ```
-gem build neutrino_api_client.gemspec
+gem build document_api_client.gemspec
 ```
 
 ## Packaging in a Rails project
 After generating the gem, unpack it into the Rails' project's `vendor` folder:
 ```
-gem unpack neutrino_api_client-<version>.gem --target <rails_project>/vendor/gems/
+gem unpack document_api_client-<version>.gem --target <rails_project>/vendor/gems/
 ```
 where
- - `<version>` is the version of the neutrino_api_client
+ - `<version>` is the version of the document_api_client
  - `<rails_project>` is the root directory of the rails project
 
 Add a line like the following to the project's Gemfile:
 ```
-gem 'neutrino_api_client', '<version>', :path => 'vendor/gems/neutrino_api_client-<version>'
+gem 'document_api_client', '<version>', :path => 'vendor/gems/document_api_client-<version>'
 ```
-where `<version>` is the version of the neutrino_api_client
+where `<version>` is the version of the document_api_client
 
 ## Development
 To pull in development dependencies, from the project's root execute:
@@ -51,7 +51,7 @@ bundle exec rspec
 ## Usage
 
 ```
-require 'neutrino_api_client'
+require 'document_api_client'
 ```
 
 ### Configuration
@@ -100,7 +100,7 @@ Requests typically return a ruby `Hash` (parsed from JSON), but they may return 
 ### Example Usage
 
 ```
-require 'neutrino_api_client'
+require 'document_api_client'
 
 Neutrino::Api::Client.config = {
   :protocol => 'http',

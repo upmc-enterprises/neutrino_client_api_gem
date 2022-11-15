@@ -1,5 +1,5 @@
-require 'neutrino/gateway/exceptions'
-require 'neutrino/gateway/uri/whitelist'
+require 'documents/gateway/exceptions'
+require 'documents/gateway/uri/whitelist'
 
 module Neutrino
   module Gateway

@@ -1,6 +1,6 @@
-require 'neutrino/gateway/exceptions'
-require 'neutrino/api/client'
-require 'neutrino/gateway/responses/response_handler'
+require 'documents/gateway/exceptions'
+require 'documents/api/client'
+require 'documents/gateway/responses/response_handler'
 
 module Neutrino
   module Gateway

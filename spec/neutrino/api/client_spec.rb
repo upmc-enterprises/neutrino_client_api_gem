@@ -1,5 +1,5 @@
 require './spec/spec_helper'
-require './lib/neutrino/api/client'
+require './lib/documents/api/client'
 require 'net/http'
 require 'uri'
 

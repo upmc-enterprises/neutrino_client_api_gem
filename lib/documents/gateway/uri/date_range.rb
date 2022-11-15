@@ -1,4 +1,4 @@
-require 'neutrino/gateway/exceptions'
+require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway

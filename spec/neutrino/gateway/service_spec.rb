@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/service'
-require './lib/neutrino/gateway/requestor'
+require './lib/documents/gateway/service'
+require './lib/documents/gateway/requestor'
 
 describe Neutrino::Gateway::Service do
 

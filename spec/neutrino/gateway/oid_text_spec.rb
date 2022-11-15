@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/oid_text'
-require './lib/neutrino/gateway/requestor'
+require './lib/documents/gateway/oid_text'
+require './lib/documents/gateway/requestor'
 
 describe Neutrino::Gateway::OidText do
 

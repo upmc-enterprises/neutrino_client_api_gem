@@ -1,9 +1,9 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/patient'
-require './lib/neutrino/api/client'
-require './lib/neutrino/gateway/requestor'
-require './lib/neutrino/gateway/uri/whitelist_factory'
-require './lib/neutrino/gateway/exceptions'
+require './lib/documents/gateway/patient'
+require './lib/documents/api/client'
+require './lib/documents/gateway/requestor'
+require './lib/documents/gateway/uri/whitelist_factory'
+require './lib/documents/gateway/exceptions'
 
 describe Neutrino::Gateway::Patient do
 

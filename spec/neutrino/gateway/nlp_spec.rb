@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/nlp'
-require './lib/neutrino/gateway/requestor'
+require './lib/documents/gateway/nlp'
+require './lib/documents/gateway/requestor'
 
 describe Neutrino::Gateway::Nlp do
 

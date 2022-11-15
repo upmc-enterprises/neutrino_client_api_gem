@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/named_query'
-require './lib/neutrino/gateway/requestor'
+require './lib/documents/gateway/named_query'
+require './lib/documents/gateway/requestor'
 
 describe Neutrino::Gateway::NamedQuery do
 

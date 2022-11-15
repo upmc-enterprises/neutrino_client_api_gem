@@ -1,9 +1,9 @@
 require 'api-auth'
 require 'net/http'
 require 'net/http/post/multipart'
-require 'neutrino/helpers/api_auth_modifications.rb'
-require 'neutrino/helpers/monkey_patch'
-require 'neutrino/gateway/exceptions'
+require 'documents/helpers/api_auth_modifications.rb'
+require 'documents/helpers/monkey_patch'
+require 'documents/gateway/exceptions'
 require 'digest/sha2'
 
 module Neutrino

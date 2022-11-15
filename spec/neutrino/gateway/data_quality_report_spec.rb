@@ -1,7 +1,7 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/data_quality_report'
-require './lib/neutrino/gateway/requestor'
-require './lib/neutrino/gateway/exceptions'
+require './lib/documents/gateway/data_quality_report'
+require './lib/documents/gateway/requestor'
+require './lib/documents/gateway/exceptions'
 
 describe Neutrino::Gateway::DataQualityReport do
   before(:each) do

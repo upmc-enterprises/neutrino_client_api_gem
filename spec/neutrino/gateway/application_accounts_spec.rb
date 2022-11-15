@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/application_accounts'
-require './lib/neutrino/gateway/requestor'
+require './lib/documents/gateway/application_accounts'
+require './lib/documents/gateway/requestor'
 
 describe Neutrino::Gateway::ApplicationAccounts do
 
@@ -122,7 +122,7 @@ describe Neutrino::Gateway::ApplicationAccounts do
                              'secret_key' => 'ABCDEF0',
                              'authorization_level' => 'read_only',
                              'all_tenant_access' => true,
-                             'tenant_tids' => ['neutrino'],
+                             'tenant_tids' => ['documents'],
                              'enabled' => true,
                              'created_by' => 'test_user',
                              'updated_by' => 'test_user' } }

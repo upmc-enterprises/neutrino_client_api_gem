@@ -1,7 +1,7 @@
 require './spec/spec_helper'
-require './lib/neutrino/api/client'
-require './lib/neutrino/gateway/requestor'
-require './lib/neutrino/gateway/exceptions'
+require './lib/documents/api/client'
+require './lib/documents/gateway/requestor'
+require './lib/documents/gateway/exceptions'
 
 describe Neutrino::Gateway::Requestor do
 

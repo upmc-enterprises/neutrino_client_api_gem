@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/map_type'
-require './lib/neutrino/gateway/requestor'
+require './lib/documents/gateway/map_type'
+require './lib/documents/gateway/requestor'
 
 describe Neutrino::Gateway::MapType do
 

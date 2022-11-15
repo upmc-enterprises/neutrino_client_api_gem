@@ -1,6 +1,6 @@
 require './spec/spec_helper'
-require './lib/neutrino/gateway/uri/whitelist_factory'
-require './lib/neutrino/gateway/exceptions'
+require './lib/documents/gateway/uri/whitelist_factory'
+require './lib/documents/gateway/exceptions'
 
 describe Neutrino::Gateway::Uri::WhitelistFactory do
 
