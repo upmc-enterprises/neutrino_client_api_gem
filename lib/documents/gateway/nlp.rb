@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class Nlp < Neutrino::Gateway::Requestor
+    class Nlp < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -13,7 +13,7 @@ module Neutrino
         # @raise [Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status code
         def service_running?(options = {})
           path = '/nlp/hf_reveal/service_test'
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
                        .code_is_not? 502
         end
 
@@ -25,7 +25,7 @@ module Neutrino
         # @raise [Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status code
         def document(params, options = {})
           path = base_uri(params, options)
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::NlpPatientDocumentNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::NlpPatientDocumentNotFoundError)
                                 .to_hash
         end
 
@@ -37,7 +37,7 @@ module Neutrino
         # @raise [Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status code
         def data(params, options = {})
           path = "#{base_uri(params, options)}/data"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::NlpPatientDocumentSourceTextNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::NlpPatientDocumentSourceTextNotFoundError)
                                 .data_and_type
         end
 
@@ -56,7 +56,7 @@ module Neutrino
           elsif params[:transaction_id]
             path << "/transaction_id/#{params[:transaction_id]}"
           else
-            fail Neutrino::Gateway::Exceptions::BadRequestError, 'Must provide an id, a patient_document_id or an nlp transaction id'
+            fail Documents::Gateway::Exceptions::BadRequestError, 'Must provide an id, a patient_document_id or an nlp transaction id'
           end
           path
         end

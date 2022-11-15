@@ -4,7 +4,7 @@ require 'open-uri'
 
 module Neutrino
   module Gateway
-    class OidText < Neutrino::Gateway::Requestor
+    class OidText < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 

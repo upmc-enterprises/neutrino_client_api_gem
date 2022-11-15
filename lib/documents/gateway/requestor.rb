@@ -28,7 +28,7 @@ module Neutrino
           considering(response).
           if_500_raise(Exceptions::InternalServerError).
           with_general_exception_check('403', /tenant.*disabled|disabled.*tenant/i,
-                                       Neutrino::Gateway::Exceptions::TenantDisabledError).
+                                       Documents::Gateway::Exceptions::TenantDisabledError).
           if_non_200_raise(Exceptions::FailedRequestError)
       end
     end

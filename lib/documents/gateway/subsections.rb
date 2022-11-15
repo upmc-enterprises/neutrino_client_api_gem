@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class Subsections < Neutrino::Gateway::Requestor
+    class Subsections < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 

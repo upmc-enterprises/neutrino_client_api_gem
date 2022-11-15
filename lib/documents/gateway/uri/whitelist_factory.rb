@@ -20,7 +20,7 @@ module Neutrino
         #
         # @return [Whitelist] the constructed Whitelist
         def build
-          fail Neutrino::Gateway::Exceptions::BadRequestError if @specified_whitelists.count > 1
+          fail Documents::Gateway::Exceptions::BadRequestError if @specified_whitelists.count > 1
           whitelist = @specified_whitelists.first
           values = @whitelist_hash[whitelist]
 
@@ -30,13 +30,13 @@ module Neutrino
             Whitelist.new
                      .with_template('/type_of_service_list/{value}')
                      .and_values(values)
-                     .error_on_empty(Neutrino::Gateway::Exceptions::TypesOfServiceNotProvided)
+                     .error_on_empty(Documents::Gateway::Exceptions::TypesOfServiceNotProvided)
 
           when :subject_matter_domain_whitelist
             Whitelist.new
                      .with_template('/subject_matter_domain_list/{value}')
                      .and_values(values)
-                     .error_on_empty(Neutrino::Gateway::Exceptions::SubjectMatterDomainsNotProvided)
+                     .error_on_empty(Documents::Gateway::Exceptions::SubjectMatterDomainsNotProvided)
           else
             Whitelist.new
           end

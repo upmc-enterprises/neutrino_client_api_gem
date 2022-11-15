@@ -34,7 +34,7 @@ module Neutrino
 
         def set_end_date_and_raise_error_if_end_is_eariler_than_start(end_date)
           @end_date = FormattedDate.new end_date
-          fail Neutrino::Gateway::Exceptions::TimeWindowError if @end_date.earlier_than? @start_date
+          fail Documents::Gateway::Exceptions::TimeWindowError if @end_date.earlier_than? @start_date
         end
 
         def uri_or_empty_string_if_either_date_is_nil
@@ -102,7 +102,7 @@ module Neutrino
         end
 
         def validate_date
-          fail Neutrino::Gateway::Exceptions::TimeFormatError unless @date.nil? ||  @date.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
+          fail Documents::Gateway::Exceptions::TimeFormatError unless @date.nil? ||  @date.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
         end
 
       end

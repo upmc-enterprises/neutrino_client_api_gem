@@ -3,7 +3,7 @@ require './lib/documents/api/client'
 require './lib/documents/gateway/requestor'
 require './lib/documents/gateway/exceptions'
 
-describe Neutrino::Gateway::Requestor do
+describe Documents::Gateway::Requestor do
 
   let(:expected_api_version) { 'expected_api_version' }
 
@@ -51,11 +51,11 @@ describe Neutrino::Gateway::Requestor do
           end
 
           describe '#to_hash' do
-            specify { expect { subject.to_hash }.to raise_error(Neutrino::Gateway::Exceptions::FailedRequestError) }
+            specify { expect { subject.to_hash }.to raise_error(Documents::Gateway::Exceptions::FailedRequestError) }
           end
 
           describe '#data_and_type' do
-            specify { expect { subject.data_and_type }.to raise_error(Neutrino::Gateway::Exceptions::FailedRequestError) }
+            specify { expect { subject.data_and_type }.to raise_error(Documents::Gateway::Exceptions::FailedRequestError) }
           end
         end
 
@@ -66,7 +66,7 @@ describe Neutrino::Gateway::Requestor do
               and_return(double('Response', code: '500', body: '{ "error": "Internal Server Error" }'))
           end
 
-          specify { expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::InternalServerError) }
+          specify { expect { subject }.to raise_error(Documents::Gateway::Exceptions::InternalServerError) }
         end
       end
     end

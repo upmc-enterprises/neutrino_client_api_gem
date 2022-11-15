@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class PatientDocument < Neutrino::Gateway::Requestor
+    class PatientDocument < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -23,7 +23,7 @@ module Neutrino
         # @return [Hash] the patient document
         def get(params, options = {})
           path = base_uri(params, options)
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
                                 .to_hash
         end
 
@@ -36,8 +36,8 @@ module Neutrino
         def data(params, options = {})
           path = "#{base_uri(params)}/data"
           path += ".#{params[:format]}" if params[:format]
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
-                                .if_400_raise(Neutrino::Gateway::Exceptions::DocumentConversionNotSupported).data_and_type
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
+                                .if_400_raise(Documents::Gateway::Exceptions::DocumentConversionNotSupported).data_and_type
         end
 
         # Gets a patient document's text
@@ -47,7 +47,7 @@ module Neutrino
         # @return [String] the patient document's text
         def text(params, options = {})
           path = "#{base_uri(params)}/text"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentTextNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::PatientDocumentTextNotFoundError)
                                 .to_s
         end
 
@@ -56,16 +56,16 @@ module Neutrino
         # @param [Hash] params specify which patient document to get by id and the search term to highlight
         # @param [Hash] options specify query values
         # @return [Hash] the highlighted document in html
-        # @raise [Neutrino::Gateway::Exceptions::BadRequestError] when NEUTRINO returns a 400 status
-        # @raise [Neutrino::Gateway::Exceptions::InvalidTenantOperation] when NEUTRINO returns a 403 status
-        # @raise [Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status
+        # @raise [Documents::Gateway::Exceptions::BadRequestError] when NEUTRINO returns a 400 status
+        # @raise [Documents::Gateway::Exceptions::InvalidTenantOperation] when NEUTRINO returns a 403 status
+        # @raise [Documents::Gateway::Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status
         def highlight(params, options = {})
           path = "#{api(options)}/patient_document/highlight/#{params[:id]}"
           path += ".#{params[:format]}" if params[:format]
           request(path, options.merge(literal: "#{params[:literal]}")).
-            if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError).
-            if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation).
-            if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError).
+            if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError).
+            if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation).
+            if_400_raise(Documents::Gateway::Exceptions::BadRequestError).
             data_and_type
         end
 
@@ -77,7 +77,7 @@ module Neutrino
         def original_metadata(params, options = {})
           path = "#{base_uri(params)}/original_metadata"
           request(path, options).
-            if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError).
+            if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError).
             to_hash
         end
 
@@ -90,7 +90,7 @@ module Neutrino
         def patient_demographics(params, options = {})
           path = "#{base_uri(params)}/patient_demographics"
           request(path, options).
-            if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError).
+            if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError).
             to_hash
         end
 
@@ -101,7 +101,7 @@ module Neutrino
         # @raise [Exceptions::BadRequestError] when NEUTRINO returns a 400 status code
         def search(options = {})
           path = "#{api}/patient_document/search"
-          request(path, options).if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
+          request(path, options).if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
                                 .to_hash
         end
 
@@ -110,15 +110,15 @@ module Neutrino
         # @param [String] search_term specify what to search for
         # @param [Hash] options specify query values
         # @return [Hash] the patient's document metadata
-        # @raise [Neutrino::Gateway::Exceptions::BadRequestError] when NEUTRINO returns a 400 status
-        # @raise [Neutrino::Gateway::Exceptions::InvalidTenantOperation] when NEUTRINO returns a 403 status
-        # @raise [Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status
+        # @raise [Documents::Gateway::Exceptions::BadRequestError] when NEUTRINO returns a 400 status
+        # @raise [Documents::Gateway::Exceptions::InvalidTenantOperation] when NEUTRINO returns a 403 status
+        # @raise [Documents::Gateway::Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status
         def literal_search(search_term, options = {})
           path = "#{api}/patient_document/search"
           request(path, options.merge(literal: search_term))
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
-              .if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
+              .if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
               .to_hash
         end
 
@@ -131,7 +131,7 @@ module Neutrino
           document_source_updated_at = params[:document_source_updated_at]
           document_source_updated_at_uri = document_source_updated_at.nil? ? '' : "/#{document_source_updated_at.iso8601(3)}"
           path = "#{base_uri(params)}/cluster#{document_source_updated_at_uri}"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
                                 .to_hash
         end
 
@@ -142,15 +142,15 @@ module Neutrino
         # @return [Hash] the patient document set
         def set(params, options = {})
           path = "#{base_uri(params)}/set"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
                                 .to_hash
         end
 
         def get_by_data_status_and_time_window(params, options = {})
           path = "#{api(options)}/patient_document/#{params[:data_status]}/document_creation_between/#{params[:date_from]}/#{params[:date_to]}"
           request(path, options)
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash
         end
 
@@ -165,8 +165,8 @@ module Neutrino
           path = "#{api(options)}/patient/#{params[:root]}/#{params[:extension]}/patient_documents/#{params[:visit_root]}/#{params[:visit_extension]}"
           path << "/#{params[:current]}" if params[:current]
           request(path, options)
-            .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-            .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+            .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+            .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
             .to_hash
         end
 
@@ -181,8 +181,8 @@ module Neutrino
           path = "#{api}/patient_document"
           response = request(path, options.merge!(method: :post), body, basic_auth)
           errors = JSON.parse(response.to_s)["errors"]
-          response.if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError.new(errors))
-                  .if_401_raise(Neutrino::Gateway::Exceptions::AuthenticationError.new(errors))
+          response.if_400_raise(Documents::Gateway::Exceptions::BadRequestError.new(errors))
+                  .if_401_raise(Documents::Gateway::Exceptions::AuthenticationError.new(errors))
                   .to_hash
         end
 
@@ -193,7 +193,7 @@ module Neutrino
         # @return [Hash] NEUTRINO response
         def delete(patient_document_id, options = {})
           path = "#{api}/patient_document/delete/#{patient_document_id}"
-          request(path, options.merge!(method: :delete)).if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+          request(path, options.merge!(method: :delete)).if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
                                                         .to_hash
         end
 
@@ -208,8 +208,8 @@ module Neutrino
           path = "#{api(options)}/patient_document/ingestion_errors"
           path << "/#{params[:root]}" if params[:root]
           request(path, options)
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash
         end
 
@@ -223,8 +223,8 @@ module Neutrino
           path = "#{api(options)}/patient_document/ingestion_error"
           path << "/#{params[:id]}" if params[:id]
           request(path, options)
-            .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-            .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+            .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+            .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
             .to_hash
         end
 
@@ -256,8 +256,8 @@ module Neutrino
           params.merge!(options)
           path = "#{api(options)}/patient_document/ids/hl7"
           request(path, params)
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash
         end
 
@@ -277,8 +277,8 @@ module Neutrino
           path = "#{api(options)}/patient_document/ids"
           path << "/#{params[:precedence]}" if params[:precedence]
           request(path, params)
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash
         end
 
@@ -300,7 +300,7 @@ module Neutrino
           elsif params[:root].present?
             url << "/#{URI.escape(params[:root])}"
           else
-            fail Neutrino::Gateway::Exceptions::BadRequestError, 'Either id or root and extension are required to create patient document path'
+            fail Documents::Gateway::Exceptions::BadRequestError, 'Either id or root and extension are required to create patient document path'
           end
           url
         end

@@ -3,7 +3,7 @@ require './lib/documents/gateway/patient_document'
 require './lib/documents/gateway/requestor'
 require './lib/documents/gateway/exceptions'
 
-describe Neutrino::Gateway::PatientDocument do
+describe Documents::Gateway::PatientDocument do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash
@@ -63,7 +63,7 @@ describe Neutrino::Gateway::PatientDocument do
           .to_return(status: ['404', 'OK'])
         expect do
           described_class.data({ id: 'i_dont_exist' }, OPTIONS_WITH_REMOTE_IP)
-        end.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+        end.to raise_error(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
       end
 
     end
@@ -78,7 +78,7 @@ describe Neutrino::Gateway::PatientDocument do
           .to_return(status: ['400', 'OK'])
         expect {
           described_class.data({ id: 'i_not_supported' }, OPTIONS_WITH_REMOTE_IP)
-        }.to raise_error(Neutrino::Gateway::Exceptions::DocumentConversionNotSupported)
+        }.to raise_error(Documents::Gateway::Exceptions::DocumentConversionNotSupported)
       end
 
     end
@@ -125,7 +125,7 @@ describe Neutrino::Gateway::PatientDocument do
           'http://testhost:4242/api/v1/patient_document/highlight/20160114.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['404', 'Patient Not Found'])
-        expect{ described_class.highlight(params.merge(id: 20160114), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+        expect{ described_class.highlight(params.merge(id: 20160114), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
       end
     end
 
@@ -136,7 +136,7 @@ describe Neutrino::Gateway::PatientDocument do
           'http://testhost:4242/api/v1/patient_document/highlight/20160113.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['400', 'bad request'])
-        expect{ described_class.highlight(params.merge(id: 20160113), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect{ described_class.highlight(params.merge(id: 20160113), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -147,7 +147,7 @@ describe Neutrino::Gateway::PatientDocument do
           'http://testhost:4242/api/v1/patient_document/highlight/20160112.html?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar&literal=exam')
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['403', 'bad request'])
-        expect{ described_class.highlight(params.merge(id: 20160112), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+        expect{ described_class.highlight(params.merge(id: 20160112), OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
@@ -178,7 +178,7 @@ describe Neutrino::Gateway::PatientDocument do
           "http://testhost:4242/api/v1/patient_document/invalid/document_creation_between/invalid/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar")
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['400', 'bad request'])
-        expect{ described_class.get_by_data_status_and_time_window(params_400, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect{ described_class.get_by_data_status_and_time_window(params_400, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -189,7 +189,7 @@ describe Neutrino::Gateway::PatientDocument do
           'http://testhost:4242/api/v1/patient_document/no_status/document_creation_between/2018-04-03T18:48:38.077Z/2018-05-03T18:48:38.077Z?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['403', 'Tenant Operation Not Allowed'])
-        expect{ described_class.get_by_data_status_and_time_window(params_403, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+        expect{ described_class.get_by_data_status_and_time_window(params_403, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
@@ -218,7 +218,7 @@ describe Neutrino::Gateway::PatientDocument do
             'http://testhost:4242/api/v1/patient/pt_root/pt_extension/patient_documents/v_root/v_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
             .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(status: ['400', 'bad request'])
-        expect{ described_class.get_documents_by_visit_root_extension(params_400, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect{ described_class.get_documents_by_visit_root_extension(params_400, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -229,7 +229,7 @@ describe Neutrino::Gateway::PatientDocument do
             'http://testhost:4242/api/v1/patient/pt_root/pt_extension/patient_documents/v_root/v_extension?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
             .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(status: ['403', 'Tenant Operation Not Allowed'])
-        expect{ described_class.get_documents_by_visit_root_extension(params_403, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+        expect{ described_class.get_documents_by_visit_root_extension(params_403, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
@@ -257,7 +257,7 @@ describe Neutrino::Gateway::PatientDocument do
           'http://testhost:4242/api/v1/patient_document/i_dont_exist/original_metadata?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: ['404', 'OK'])
-        expect{ subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+        expect{ subject }.to raise_error(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
       end
     end
 
@@ -289,7 +289,7 @@ describe Neutrino::Gateway::PatientDocument do
             'http://testhost:4242/api/v1/patient_document/35/patient_demographics?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
             .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
             .to_return(status: 404)
-          expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+          expect { subject }.to raise_error(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
         end
       end
 
@@ -477,17 +477,17 @@ describe Neutrino::Gateway::PatientDocument do
     end
 
     it 'performs a post request' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), anything, anything).and_call_original
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), anything, anything).and_call_original
       expect(described_class.create(nil, options)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
     it 'performs a request with the passed body' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar', anything).and_call_original
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar', anything).and_call_original
       expect(described_class.create('foobar', options)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
     it 'performs a request without basic auth' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, anything, false).and_call_original
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, anything, anything, false).and_call_original
       expect(described_class.create('foobar', options)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
     end
 
@@ -500,7 +500,7 @@ describe Neutrino::Gateway::PatientDocument do
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(body: DataSamples.patient_document_test_patient_document.to_s, status: ['200', 'OK'])
 
-        expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, anything, true).and_call_original
+        expect(Documents::Gateway::Requestor).to receive(:request).with(anything, anything, anything, true).and_call_original
         expect(described_class.create('foobar', options, true)).to eq(DataSamples.patient_document_test_patient_document.to_hash)
       end
 
@@ -517,8 +517,8 @@ describe Neutrino::Gateway::PatientDocument do
       end
 
       it 'raises a bad request error' do
-        expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, anything, anything).and_call_original
-        expect { described_class.create(nil, options) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect(Documents::Gateway::Requestor).to receive(:request).with(anything, anything, anything, anything).and_call_original
+        expect { described_class.create(nil, options) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
 
     end
@@ -640,7 +640,7 @@ describe Neutrino::Gateway::PatientDocument do
       let(:params) { {} }
 
       it 'raises a BadRequestError' do
-        expect { described_class.base_uri(params) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.base_uri(params) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
 
     end

@@ -2,8 +2,8 @@ require './spec/spec_helper'
 require './lib/documents/gateway/responses/response_handler'
 require './lib/documents/gateway/exceptions'
 
-describe Neutrino::Gateway::Responses::ResponseHandler do
-  let(:response_handler) { Neutrino::Gateway::Responses::ResponseHandler.new }
+describe Documents::Gateway::Responses::ResponseHandler do
+  let(:response_handler) { Documents::Gateway::Responses::ResponseHandler.new }
 
   describe '.to_s' do
 
@@ -132,7 +132,7 @@ describe Neutrino::Gateway::Responses::ResponseHandler do
       context 'and that response has invalid JSON' do
         let(:response_json) { "}foobar{" }
 
-        specify { expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::JsonBodyParseError) }
+        specify { expect { subject }.to raise_error(Documents::Gateway::Exceptions::JsonBodyParseError) }
       end
 
       context 'and the ResponseHandler is told to raise an exception for non-200 codes' do

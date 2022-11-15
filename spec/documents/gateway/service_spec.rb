@@ -2,7 +2,7 @@ require './spec/spec_helper'
 require './lib/documents/gateway/service'
 require './lib/documents/gateway/requestor'
 
-describe Neutrino::Gateway::Service do
+describe Documents::Gateway::Service do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash
@@ -39,7 +39,7 @@ describe Neutrino::Gateway::Service do
       end
 
       it 'raises a BadRequestError' do
-        expect { described_class.data(params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.data(params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -55,7 +55,7 @@ describe Neutrino::Gateway::Service do
       it 'raises a DerivedWorkDocumentNotFoundError' do
         expect do
           described_class.data(params, options.merge(OPTIONS_WITH_REMOTE_IP))
-        end.to raise_error(Neutrino::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
+        end.to raise_error(Documents::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
       end
     end
   end
@@ -91,7 +91,7 @@ describe Neutrino::Gateway::Service do
       end
 
       it 'raises a BadRequestError' do
-        expect { described_class.metadata(params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.metadata(params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -107,7 +107,7 @@ describe Neutrino::Gateway::Service do
       it 'raises a DerivedWorkDocumentNotFoundError' do
         expect do
           described_class.metadata(params, options.merge(OPTIONS_WITH_REMOTE_IP))
-        end.to raise_error(Neutrino::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
+        end.to raise_error(Documents::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
       end
     end
   end
@@ -145,7 +145,7 @@ describe Neutrino::Gateway::Service do
       let(:params) { { patient_document_id: '01123581321' } }
 
       it 'returns a URI service_class and service_identifier' do
-        expect { described_class.base_uri(params, options) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.base_uri(params, options) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
     end
 
@@ -154,7 +154,7 @@ describe Neutrino::Gateway::Service do
       let(:params) { {} }
 
       it 'returns a URI service_class and service_identifier' do
-        expect { described_class.base_uri(params, options) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
+        expect { described_class.base_uri(params, options) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
       end
     end
   end

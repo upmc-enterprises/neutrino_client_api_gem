@@ -3,7 +3,7 @@ require './lib/documents/gateway/requestor'
 require './lib/documents/gateway/exceptions'
 require './lib/documents/gateway/provider'
 
-describe Neutrino::Gateway::Provider do
+describe Documents::Gateway::Provider do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash
@@ -24,7 +24,7 @@ describe Neutrino::Gateway::Provider do
     end
 
     it 'performs a post request' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(path, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), body).and_call_original
+      expect(Documents::Gateway::Requestor).to receive(:request).with(path, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), body).and_call_original
       expect(described_class.create(body, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
@@ -39,7 +39,7 @@ describe Neutrino::Gateway::Provider do
       end
 
       it 'raises a provider invalid error' do
-        expect { described_class.create(body, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
+        expect { described_class.create(body, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::ProviderInvalidError)
       end
     end
 
@@ -90,7 +90,7 @@ describe Neutrino::Gateway::Provider do
       end
 
       it 'raises a provider invalid error' do
-        expect { described_class.get({ id: 'd' }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
+        expect { described_class.get({ id: 'd' }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::ProviderInvalidError)
       end
     end
 
@@ -105,7 +105,7 @@ describe Neutrino::Gateway::Provider do
       end
 
       it 'raises a provider not found error' do
-        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
+        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::ProviderNotFoundError)
       end
     end
   end
@@ -137,7 +137,7 @@ describe Neutrino::Gateway::Provider do
       end
 
       it 'raises a provider invalid error' do
-        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderInvalidError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::ProviderInvalidError)
       end
     end
 
@@ -152,7 +152,7 @@ describe Neutrino::Gateway::Provider do
       end
 
       it 'raises a provider not found error' do
-        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::ProviderNotFoundError)
       end
     end
   end
@@ -182,7 +182,7 @@ describe Neutrino::Gateway::Provider do
       end
 
       it 'raises a Provider not found error' do
-        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
+        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::ProviderNotFoundError)
       end
     end
   end

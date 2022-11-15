@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class ApplicationAccounts < Neutrino::Gateway::Requestor
+    class ApplicationAccounts < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -15,7 +15,7 @@ module Neutrino
           response = request(base_uri, options.merge(method: :post), body)
           error = JSON.parse(response.to_s)['error']
           response
-            .if_400_raise(Neutrino::Gateway::Exceptions::UnableToCreateApplicationAccountsError.new([], error))
+            .if_400_raise(Documents::Gateway::Exceptions::UnableToCreateApplicationAccountsError.new([], error))
             .to_hash
         end
 
@@ -25,7 +25,7 @@ module Neutrino
         # @raise [Exceptions::UnableToRetrieveApplicationAccountsError] when Neutrino returns a 400 status code
         def index(options = {})
           request(base_uri, options)
-            .if_400_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
+            .if_400_raise(Documents::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
             .to_hash
         end
 
@@ -36,7 +36,7 @@ module Neutrino
         def find_by_id(id, options = {}, debug = false)
           path = "#{base_uri}/#{id}"
           request(path, options.merge(debug: debug))
-            .if_400_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
+            .if_400_raise(Documents::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
             .to_hash
         end
 
@@ -49,7 +49,7 @@ module Neutrino
           response = request(path, options.merge(method: :post), body)
           error = JSON.parse(response.to_s)['error']
           response
-            .if_400_raise(Neutrino::Gateway::Exceptions::UnableToUpdateApplicationAccountsError.new([], error))
+            .if_400_raise(Documents::Gateway::Exceptions::UnableToUpdateApplicationAccountsError.new([], error))
             .to_hash
         end
 

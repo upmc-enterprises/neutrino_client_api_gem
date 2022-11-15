@@ -4,8 +4,8 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'documents/gateway/version'
 Gem::Specification.new do |s|
-  s.name     = 'document_api_client'
-  s.version  = Neutrino::Gateway::VERSION
+  s.name     = 'documents_api_client'
+  s.version  = Documents::Gateway::VERSION
   s.date     = '2022-11-30'
   s.summary  = 'Provides gateway to the documents RESTful API'
   s.description = 'Provides gateway to interact with a Documents instance over HTTP'

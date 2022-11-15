@@ -2,7 +2,7 @@ require './lib/documents/gateway/uri/date_range'
 require './lib/documents/gateway/exceptions'
 require 'time'
 
-describe Neutrino::Gateway::Uri::DateRange do
+describe Documents::Gateway::Uri::DateRange do
 
   let(:date_in_2013) { '2013-01-01T01:01:01Z' }
   let(:date_in_2014) { '2014-01-01T01:01:01Z' }
@@ -10,7 +10,7 @@ describe Neutrino::Gateway::Uri::DateRange do
   describe '.beginning_at' do
 
     it 'raises a TimeFormatError when it is given a begin date that is not properly formatted' do
-      expect { described_class.new.beginning_at('foo') }.to raise_error(Neutrino::Gateway::Exceptions::TimeFormatError)
+      expect { described_class.new.beginning_at('foo') }.to raise_error(Documents::Gateway::Exceptions::TimeFormatError)
     end
 
   end
@@ -24,13 +24,13 @@ describe Neutrino::Gateway::Uri::DateRange do
     end
 
     it 'raises a TimeFormatError when it is given a end date that is not properly formatted' do
-      expect { described_class.new.ending_at('foo') }.to raise_error(Neutrino::Gateway::Exceptions::TimeFormatError)
+      expect { described_class.new.ending_at('foo') }.to raise_error(Documents::Gateway::Exceptions::TimeFormatError)
     end
 
     it 'raises a TimeWindowError when it is given a begin date that is after its end date' do
       range = described_class.new.beginning_at(date_in_2014)
 
-      expect { range.ending_at(date_in_2013) }.to raise_error(Neutrino::Gateway::Exceptions::TimeWindowError)
+      expect { range.ending_at(date_in_2013) }.to raise_error(Documents::Gateway::Exceptions::TimeWindowError)
     end
 
   end
@@ -62,7 +62,7 @@ describe Neutrino::Gateway::Uri::DateRange do
 
 end
 
-describe Neutrino::Gateway::Uri::FormattedDate do
+describe Documents::Gateway::Uri::FormattedDate do
 
   let(:date_in_2014) { '2014-01-01T00:00:00Z' }
   let(:date_in_2013) { '2013-01-01T01:01:01Z' }
@@ -78,7 +78,7 @@ describe Neutrino::Gateway::Uri::FormattedDate do
     end
 
     it 'raises a TimeFormatError when given a string that is not in the correct format' do
-      expect { described_class.new 'foo' }.to raise_error(Neutrino::Gateway::Exceptions::TimeFormatError)
+      expect { described_class.new 'foo' }.to raise_error(Documents::Gateway::Exceptions::TimeFormatError)
     end
 
   end

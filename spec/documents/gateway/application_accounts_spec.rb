@@ -2,7 +2,7 @@ require './spec/spec_helper'
 require './lib/documents/gateway/application_accounts'
 require './lib/documents/gateway/requestor'
 
-describe Neutrino::Gateway::ApplicationAccounts do
+describe Documents::Gateway::ApplicationAccounts do
 
   let(:base_api) { 'base_api' }
 
@@ -37,7 +37,7 @@ describe Neutrino::Gateway::ApplicationAccounts do
       end
 
       it 'raises an error' do
-        expect { described_class.create(new_account, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::UnableToCreateApplicationAccountsError)
+        expect { described_class.create(new_account, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::UnableToCreateApplicationAccountsError)
       end
     end
 
@@ -63,7 +63,7 @@ describe Neutrino::Gateway::ApplicationAccounts do
       end
 
       it 'raises an error' do
-        expect { described_class.index(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
+        expect { described_class.index(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
       end
     end
 
@@ -110,7 +110,7 @@ describe Neutrino::Gateway::ApplicationAccounts do
       end
 
       it 'raises an error' do
-        expect { described_class.find_by_id(1, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
+        expect { described_class.find_by_id(1, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::UnableToRetrieveApplicationAccountsError)
       end
     end
 
@@ -148,7 +148,7 @@ describe Neutrino::Gateway::ApplicationAccounts do
       end
 
       it 'raises an error' do
-        expect { described_class.update_by_id(1, update_account, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::UnableToUpdateApplicationAccountsError)
+        expect { described_class.update_by_id(1, update_account, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::UnableToUpdateApplicationAccountsError)
       end
     end
 

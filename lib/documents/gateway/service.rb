@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class Service < Neutrino::Gateway::Requestor
+    class Service < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -16,7 +16,7 @@ module Neutrino
         # @raise [Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status code
         def data(params, options = {})
           path = "#{base_uri(params, options)}/data"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
               .data_and_type
         end
 
@@ -29,7 +29,7 @@ module Neutrino
         # @raise [Exceptions::PatientDocumentNotFoundError] when NEUTRINO returns a 404 status code
         def metadata(params, options = {})
           path = "#{base_uri(params, options)}"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::DerivedWorkDocumentNotFoundError)
               .to_hash
         end
 
@@ -48,10 +48,10 @@ module Neutrino
             elsif params[:patient_document_id]
               path << "/patient_document/#{params[:patient_document_id]}/service/#{params[:service_class]}/#{params[:service_identifier]}"
             else
-              fail Neutrino::Gateway::Exceptions::BadRequestError, 'Must provide an id or a patient_document_id'
+              fail Documents::Gateway::Exceptions::BadRequestError, 'Must provide an id or a patient_document_id'
             end
           else
-            fail Neutrino::Gateway::Exceptions::BadRequestError, 'Must provide an service_class and service_identifier'
+            fail Documents::Gateway::Exceptions::BadRequestError, 'Must provide an service_class and service_identifier'
           end
           path
         end

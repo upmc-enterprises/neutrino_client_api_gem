@@ -3,7 +3,7 @@ require 'documents/gateway/requestor'
 
 module Neutrino
   module Gateway
-    class NamedQuery < Neutrino::Gateway::Requestor
+    class NamedQuery < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -14,7 +14,7 @@ module Neutrino
         # @return [Hash] a named query
         def get(name, options = {})
           path = "#{base_uri}/#{name}"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::NamedQueryNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::NamedQueryNotFoundError)
                                 .to_hash
         end
 

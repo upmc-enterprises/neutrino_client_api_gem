@@ -1,7 +1,7 @@
 require './spec/spec_helper'
 require './lib/documents/gateway/info'
 
-describe Neutrino::Gateway::Info do
+describe Documents::Gateway::Info do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash

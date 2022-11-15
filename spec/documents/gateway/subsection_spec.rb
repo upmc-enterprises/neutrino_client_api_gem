@@ -3,7 +3,7 @@ require './lib/documents/gateway/requestor'
 require './lib/documents/gateway/exceptions'
 require './lib/documents/gateway/subsections'
 
-describe Neutrino::Gateway::Subsections do
+describe Documents::Gateway::Subsections do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash

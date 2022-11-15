@@ -4,7 +4,7 @@ require 'net/http/post/multipart'
 
 module Neutrino
   module Gateway
-    class MapType < Neutrino::Gateway::Requestor
+    class MapType < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -22,7 +22,7 @@ module Neutrino
         # @raise [Exceptions::MapTypeNotFoundError] when NEUTRINO returns a 404 status code
         def get(params = {}, options = {})
           path = specific_map_type_uri(params)
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::MapTypeNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::MapTypeNotFoundError)
                                 .to_hash
         end
 

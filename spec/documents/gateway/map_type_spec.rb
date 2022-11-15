@@ -2,7 +2,7 @@ require './spec/spec_helper'
 require './lib/documents/gateway/map_type'
 require './lib/documents/gateway/requestor'
 
-describe Neutrino::Gateway::MapType do
+describe Documents::Gateway::MapType do
 
   let(:base_api) { 'base_api' }
 
@@ -65,18 +65,18 @@ describe Neutrino::Gateway::MapType do
   describe 'self.create_map_type' do
 
     it 'performs a request specifying the post method' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), anything)
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), anything)
       described_class.create_map_type(anything, OPTIONS_WITH_REMOTE_IP)
     end
 
     it 'performs a request specifying the passed body' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar')
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, anything, 'foobar')
       described_class.create_map_type('foobar', OPTIONS_WITH_REMOTE_IP)
     end
 
     it 'performs a request against the map type URI' do
-      allow(Neutrino::Gateway::Requestor).to receive(:api).and_return('api_uri')
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with('api_uri/map_type', anything, anything)
+      allow(Documents::Gateway::Requestor).to receive(:api).and_return('api_uri')
+      expect(Documents::Gateway::Requestor).to receive(:request).with('api_uri/map_type', anything, anything)
       described_class.create_map_type(anything, OPTIONS_WITH_REMOTE_IP)
     end
 
@@ -89,31 +89,31 @@ describe Neutrino::Gateway::MapType do
     let(:sample_multipart_upload) { UploadIO.new(sample_uploaded_file, sample_uploaded_file.content_type, sample_uploaded_file.original_filename) }
 
     it 'performs a request specifying the post_multipart method' do
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, { method: :post_multipart }.merge(OPTIONS_WITH_REMOTE_IP), anything, anything, anything)
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, { method: :post_multipart }.merge(OPTIONS_WITH_REMOTE_IP), anything, anything, anything)
       described_class.import_map_type_file(sample_uploaded_file, OPTIONS_WITH_REMOTE_IP)
     end
 
     it 'performs a request specifying the passed body' do
       allow(UploadIO).to receive(:new).with(sample_uploaded_file, sample_uploaded_file.content_type, sample_uploaded_file.original_filename).and_return(sample_multipart_upload)
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, { 'fileUpload' => sample_multipart_upload }, anything, anything)
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, anything, { 'fileUpload' => sample_multipart_upload }, anything, anything)
       described_class.import_map_type_file(sample_uploaded_file, OPTIONS_WITH_REMOTE_IP)
     end
 
     it 'performs a request against the map type import URI' do
-      allow(Neutrino::Gateway::Requestor).to receive(:api).and_return('api_uri')
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with('api_uri/map_type/import/file', anything, anything, anything, anything)
+      allow(Documents::Gateway::Requestor).to receive(:api).and_return('api_uri')
+      expect(Documents::Gateway::Requestor).to receive(:request).with('api_uri/map_type/import/file', anything, anything, anything, anything)
       described_class.import_map_type_file(sample_uploaded_file)
     end
 
     it 'performs a request without using basic auth' do
-      allow(Neutrino::Gateway::Requestor).to receive(:api).and_return('api_uri')
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, anything, anything, anything)
+      allow(Documents::Gateway::Requestor).to receive(:api).and_return('api_uri')
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, anything, anything, anything, anything)
       described_class.import_map_type_file(sample_uploaded_file, OPTIONS_WITH_REMOTE_IP)
     end
 
     it 'performs a request specifying the http timeout should be extended for this specific call' do
       allow(UploadIO).to receive(:new).with(sample_uploaded_file, sample_uploaded_file.content_type, sample_uploaded_file.original_filename).and_return(sample_multipart_upload)
-      expect(Neutrino::Gateway::Requestor).to receive(:request).with(anything, anything, { 'fileUpload' => sample_multipart_upload }, anything, 60 * 60)
+      expect(Documents::Gateway::Requestor).to receive(:request).with(anything, anything, { 'fileUpload' => sample_multipart_upload }, anything, 60 * 60)
       described_class.import_map_type_file(sample_uploaded_file, OPTIONS_WITH_REMOTE_IP)
     end
 

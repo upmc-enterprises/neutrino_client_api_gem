@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class AzureAdGroup < Neutrino::Gateway::Requestor
+    class AzureAdGroup < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -16,30 +16,30 @@ module Neutrino
         # Creates a new azure group
         def create(azure_ad_group_body, options = {})
           path = base_uri
-          request(path, options.merge(method: :post), azure_ad_group_body).if_400_raise(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
+          request(path, options.merge(method: :post), azure_ad_group_body).if_400_raise(Documents::Gateway::Exceptions::AzureAdGroupInvalidError)
             .to_hash
         end
 
         # Gets an azure group
         def get(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
-            .if_400_raise(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::AzureAdGroupNotFoundError)
+            .if_400_raise(Documents::Gateway::Exceptions::AzureAdGroupInvalidError)
             .to_hash
         end
 
         # Update an azure group
         def update_by_id(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
-            .if_400_raise(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
+          request(path, options.merge(method: :post), params).if_404_raise(Documents::Gateway::Exceptions::AzureAdGroupNotFoundError)
+            .if_400_raise(Documents::Gateway::Exceptions::AzureAdGroupInvalidError)
             .to_hash
         end
 
         # Delete an azure group
         def delete_by_id(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options.merge(method: :delete)).if_404_raise(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
+          request(path, options.merge(method: :delete)).if_404_raise(Documents::Gateway::Exceptions::AzureAdGroupNotFoundError)
         end
 
         # Gets the base URI for an azure group

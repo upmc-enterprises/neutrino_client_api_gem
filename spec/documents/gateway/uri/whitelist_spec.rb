@@ -1,7 +1,7 @@
 require './spec/spec_helper'
 require './lib/documents/gateway/uri/whitelist'
 
-describe Neutrino::Gateway::Uri::Whitelist do
+describe Documents::Gateway::Uri::Whitelist do
 
   describe '.to_s' do
 

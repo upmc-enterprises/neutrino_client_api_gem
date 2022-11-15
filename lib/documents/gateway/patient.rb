@@ -5,7 +5,7 @@ require 'documents/gateway/uri/whitelist_factory'
 
 module Neutrino
   module Gateway
-    class Patient < Neutrino::Gateway::Requestor
+    class Patient < Documents::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -15,11 +15,11 @@ module Neutrino
         #
         # @param [Array] args is a splat of arguements
         # @return [Responses::ResponseHandler] a `ResponseHandler` instance for handling response codes
-        # @raise [Neutrino::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError] when repo returns a 403
+        # @raise [Documents::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError] when repo returns a 403
         def request(*args)
           super(*args)
             .with_general_exception_check('403', /authorized.*patient.*identity|patient.*identity.*authorized/i,
-                                          Neutrino::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError)
+                                          Documents::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError)
         end
 
         # Gets a patient's demographics
@@ -30,7 +30,7 @@ module Neutrino
         # @raise [Exceptions::PatientNotFoundError] when NEUTRINO returns a 404 status
         def demographics(params, options = {})
           path = "#{base_uri(params)}/demographics"
-          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::PatientNotFoundError)
+          request(path, options).if_404_raise(Documents::Gateway::Exceptions::PatientNotFoundError)
                                 .to_hash
         end
 
@@ -44,7 +44,7 @@ module Neutrino
           path = "#{base_uri(params)}/identities"
           request(path, options)
               .with_patient_identity_set_in_error_check
-              .if_404_raise(Neutrino::Gateway::Exceptions::PatientNotFoundError)
+              .if_404_raise(Documents::Gateway::Exceptions::PatientNotFoundError)
               .to_hash
         end
 
@@ -56,7 +56,7 @@ module Neutrino
         def identities_in_error(options = {})
           path = "#{api}/patient/identities_in_error"
           request(path, options)
-            .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation).to_hash
+            .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation).to_hash
         end
 
         # Sets a patient's identities in error
@@ -68,7 +68,7 @@ module Neutrino
         def set_in_error(params, options = {})
           path = "#{base_uri(params)}/set_in_error"
           request(path, options.merge(method: :post), {})
-            .if_404_raise(Neutrino::Gateway::Exceptions::PatientNotFoundError).to_hash['data_status']
+            .if_404_raise(Documents::Gateway::Exceptions::PatientNotFoundError).to_hash['data_status']
         end
 
         # Invoke self-healing on all members of a patient identity set
@@ -81,8 +81,8 @@ module Neutrino
         def self_healing(params, options = {})
           path = "#{base_uri(params)}/self_healing"
           request(path, options.merge(method: :post), {})
-            .if_404_raise(Neutrino::Gateway::Exceptions::PatientNotFoundError)
-            .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+            .if_404_raise(Documents::Gateway::Exceptions::PatientNotFoundError)
+            .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
             .to_hash['message']
         end
 
@@ -96,7 +96,7 @@ module Neutrino
           path = "#{base_uri(params)}/active_identities"
           request(path, options)
               .with_patient_identity_set_in_error_check
-              .if_404_raise(Neutrino::Gateway::Exceptions::PatientNotFoundError)
+              .if_404_raise(Documents::Gateway::Exceptions::PatientNotFoundError)
               .to_hash
         end
 
@@ -117,10 +117,10 @@ module Neutrino
         # @return [Hash] data about the patient that was deleted
         def delete(params, options={})
           request("#{base_uri(params)}/delete", options.merge(method: :delete))
-          .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
-          .if_404_raise(Neutrino::Gateway::Exceptions::PatientNotFoundError)
-          .with_general_exception_check('409', /has documents/, Neutrino::Gateway::Exceptions::PatientIdentityHasDocumentsError)
-          .with_general_exception_check('409', /is not in Error/, Neutrino::Gateway::Exceptions::PatientIdentityNotInError)
+          .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
+          .if_404_raise(Documents::Gateway::Exceptions::PatientNotFoundError)
+          .with_general_exception_check('409', /has documents/, Documents::Gateway::Exceptions::PatientIdentityHasDocumentsError)
+          .with_general_exception_check('409', /is not in Error/, Documents::Gateway::Exceptions::PatientIdentityNotInError)
           .to_hash['data_status']
         end
 
@@ -133,9 +133,9 @@ module Neutrino
         def patient_document_search(params, options = {})
           path = "#{base_uri(params)}/patient_documents/search"
           request(path, options)
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
-              .if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
+              .if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
               .to_hash
         end
 
@@ -148,8 +148,8 @@ module Neutrino
         def patient_hl7_document_ids(params, options = {})
           path = "#{base_uri(params)}/ids/hl7"
           request(path, options)
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash
         end
 
@@ -163,8 +163,8 @@ module Neutrino
           path = "#{base_uri(params)}/ids"
           path << "/#{params[:precedence]}" if params[:precedence]
           request(path, options)
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash
         end
 
@@ -177,7 +177,7 @@ module Neutrino
           path = "#{base_uri(params)}/patient_document_bounds"
           path << current_if_specified_in(params)
           request(path, options)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
               .to_hash
         end
 
@@ -227,8 +227,8 @@ module Neutrino
           path << current_if_specified_in(params)
 
           request(path, options)
-            .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
-            .if_404_raise(Neutrino::Gateway::Exceptions::PatientNotFoundError)
+            .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
+            .if_404_raise(Documents::Gateway::Exceptions::PatientNotFoundError)
             .to_hash
         end
 
@@ -241,9 +241,9 @@ module Neutrino
         def patient_documents_literal_search(params, options = {})
           path = "#{base_uri(params)}/patient_documents/search"
           request(path, options)
-              .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError)
-              .if_403_raise(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
-              .if_404_raise(Neutrino::Gateway::Exceptions::PatientDocumentNotFoundError)
+              .if_400_raise(Documents::Gateway::Exceptions::BadRequestError)
+              .if_403_raise(Documents::Gateway::Exceptions::InvalidTenantOperation)
+              .if_404_raise(Documents::Gateway::Exceptions::PatientDocumentNotFoundError)
               .to_hash
         end
 
@@ -254,7 +254,7 @@ module Neutrino
         # @raise [Exceptions::BadRequestError] when `:root` or `:extension` are not specified
         def base_uri(params)
           if params[:root].nil? || params[:extension].nil?
-            fail Neutrino::Gateway::Exceptions::BadRequestError, 'Must specify a root and extension'
+            fail Documents::Gateway::Exceptions::BadRequestError, 'Must specify a root and extension'
           end
 
           "#{api}/patient/#{URI.escape(params[:root])}/#{URI.escape(params[:extension])}"
