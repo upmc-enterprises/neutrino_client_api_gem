@@ -2,7 +2,7 @@ require './spec/spec_helper'
 require './lib/documents/gateway/uri/whitelist_factory'
 require './lib/documents/gateway/exceptions'
 
-describe Documents::Gateway::Uri::WhitelistFactory do
+describe Neutrino::Gateway::Uri::WhitelistFactory do
 
   describe '.build' do
 
@@ -11,7 +11,7 @@ describe Documents::Gateway::Uri::WhitelistFactory do
         described_class.new
                         .from_whitelists_in(type_of_service_whitelist: [], subject_matter_domain_whitelist: [])
                         .build
-      end.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
+      end.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
     end
 
     context 'when params not specifying a whitelist are given' do
@@ -33,8 +33,8 @@ describe Documents::Gateway::Uri::WhitelistFactory do
 
         before(:each) { params[:type_of_service_whitelist] = empty_values }
 
-        it 'raises a Documents::Gateway::Exceptions::TypesOfServiceNotProvided' do
-          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Documents::Gateway::Exceptions::TypesOfServiceNotProvided)
+        it 'raises a Neutrino::Gateway::Exceptions::TypesOfServiceNotProvided' do
+          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Neutrino::Gateway::Exceptions::TypesOfServiceNotProvided)
         end
 
       end
@@ -43,8 +43,8 @@ describe Documents::Gateway::Uri::WhitelistFactory do
 
         before(:each) { params[:subject_matter_domain_whitelist] = empty_values }
 
-        it 'raises a Documents::Gateway::Exceptions::SubjectMatterDomainsNotProvided' do
-          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Documents::Gateway::Exceptions::SubjectMatterDomainsNotProvided)
+        it 'raises a Neutrino::Gateway::Exceptions::SubjectMatterDomainsNotProvided' do
+          expect { subject.from_whitelists_in(params).build.to_s }.to raise_error(Neutrino::Gateway::Exceptions::SubjectMatterDomainsNotProvided)
         end
 
       end

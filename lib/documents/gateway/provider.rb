@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class Provider < Documents::Gateway::Requestor
+    class Provider < Neutrino::Gateway::Requestor
       private_class_method :new
       class << self
         # Creates a new provider
@@ -13,7 +13,7 @@ module Neutrino
         # @return [Hash] the NEUTRINO response body
         def create(provider_body, options = {})
           path = base_uri
-          request(path, options.merge(method: :post), provider_body).if_400_raise(Documents::Gateway::Exceptions::ProviderInvalidError).to_hash
+          request(path, options.merge(method: :post), provider_body).if_400_raise(Neutrino::Gateway::Exceptions::ProviderInvalidError).to_hash
         end
 
         # Shows all providers
@@ -33,8 +33,8 @@ module Neutrino
         # @return [Hash] the provider
         def get(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options).if_404_raise(Documents::Gateway::Exceptions::ProviderNotFoundError)
-            .if_400_raise(Documents::Gateway::Exceptions::ProviderInvalidError)
+          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
+            .if_400_raise(Neutrino::Gateway::Exceptions::ProviderInvalidError)
             .to_hash
         end
 
@@ -45,8 +45,8 @@ module Neutrino
         # @return [Hash] the provider
         def update_by_id(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Documents::Gateway::Exceptions::ProviderNotFoundError)
-            .if_400_raise(Documents::Gateway::Exceptions::ProviderInvalidError)
+          request(path, options.merge(method: :post), params).if_404_raise(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
+            .if_400_raise(Neutrino::Gateway::Exceptions::ProviderInvalidError)
             .to_hash
         end
 
@@ -57,7 +57,7 @@ module Neutrino
         # @return [Hash] the provider
         def delete_by_id(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options.merge(method: :delete)).if_404_raise(Documents::Gateway::Exceptions::ProviderNotFoundError)
+          request(path, options.merge(method: :delete)).if_404_raise(Neutrino::Gateway::Exceptions::ProviderNotFoundError)
         end
 
         # Gets the base URI for a provider

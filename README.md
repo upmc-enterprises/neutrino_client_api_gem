@@ -15,7 +15,7 @@ The gem version can be updated in lib/documents/gateway/version.rb
 ## Generating
 In the project's root execute:
 ```
-gem build document_api_client.gemspec
+gem build documents_api_client.gemspec
 ```
 
 ## Packaging in a Rails project
@@ -88,12 +88,12 @@ Neutrino::Api::Client.config = {
 
 Requests to NEUTRINO are made through `Gateway` classes:
 
- - `Documents::Gateway::Info`
- - `Documents::Gateway::MapType`
- - `Documents::Gateway::OidText`
- - `Documents::Gateway::NamedQuery`
- - `Documents::Gateway::PatientDocument`
- - `Documents::Gateway::Patient`
+ - `Neutrino::Gateway::Info`
+ - `Neutrino::Gateway::MapType`
+ - `Neutrino::Gateway::OidText`
+ - `Neutrino::Gateway::NamedQuery`
+ - `Neutrino::Gateway::PatientDocument`
+ - `Neutrino::Gateway::Patient`
 
 Requests typically return a ruby `Hash` (parsed from JSON), but they may return other data as well (e.g. `String`)
 
@@ -114,7 +114,7 @@ Neutrino::Api::Client.config = {
   :hmac_key => <app_key>
 }
 
-Documents::Gateway::PatientDocument.get({ id: "530fb1cce4b038c5cae1f417" }, { remote_ip: "100.1.24.1" })
+Neutrino::Gateway::PatientDocument.get({ id: "530fb1cce4b038c5cae1f417" }, { remote_ip: "100.1.24.1" })
 ```
 
 ## To generate release

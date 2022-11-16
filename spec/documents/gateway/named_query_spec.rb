@@ -2,7 +2,7 @@ require './spec/spec_helper'
 require './lib/documents/gateway/named_query'
 require './lib/documents/gateway/requestor'
 
-describe Documents::Gateway::NamedQuery do
+describe Neutrino::Gateway::NamedQuery do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash

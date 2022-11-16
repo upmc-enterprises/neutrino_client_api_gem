@@ -2,7 +2,7 @@ require './spec/spec_helper'
 require './lib/documents/gateway/oid_text'
 require './lib/documents/gateway/requestor'
 
-describe Documents::Gateway::OidText do
+describe Neutrino::Gateway::OidText do
 
   let(:base_api) { 'base_api' }
 

@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class DataQualityReport < Documents::Gateway::Requestor
+    class DataQualityReport < Neutrino::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -13,7 +13,7 @@ module Neutrino
         def summary(options = {})
           path = "#{api}/reports/data-quality/summary"
           request(path, options).
-            if_400_raise(Documents::Gateway::Exceptions::BadRequestError.new).to_hash
+            if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError.new).to_hash
         end
 
         # Update the twelve month volume report by source created at
@@ -23,7 +23,7 @@ module Neutrino
         def twelve_month_volume_by_source_created_at(options = {})
           path = "#{api}/reports/data-quality/twelve_month_volume_by_source_created_at"
           request(path, options)
-            .if_400_raise(Documents::Gateway::Exceptions::BadRequestError.new).to_hash
+            .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError.new).to_hash
         end
 
         # Update the twelve month volume report by created at
@@ -33,7 +33,7 @@ module Neutrino
         def twelve_month_volume_by_created_at(options = {})
           path = "#{api}/reports/data-quality/twelve_month_volume_by_created_at"
           request(path, options)
-            .if_400_raise(Documents::Gateway::Exceptions::BadRequestError.new).to_hash
+            .if_400_raise(Neutrino::Gateway::Exceptions::BadRequestError.new).to_hash
         end
       end
     end

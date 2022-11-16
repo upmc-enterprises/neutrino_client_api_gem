@@ -2,7 +2,7 @@ require './spec/spec_helper'
 require './lib/documents/gateway/tenants'
 require './lib/documents/gateway/requestor'
 
-describe Documents::Gateway::Tenants do
+describe Neutrino::Gateway::Tenants do
 
   let(:base_api) { 'base_api' }
 
@@ -65,7 +65,7 @@ describe Documents::Gateway::Tenants do
       end
 
       it 'raises an error' do
-        expect { described_class.find_by_id(1, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::UnableToRetrieveTenantsError)
+        expect { described_class.find_by_id(1, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::UnableToRetrieveTenantsError)
       end
     end
   end
@@ -85,7 +85,7 @@ describe Documents::Gateway::Tenants do
     end
 
     it 'performs a post request' do
-      expect(Documents::Gateway::Requestor).to receive(:request).with(path, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), body).and_call_original
+      expect(Neutrino::Gateway::Requestor).to receive(:request).with(path, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), body).and_call_original
       expect(described_class.create(body, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
@@ -118,7 +118,7 @@ describe Documents::Gateway::Tenants do
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.update_by_id(1, response_message, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::UnableToUpdateTenantError)
+        expect { described_class.update_by_id(1, response_message, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::UnableToUpdateTenantError)
       end
     end
 
@@ -133,7 +133,7 @@ describe Documents::Gateway::Tenants do
       end
 
       it 'raises a tenant invalid error' do
-        expect { described_class.update_by_id(1, response_message, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::UnableToRetrieveTenantsError)
+        expect { described_class.update_by_id(1, response_message, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::UnableToRetrieveTenantsError)
       end
     end
   end

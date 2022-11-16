@@ -3,7 +3,7 @@ require './lib/documents/gateway/data_quality_report'
 require './lib/documents/gateway/requestor'
 require './lib/documents/gateway/exceptions'
 
-describe Documents::Gateway::DataQualityReport do
+describe Neutrino::Gateway::DataQualityReport do
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash
   end
@@ -34,7 +34,7 @@ describe Documents::Gateway::DataQualityReport do
       end
 
       it 'raises a bad request error' do
-        expect { described_class.summary(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
+        expect { described_class.summary(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
   end
@@ -64,7 +64,7 @@ describe Documents::Gateway::DataQualityReport do
       end
 
       it 'raises a bad request error' do
-        expect { described_class.twelve_month_volume_by_source_created_at(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
+        expect { described_class.twelve_month_volume_by_source_created_at(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
   end
@@ -94,7 +94,7 @@ describe Documents::Gateway::DataQualityReport do
       end
 
       it 'raises a bad request error' do
-        expect { described_class.twelve_month_volume_by_created_at(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
+        expect { described_class.twelve_month_volume_by_created_at(OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
     end
   end

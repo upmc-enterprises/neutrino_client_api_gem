@@ -5,7 +5,7 @@ require './lib/documents/gateway/requestor'
 require './lib/documents/gateway/uri/whitelist_factory'
 require './lib/documents/gateway/exceptions'
 
-describe Documents::Gateway::Patient do
+describe Neutrino::Gateway::Patient do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash
@@ -16,8 +16,8 @@ describe Documents::Gateway::Patient do
   let(:params_root_and_extension) { { root: root, extension: extension } }
   let(:invalid_user_params_root_and_extension) { { root: 'fdsaf', extension: 'gsaewags' } }
   let(:user_root_and_extension) { { user: { root: 'foobar', extension: 'spameggs' } } }
-  let(:set_in_error_exception) { Documents::Gateway::Exceptions::PatientIdentitySetInError }
-  let(:invalid_tenant_operation) { Documents::Gateway::Exceptions::InvalidTenantOperation }
+  let(:set_in_error_exception) { Neutrino::Gateway::Exceptions::PatientIdentitySetInError }
+  let(:invalid_tenant_operation) { Neutrino::Gateway::Exceptions::InvalidTenantOperation }
   let(:mock_response) { double('Mock Response', code: 403, body: {}) }
 
   shared_examples 'the_patient_identity_set_is_in_error' do
@@ -63,7 +63,7 @@ describe Documents::Gateway::Patient do
         .to_return(status: ['404', 'OK'])
       expect do
         described_class.demographics({ root: 'srcsys', extension: '4321' }, OPTIONS_WITH_REMOTE_IP)
-      end.to raise_error(Documents::Gateway::Exceptions::PatientNotFoundError)
+      end.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError)
     end
 
   end
@@ -124,7 +124,7 @@ describe Documents::Gateway::Patient do
               .to_return(status: 404)
           end
 
-          specify { expect { subject }.to raise_error(Documents::Gateway::Exceptions::PatientNotFoundError) }
+          specify { expect { subject }.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError) }
         end
       end
 
@@ -184,7 +184,7 @@ describe Documents::Gateway::Patient do
       it 'raises a PatientNotFoundError when it receives a 404 error' do
         expect do
           described_class.set_in_error(params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP))
-        end.to raise_error(Documents::Gateway::Exceptions::PatientNotFoundError)
+        end.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError)
       end
     end
   end
@@ -218,7 +218,7 @@ describe Documents::Gateway::Patient do
       it 'raises a InvalidTenantOperation error when it receives a 403 error' do
         expect do
           described_class.self_healing(params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP))
-        end.to raise_error(Documents::Gateway::Exceptions::InvalidTenantOperation)
+        end.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
       end
     end
 
@@ -233,7 +233,7 @@ describe Documents::Gateway::Patient do
       it 'raises a PatientNotFoundError when it receives a 404 error' do
         expect do
           described_class.self_healing(params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP))
-        end.to raise_error(Documents::Gateway::Exceptions::PatientNotFoundError)
+        end.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError)
       end
     end
   end
@@ -285,26 +285,26 @@ describe Documents::Gateway::Patient do
 
     it 'performs a request returning 403 - requesting application or tenant is not authorized to perform lookup with Patient Identity' do
       allow(Neutrino::Api::Client).to receive(:perform_request).and_return( double('Mock Response', code: 403, body: { message: 'Application is not authorized to perform lookup with Patient Identity' }))
-      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Documents::Gateway::Exceptions::InvalidTenantOperation)
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Neutrino::Gateway::Exceptions::InvalidTenantOperation)
     end
 
     it 'performs a request returning 404 - requested identity does not exist in the system' do
       allow(Neutrino::Api::Client).to receive(:perform_request).and_return( double('Mock Response', code: 404, body: {}))
-      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Documents::Gateway::Exceptions::PatientNotFoundError)
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError)
     end
 
     it 'performs a request returning 409 - requested identity is not "in error"' do
       allow(Neutrino::Api::Client).to receive(:perform_request).and_return(double('Mock Response', code: '409', body: '{ "error": "Patient Identity is not in Error" }' ))
-      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Documents::Gateway::Exceptions::PatientIdentityNotInError)
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Neutrino::Gateway::Exceptions::PatientIdentityNotInError)
     end
 
     it 'performs a request returning 409 - requested identity has documents' do
       allow(Neutrino::Api::Client).to receive(:perform_request).and_return(double('Mock Response', code: '409', body: '{ "error": "Patient Identity has documents" }'))
-      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Documents::Gateway::Exceptions::PatientIdentityHasDocumentsError)
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Neutrino::Gateway::Exceptions::PatientIdentityHasDocumentsError)
     end
 
     it 'performs a request returning 500 - an unknown error occurred' do
-      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Documents::Gateway::Exceptions::InternalServerError)
+      expect{ described_class.delete(invalid_user_params_root_and_extension, user_root_and_extension.merge(OPTIONS_WITH_REMOTE_IP)) }.to raise_error(Neutrino::Gateway::Exceptions::InternalServerError)
     end
 
   end
@@ -333,7 +333,7 @@ describe Documents::Gateway::Patient do
       before(:each) do
         params[:root] = root
         params[:extension] = extension
-        allow(Documents::Gateway::Requestor).to receive(:request).and_return(double.as_null_object)
+        allow(Neutrino::Gateway::Requestor).to receive(:request).and_return(double.as_null_object)
       end
 
       context 'and current is specified in params' do
@@ -341,7 +341,7 @@ describe Documents::Gateway::Patient do
         before(:each) { params[:current] = true }
 
         it 'contains the current uri component' do
-          expect(Documents::Gateway::Requestor).to receive(:request).with(/\/current/, anything)
+          expect(Neutrino::Gateway::Requestor).to receive(:request).with(/\/current/, anything)
           described_class.patient_documents(params)
         end
 
@@ -376,7 +376,7 @@ describe Documents::Gateway::Patient do
       before(:each) do
         params[:root] = root
         params[:extension] = extension
-        allow(Documents::Gateway::Requestor).to receive(:request).and_return(double.as_null_object)
+        allow(Neutrino::Gateway::Requestor).to receive(:request).and_return(double.as_null_object)
       end
 
     end
@@ -488,11 +488,11 @@ describe Documents::Gateway::Patient do
 
     it 'raises a TimeWindowError if it is given a date range whose starting date is after the ending date' do
       allow(described_class).to receive(:base_uri).and_return('/fooey')
-      expect { described_class.patient_documents(date_to: date_from, date_from: date_to) }.to raise_error(Documents::Gateway::Exceptions::TimeWindowError)
+      expect { described_class.patient_documents(date_to: date_from, date_from: date_to) }.to raise_error(Neutrino::Gateway::Exceptions::TimeWindowError)
     end
 
     it 'raises a BadRequestError if more than one whitelist is specified' do
-      expect { described_class.patient_documents(type_of_service_whitelist: [], with_ejection_fractions: true) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
+      expect { described_class.patient_documents(type_of_service_whitelist: [], with_ejection_fractions: true) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
     end
 
     context 'when requesting a patient who does not exist' do
@@ -505,7 +505,7 @@ describe Documents::Gateway::Patient do
           'http://testhost:4242/api/v1/patient/somesys/12345/patient_documents?user%5Bextension%5D=spameggs&user%5Broot%5D=foobar')
           .with(headers: { 'X-Forwarded-For' => REMOTE_IP })
           .to_return(status: 404)
-        expect { described_class.patient_documents({ root: root, extension: extension }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::PatientNotFoundError)
+        expect { described_class.patient_documents({ root: root, extension: extension }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::PatientNotFoundError)
       end
 
     end
@@ -521,7 +521,7 @@ describe Documents::Gateway::Patient do
   describe 'self.request' do
     let(:unauthorized_response) { double('Response', code: '403',
                                          body: { error: 'Application is not authorized to perform lookup with Patient Identity' }.to_json) }
-    let(:unauthorized_error) { Documents::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError }
+    let(:unauthorized_error) { Neutrino::Gateway::Exceptions::PatientIdentityGatewayNotAuthorizedError }
 
     it 'raises an patient identity unauthorized error if request is unauthorized' do
       expect {
@@ -538,7 +538,7 @@ describe Documents::Gateway::Patient do
       let(:params) { {} }
 
       it 'raises a BadRequestError' do
-        expect { described_class.base_uri(params) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
+        expect { described_class.base_uri(params) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
       end
 
     end

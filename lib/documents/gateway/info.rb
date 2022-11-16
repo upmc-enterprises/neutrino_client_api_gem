@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class Info < Documents::Gateway::Requestor
+    class Info < Neutrino::Gateway::Requestor
       private_class_method :new
       class << self
 
@@ -13,7 +13,7 @@ module Neutrino
         # @raise [Exceptions::UnableToParseVersionHistoryError] when NEUTRINO returns a 400 status code
         def deployments(options = {})
           path = "#{base_uri}/deployments"
-          request(path, options).if_400_raise(Documents::Gateway::Exceptions::UnableToParseVersionHistoryError)
+          request(path, options).if_400_raise(Neutrino::Gateway::Exceptions::UnableToParseVersionHistoryError)
                        .to_hash
         end
 
@@ -23,7 +23,7 @@ module Neutrino
         # @raise [Exceptions::UnableToParseVersionInformationError] when NEUTRINO returns a 400 status code
         def current_deployment(options = {})
           path = "#{base_uri}/deployment/current"
-          request(path, options).if_400_raise(Documents::Gateway::Exceptions::UnableToParseVersionInformationError)
+          request(path, options).if_400_raise(Neutrino::Gateway::Exceptions::UnableToParseVersionInformationError)
                        .to_hash
         end
 
@@ -35,8 +35,8 @@ module Neutrino
         def configuration(category = nil, options = {})
           path = "#{base_uri}/configuration#{category ? '/'+category : ''}"
           request(path, options)
-                        .if_404_raise(Documents::Gateway::Exceptions::MissingConfiguration.new)
-                        .if_400_raise(Documents::Gateway::Exceptions::UnableToRetrieveConfigurations)
+                        .if_404_raise(Neutrino::Gateway::Exceptions::MissingConfiguration.new)
+                        .if_400_raise(Neutrino::Gateway::Exceptions::UnableToRetrieveConfigurations)
                        .to_hash
         end
 

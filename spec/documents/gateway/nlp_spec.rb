@@ -2,7 +2,7 @@ require './spec/spec_helper'
 require './lib/documents/gateway/nlp'
 require './lib/documents/gateway/requestor'
 
-describe Documents::Gateway::Nlp do
+describe Neutrino::Gateway::Nlp do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash
@@ -46,7 +46,7 @@ describe Documents::Gateway::Nlp do
     let(:empty_params) { {} }
 
     it 'raises a BadRequestError when no params are given' do
-      expect { described_class.document(empty_params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
+      expect { described_class.document(empty_params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
     end
 
   end
@@ -65,7 +65,7 @@ describe Documents::Gateway::Nlp do
     let(:empty_params) { {} }
 
     it 'raises a BadRequestError when no params are given' do
-      expect { described_class.data(empty_params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::BadRequestError)
+      expect { described_class.data(empty_params, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::BadRequestError)
     end
 
   end

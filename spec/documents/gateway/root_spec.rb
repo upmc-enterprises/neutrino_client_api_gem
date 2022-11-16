@@ -3,7 +3,7 @@ require './lib/documents/gateway/requestor'
 require './lib/documents/gateway/exceptions'
 require './lib/documents/gateway/root'
 
-describe Documents::Gateway::Root do
+describe Neutrino::Gateway::Root do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash
@@ -24,7 +24,7 @@ describe Documents::Gateway::Root do
     end
 
     it 'performs a post request' do
-      expect(Documents::Gateway::Requestor).to receive(:request).with(path, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), body).and_call_original
+      expect(Neutrino::Gateway::Requestor).to receive(:request).with(path, { method: :post }.merge(OPTIONS_WITH_REMOTE_IP), body).and_call_original
       expect(described_class.create(body, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
@@ -39,7 +39,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises a root invalid error' do
-        expect { described_class.create(body, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::RootInvalidError)
+        expect { described_class.create(body, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::RootInvalidError)
       end
     end
 
@@ -54,7 +54,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises a PostRootWithNonExistProviderError' do
-        expect { described_class.create(body, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::PostRootWithNonExistProviderError)
+        expect { described_class.create(body, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::PostRootWithNonExistProviderError)
       end
     end
 
@@ -106,7 +106,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises a root invalid error' do
-        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::RootInvalidError)
+        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::RootInvalidError)
       end
     end
 
@@ -121,7 +121,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises a root not found error' do
-        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::RootNotFoundError)
+        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::RootNotFoundError)
       end
     end
   end
@@ -153,7 +153,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises a root invalid error' do
-        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::RootInvalidError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::RootInvalidError)
       end
     end
 
@@ -168,7 +168,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises a root invalid error' do
-        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::PostRootWithNonExistProviderError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::PostRootWithNonExistProviderError)
       end
     end
 
@@ -183,7 +183,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises a root not found error' do
-        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::RootNotFoundError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::RootNotFoundError)
       end
     end
   end
@@ -213,7 +213,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises a root not found error' do
-        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::RootNotFoundError)
+        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::RootNotFoundError)
       end
     end
 
@@ -228,7 +228,7 @@ describe Documents::Gateway::Root do
       end
 
       it 'raises DeleteRootWithProviderError' do
-        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::DeleteRootWithProviderError)
+        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::DeleteRootWithProviderError)
       end
     end
   end

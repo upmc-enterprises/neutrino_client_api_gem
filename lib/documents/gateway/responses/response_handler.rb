@@ -102,9 +102,9 @@ module Neutrino
 
         # Returns the result of the ResponseHandler block unless the patient identity set was in error
         # @return [Responses::ResponseHandler] the http response that was passed to the method
-        # @raise [Documents::Gateway::Exceptions::PatientIdentitySetInError] if the patient identity set is in error
+        # @raise [Neutrino::Gateway::Exceptions::PatientIdentitySetInError] if the patient identity set is in error
         def with_patient_identity_set_in_error_check
-          if_403_raise(Documents::Gateway::Exceptions::PatientIdentitySetInError)
+          if_403_raise(Neutrino::Gateway::Exceptions::PatientIdentitySetInError)
         end
 
         # Returns the result of the ResponseHandler block unless the exception arguments match

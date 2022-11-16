@@ -3,7 +3,7 @@ require './lib/documents/gateway/requestor'
 require './lib/documents/gateway/exceptions'
 require './lib/documents/gateway/azure_ad_group'
 
-describe Documents::Gateway::AzureAdGroup do
+describe Neutrino::Gateway::AzureAdGroup do
 
   before(:each) do
     Neutrino::Api::Client.config = TestConfig.to_hash
@@ -24,7 +24,7 @@ describe Documents::Gateway::AzureAdGroup do
     end
 
     it 'performs a post request' do
-      expect(Documents::Gateway::Requestor).to receive(:request).with(path, { method: :post, remote_ip: REMOTE_IP }, body).and_call_original
+      expect(Neutrino::Gateway::Requestor).to receive(:request).with(path, { method: :post, remote_ip: REMOTE_IP }, body).and_call_original
       expect(described_class.create(body, OPTIONS_WITH_REMOTE_IP)).to eq(response_message)
     end
 
@@ -75,7 +75,7 @@ describe Documents::Gateway::AzureAdGroup do
       end
 
       it 'raises an access level invalid error' do
-        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::AzureAdGroupInvalidError)
+        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
       end
     end
 
@@ -90,7 +90,7 @@ describe Documents::Gateway::AzureAdGroup do
       end
 
       it 'raises an azure group not found error' do
-        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::AzureAdGroupNotFoundError)
+        expect { described_class.get({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
       end
     end
   end
@@ -122,7 +122,7 @@ describe Documents::Gateway::AzureAdGroup do
       end
 
       it 'raises an azure group invalid error' do
-        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::AzureAdGroupInvalidError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupInvalidError)
       end
     end
 
@@ -137,7 +137,7 @@ describe Documents::Gateway::AzureAdGroup do
       end
 
       it 'raises an azure group not found error' do
-        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::AzureAdGroupNotFoundError)
+        expect { described_class.update_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
       end
     end
   end
@@ -167,7 +167,7 @@ describe Documents::Gateway::AzureAdGroup do
       end
 
       it 'raises an azure group not found error' do
-        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Documents::Gateway::Exceptions::AzureAdGroupNotFoundError)
+        expect { described_class.delete_by_id({ id: 1 }, OPTIONS_WITH_REMOTE_IP) }.to raise_error(Neutrino::Gateway::Exceptions::AzureAdGroupNotFoundError)
       end
     end
   end

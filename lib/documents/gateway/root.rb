@@ -3,7 +3,7 @@ require 'documents/gateway/exceptions'
 
 module Neutrino
   module Gateway
-    class Root < Documents::Gateway::Requestor
+    class Root < Neutrino::Gateway::Requestor
       private_class_method :new
       class << self
         # Creates a new root
@@ -14,8 +14,8 @@ module Neutrino
         def create(root_body, options = {})
           path = base_uri
           request(path, options.merge(method: :post), root_body)
-            .with_general_exception_check('400', /Create or update a root with a non-existent provider/, Documents::Gateway::Exceptions::PostRootWithNonExistProviderError)
-            .if_400_raise(Documents::Gateway::Exceptions::RootInvalidError)
+            .with_general_exception_check('400', /Create or update a root with a non-existent provider/, Neutrino::Gateway::Exceptions::PostRootWithNonExistProviderError)
+            .if_400_raise(Neutrino::Gateway::Exceptions::RootInvalidError)
             .to_hash
         end
 
@@ -36,8 +36,8 @@ module Neutrino
         # @return [Hash] the root
         def get(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options).if_404_raise(Documents::Gateway::Exceptions::RootNotFoundError)
-                                .if_400_raise(Documents::Gateway::Exceptions::RootInvalidError)
+          request(path, options).if_404_raise(Neutrino::Gateway::Exceptions::RootNotFoundError)
+                                .if_400_raise(Neutrino::Gateway::Exceptions::RootInvalidError)
                                 .to_hash
         end
 
@@ -48,9 +48,9 @@ module Neutrino
         # @return [Hash] the root
         def update_by_id(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options.merge(method: :post), params).if_404_raise(Documents::Gateway::Exceptions::RootNotFoundError)
-            .with_general_exception_check('400', /Create or update a root with a non-existent provider/, Documents::Gateway::Exceptions::PostRootWithNonExistProviderError)
-            .if_400_raise(Documents::Gateway::Exceptions::RootInvalidError)
+          request(path, options.merge(method: :post), params).if_404_raise(Neutrino::Gateway::Exceptions::RootNotFoundError)
+            .with_general_exception_check('400', /Create or update a root with a non-existent provider/, Neutrino::Gateway::Exceptions::PostRootWithNonExistProviderError)
+            .if_400_raise(Neutrino::Gateway::Exceptions::RootInvalidError)
             .to_hash
         end
 
@@ -61,8 +61,8 @@ module Neutrino
         # @return [Hash] the root
         def delete_by_id(params, options = {})
           path = "#{base_uri}/#{params[:id]}"
-          request(path, options.merge(method: :delete)).if_404_raise(Documents::Gateway::Exceptions::RootNotFoundError)
-            .if_409_raise(Documents::Gateway::Exceptions::DeleteRootWithProviderError)
+          request(path, options.merge(method: :delete)).if_404_raise(Neutrino::Gateway::Exceptions::RootNotFoundError)
+            .if_409_raise(Neutrino::Gateway::Exceptions::DeleteRootWithProviderError)
         end
 
         # Gets the base URI for a root
