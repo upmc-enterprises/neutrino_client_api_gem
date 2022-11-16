@@ -3,10 +3,10 @@
 ## Versioning
 The gem follows the following versioning scheme
 ```
-<NEUTRINO_version>dev<major_version>.<minor_version>
+<Documents_version>dev<major_version>.<minor_version>
 ```
 where
- - `<NEUTRINO_version>` is the compatible version of NEUTRINO of which the gem acts as a gateway
+ - `<Documents_version>` is the compatible version of NEUTRINO of which the gem acts as a gateway
  - `<major_version` is the major version of the gem, indicating breaking changes for the given version of NEUTRINO
  - `<minor_version>` is the minor version of the gem, indicating non-breaking changes
 
