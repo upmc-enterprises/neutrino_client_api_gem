@@ -1,2 +1,2 @@
-rvm use jruby-9.2.6@neutrino_api_client --create
+rvm use jruby-9.2.6@documents_api_client --create
 export JRUBY_OPTS='--debug'
