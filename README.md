@@ -1,4 +1,4 @@
-# NEUTRINO API Client gem
+# DOCUMENTS API Client gem
 
 ## Versioning
 The gem follows semantic versioning.
@@ -10,28 +10,28 @@ Compatibility:
 |6.0.0dev0.01|4.14.0               |
 |6.1.0       |4.15.0+              |
 
-The gem version can be updated in lib/neutrino/gateway/version.rb
+The gem version can be updated in lib/documents/gateway/version.rb
 
 ## Generating
 In the project's root execute:
 ```
-gem build neutrino_api_client.gemspec
+gem build documents_api_client.gemspec
 ```
 
 ## Packaging in a Rails project
 After generating the gem, unpack it into the Rails' project's `vendor` folder:
 ```
-gem unpack neutrino_api_client-<version>.gem --target <rails_project>/vendor/gems/
+gem unpack documents_api_client-<version>.gem --target <rails_project>/vendor/gems/
 ```
 where
- - `<version>` is the version of the neutrino_api_client
+ - `<version>` is the version of the documents_api_client
  - `<rails_project>` is the root directory of the rails project
 
 Add a line like the following to the project's Gemfile:
 ```
-gem 'neutrino_api_client', '<version>', :path => 'vendor/gems/neutrino_api_client-<version>'
+gem 'documents_api_client', '<version>', :path => 'vendor/gems/documents_api_client-<version>'
 ```
-where `<version>` is the version of the neutrino_api_client
+where `<version>` is the version of the documents_api_client
 
 ## Development
 To pull in development dependencies, from the project's root execute:
@@ -51,13 +51,13 @@ bundle exec rspec
 ## Usage
 
 ```
-require 'neutrino_api_client'
+require 'documents_api_client'
 ```
 
 ### Configuration
 
 ```
-Neutrino::Api::Client.config = <some config hash>
+Documents::Api::Client.config = <some config hash>
 ```
 
 Where `<some config hash>` is a ruby hash that specifies the required configurations
@@ -65,7 +65,7 @@ Where `<some config hash>` is a ruby hash that specifies the required configurat
 #### Example Configuration
 
 ```
-Neutrino::Api::Client.config = {
+Documents::Api::Client.config = {
   :protocol => 'http',
   :host => 'localhost',
   :port => '3000',
@@ -82,27 +82,27 @@ Neutrino::Api::Client.config = {
 **Notes**
 
  - The key`:api_version` is not required, but will default to `'1'` if not specified.
- - To follow the HIPAA Compliance, you should always pass :remote_ip in the option when you use Neutrino::Gateway
+ - To follow the HIPAA Compliance, you should always pass :remote_ip in the option when you use Documents::Gateway
 
 ### Gateway
 
-Requests to NEUTRINO are made through `Gateway` classes:
+Requests to DOCUMENTS are made through `Gateway` classes:
 
- - `Neutrino::Gateway::Info`
- - `Neutrino::Gateway::MapType`
- - `Neutrino::Gateway::OidText`
- - `Neutrino::Gateway::NamedQuery`
- - `Neutrino::Gateway::PatientDocument`
- - `Neutrino::Gateway::Patient`
+ - `Documents::Gateway::Info`
+ - `Documents::Gateway::MapType`
+ - `Documents::Gateway::OidText`
+ - `Documents::Gateway::NamedQuery`
+ - `Documents::Gateway::PatientDocument`
+ - `Documents::Gateway::Patient`
 
 Requests typically return a ruby `Hash` (parsed from JSON), but they may return other data as well (e.g. `String`)
 
 ### Example Usage
 
 ```
-require 'neutrino_api_client'
+require 'documents_api_client'
 
-Neutrino::Api::Client.config = {
+Documents::Api::Client.config = {
   :protocol => 'http',
   :host => 'localhost',
   :port => '3000',
@@ -114,7 +114,7 @@ Neutrino::Api::Client.config = {
   :hmac_key => <app_key>
 }
 
-Neutrino::Gateway::PatientDocument.get({ id: "530fb1cce4b038c5cae1f417" }, { remote_ip: "100.1.24.1" })
+Documents::Gateway::PatientDocument.get({ id: "530fb1cce4b038c5cae1f417" }, { remote_ip: "100.1.24.1" })
 ```
 
 ## To generate release
