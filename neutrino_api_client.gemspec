@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'mime-types',      '3.2.2'
   s.add_runtime_dependency 'rest-client',     '2.0.2'
   s.add_runtime_dependency 'multipart-post',  '2.1.1'
-  s.add_runtime_dependency 'activesupport',   '~> 6.0'
+  s.add_runtime_dependency 'activesupport',   '>= 6', '< 8'
 
   s.add_development_dependency 'webmock',       '3.8.0'
   s.add_development_dependency 'guard-rspec',   '4.7.3'
